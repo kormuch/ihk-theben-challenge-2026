@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theben PIS — Product Information System</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e2e8f0; display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
+
+  /* ══════════════════════════════
+     SIDEBAR — exakt VD Startup
+  ══════════════════════════════ */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: #161b27;
+    border-right: 1px solid #1f2937;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  /* Logo */
+  .sb-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 18px 16px 16px;
+    border-bottom: 1px solid #1f2937;
+  }
+  .sb-logo-triangle {
+    width: 0; height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 16px solid #22c55e;
+  }
+  .sb-logo-text {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    color: #fff;
+    line-height: 1.25;
+  }
+  .sb-logo-text small { display: block; font-weight: 400; color: #6b7280; font-size: 9px; letter-spacing: 1px; }
+
+  /* User block */
+  .sb-user {
+    padding: 14px 16px;
+    border-bottom: 1px solid #1f2937;
+  }
+  .sb-avatar {
+    width: 34px; height: 34px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: #fff;
+    margin-bottom: 8px;
+  }
+  .sb-company   { font-size: 12px; font-weight: 600; color: #e2e8f0; }
+  .sb-name      { font-size: 12px; color: #9ca3af; margin-top: 1px; }
+  .sb-email     { font-size: 11px; color: #4b5563; margin-top: 1px; }
+  .sb-links     { display: flex; gap: 10px; margin-top: 8px; }
+  .sb-link      { font-size: 11px; color: #6b7280; cursor: pointer; }
+  .sb-link:hover { color: #9ca3af; }
+  .sb-admin     { display: inline-block; background: #22c55e; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-top: 6px; }
+
+  /* Stats */
+  .sb-stats {
+    display: flex;
+    gap: 0;
+    padding: 10px 16px;
+    border-bottom: 1px solid #1f2937;
+  }
+  .sb-stat {
+    flex: 1;
+    text-align: center;
+  }
+  .sb-stat-val  { font-size: 15px; font-weight: 700; color: #e2e8f0; }
+  .sb-stat-lbl  { font-size: 10px; color: #6b7280; margin-top: 1px; }
+
+  /* Nav */
+  .sb-nav { padding: 8px 8px; flex: 1; }
+  .sb-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #9ca3af;
+    transition: background 0.12s, color 0.12s;
+    margin-bottom: 1px;
+  }
+  .sb-item:hover { background: #1f2937; color: #e2e8f0; }
+  .sb-item.active { background: #14532d30; color: #4ade80; }
+  .sb-icon { width: 15px; font-size: 13px; text-align: center; opacity: 0.7; }
+  .sb-item.active .sb-icon { opacity: 1; }
+
+  /* Bottom */
+  .sb-bottom {
+    padding: 10px 8px 8px;
+    border-top: 1px solid #1f2937;
+    margin-top: auto;
+  }
+  .sb-lang {
+    display: flex; gap: 8px; align-items: center;
+    padding: 6px 10px;
+    font-size: 11px; color: #6b7280;
+  }
+  .lang-btn {
+    cursor: pointer; padding: 2px 6px; border-radius: 4px;
+    font-size: 11px; color: #6b7280;
+    border: 1px solid transparent;
+  }
+  .lang-btn.active { border-color: #374151; color: #9ca3af; background: #1f2937; }
+
+  /* ══════════════════════════════
+     MAIN AREA
+  ══════════════════════════════ */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* Top bar */
+  .topbar {
+    background: #161b27;
+    border-bottom: 1px solid #1f2937;
+    padding: 10px 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .topbar-back   { font-size: 12px; color: #6b7280; cursor: pointer; }
+  .topbar-back:hover { color: #9ca3af; }
+  .topbar-title  { font-size: 18px; font-weight: 700; color: #f1f5f9; flex: 1; }
+  .topbar-meta   { font-size: 11px; color: #6b7280; }
+  .btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-ghost   { background: transparent; color: #9ca3af; border: 1px solid #1f2937; }
+  .btn-ghost:hover { background: #1f2937; color: #e2e8f0; }
+  .btn-primary { background: #16a34a; color: #fff; }
+  .btn-primary:hover { background: #15803d; }
+
+  /* ── PIS Horizontal Nav ── */
+  .ma-nav {
+    background: #161b27;
+    border-bottom: 1px solid #1f2937;
+    display: flex;
+    flex-direction: column;
+  }
+  .ma-nav-row {
+    display: flex;
+    align-items: stretch;
+    padding: 0 16px;
+    gap: 0;
+  }
+  .ma-nav-row:first-child {
+    border-bottom: 1px solid #1f293760;
+  }
+  .ma-nav-row-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #9ca3af;
+    align-self: center;
+    width: 80px;
+    min-width: 80px;
+    white-space: nowrap;
+    cursor: default;
+    user-select: none;
+    border-right: 1px solid #1f2937;
+    padding-right: 12px;
+    margin-right: 4px;
+  }
+  .ma-nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #9ca3af;
+    cursor: default;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    letter-spacing: 0.1px;
+  }
+  .ma-nav-badge {
+    background: #ef4444; color: #fff;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 6px; border-radius: 10px;
+  }
+  .ma-nav-badge.green { background: #16a34a; }
+  .ma-nav-sub-item {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 6px;
+    min-width: 148px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    border-radius: 6px 6px 0 0;
+    transition: color 0.12s, background 0.12s, border-color 0.12s;
+  }
+  .ma-nav-sub-item:hover { color: #e2e8f0; background: #1f293760; }
+  .ma-nav-sub-item.active {
+    color: #4ade80;
+    border-bottom-color: #22c55e;
+    background: #16a34a18;
+  }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 24px; }
+  .screen  { display: none; }
+  .screen.active { display: block; }
+
+  /* ══════════════════════════════
+     SHARED COMPONENTS
+  ══════════════════════════════ */
+  .page-title { font-size: 20px; font-weight: 700; color: #f1f5f9; margin-bottom: 3px; }
+  .page-sub   { font-size: 12px; color: #6b7280; margin-bottom: 22px; }
+
+  .card { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+  .card-sub   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .card-hd    { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+  .stats-row { display: flex; gap: 14px; margin-bottom: 20px; flex-wrap: wrap; }
+  .stat-box  {
+    flex: 1; min-width: 120px;
+    background: #1a2030; border: 1px solid #1f2937;
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .stat-lbl  { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .stat-val  { font-size: 26px; font-weight: 700; color: #f1f5f9; line-height: 1; }
+  .stat-hint { font-size: 11px; color: #4ade80; margin-top: 3px; }
+  .stat-hint.red    { color: #ef4444; }
+  .stat-hint.yellow { color: #fbbf24; }
+
+  .deal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .deal-card { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; padding: 18px; cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+  .deal-card:hover { border-color: #22c55e40; transform: translateY(-1px); }
+  .deal-name { font-size: 14px; font-weight: 600; color: #f1f5f9; }
+  .deal-type-txt { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .badge { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
+  .badge-green  { background: #16a34a25; color: #4ade80; }
+  .badge-yellow { background: #f59e0b25; color: #fbbf24; }
+  .badge-blue   { background: #3b82f625; color: #60a5fa; }
+  .badge-red    { background: #ef444425; color: #f87171; }
+  .prog-mini { height: 3px; background: #1f2937; border-radius: 3px; margin-top: 10px; }
+  .prog-fill { height: 100%; border-radius: 3px; }
+  .deal-meta-row { display: flex; gap: 14px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #1f2937; }
+  .dmi { font-size: 11px; color: #6b7280; }
+  .dmi strong { display: block; font-size: 10px; color: #4b5563; margin-bottom: 1px; }
+
+  .form-group  { margin-bottom: 16px; }
+  .form-label  { font-size: 11px; font-weight: 600; color: #9ca3af; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input  { width: 100%; background: #0f1117; border: 1px solid #1f2937; border-radius: 6px; padding: 9px 12px; font-size: 13px; color: #e2e8f0; outline: none; }
+  .form-input:focus  { border-color: #22c55e50; }
+  .form-select { width: 100%; background: #0f1117; border: 1px solid #1f2937; border-radius: 6px; padding: 9px 12px; font-size: 13px; color: #e2e8f0; outline: none; cursor: pointer; }
+  .form-textarea { width: 100%; background: #0f1117; border: 1px solid #1f2937; border-radius: 6px; padding: 9px 12px; font-size: 13px; color: #e2e8f0; outline: none; min-height: 90px; resize: vertical; }
+  .form-row    { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .deal-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .deal-type-card { background: #0f1117; border: 2px solid #1f2937; border-radius: 8px; padding: 14px; cursor: pointer; transition: border-color 0.15s; }
+  .deal-type-card:hover   { border-color: #22c55e40; }
+  .deal-type-card.sel     { border-color: #22c55e; background: #22c55e08; }
+  .dtc-title { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 3px; }
+  .dtc-sub   { font-size: 11px; color: #6b7280; }
+
+  .upload-zone { border: 2px dashed #2d3748; border-radius: 10px; padding: 44px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; }
+  .upload-zone:hover { border-color: #22c55e; background: #22c55e06; }
+  .upload-list { display: flex; flex-direction: column; gap: 7px; }
+  .upload-item { background: #0f1117; border: 1px solid #1f2937; border-radius: 7px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+  .upf-info { flex: 1; }
+  .upf-name { font-size: 12px; font-weight: 500; color: #e2e8f0; }
+  .upf-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
+  .upf-prog { height: 3px; background: #1f2937; border-radius: 3px; margin-top: 5px; }
+  .upf-fill { height: 100%; border-radius: 3px; background: #16a34a; }
+  .upf-status { font-size: 11px; font-weight: 600; }
+  .upf-status.ok  { color: #4ade80; }
+  .upf-status.err { color: #ef4444; }
+  .upf-status.run { color: #fbbf24; }
+
+  .analyse-bar { background: #1a2030; border: 1px solid #1f2937; border-radius: 8px; padding: 12px 18px; margin-bottom: 18px; display: flex; align-items: center; gap: 14px; }
+  .abar-label { font-size: 12px; color: #9ca3af; flex: 1; }
+  .abar-track { flex: 2; height: 7px; background: #1f2937; border-radius: 7px; }
+  .abar-fill  { height: 100%; border-radius: 7px; background: #16a34a; }
+  .abar-pct   { font-size: 12px; font-weight: 700; color: #4ade80; min-width: 36px; text-align: right; }
+
+  .cat-tabs { display: flex; gap: 7px; margin-bottom: 16px; flex-wrap: wrap; }
+  .cat-tab  { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid #1f2937; color: #6b7280; transition: all 0.12s; }
+  .cat-tab:hover  { border-color: #22c55e40; color: #9ca3af; }
+  .cat-tab.active { background: #16a34a20; border-color: #22c55e50; color: #4ade80; }
+
+  .inner-tabs { display: flex; gap: 0; border-bottom: 1px solid #1f2937; margin-bottom: 20px; }
+  .inner-tab { padding: 9px 16px; font-size: 12px; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.12s, border-color 0.12s; }
+  .inner-tab:hover { color: #9ca3af; }
+  .inner-tab.active { color: #4ade80; border-bottom-color: #22c55e; }
+
+  .tbl { width: 100%; border-collapse: collapse; }
+  .tbl th { text-align: left; font-size: 10px; color: #4b5563; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; padding: 7px 10px; border-bottom: 1px solid #1f2937; }
+  .tbl td { padding: 9px 10px; border-bottom: 1px solid #1f293710; font-size: 12px; color: #9ca3af; vertical-align: middle; }
+  .tbl tr:hover td { background: #1f293720; }
+  .conf-bar { height: 5px; background: #1f2937; border-radius: 5px; width: 70px; display: inline-block; vertical-align: middle; margin-right: 5px; }
+  .conf-fill { height: 100%; border-radius: 5px; }
+  .doc-badge { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .doc-badge.fin  { background: #3b82f620; color: #60a5fa; }
+  .doc-badge.leg  { background: #8b5cf620; color: #a78bfa; }
+  .doc-badge.com  { background: #f59e0b20; color: #fbbf24; }
+  .doc-badge.unk  { background: #37415120; color: #6b7280; }
+
+  .compl-big { text-align: center; padding: 28px 20px; }
+  .compl-score { font-size: 58px; font-weight: 800; line-height: 1; }
+  .compl-score.yellow { color: #fbbf24; }
+  .compl-score.green  { color: #4ade80; }
+  .compl-score.red    { color: #ef4444; }
+  .compl-track { height: 10px; background: #1f2937; border-radius: 10px; margin: 16px auto; max-width: 320px; }
+  .compl-fill  { height: 100%; border-radius: 10px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 14px; }
+  .kpi-box  { background: #0f1117; border: 1px solid #1f2937; border-radius: 8px; padding: 14px; }
+  .kpi-lbl  { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 5px; }
+  .kpi-val  { font-size: 20px; font-weight: 700; color: #f1f5f9; }
+  .kpi-yr   { font-size: 10px; color: #4b5563; margin-top: 2px; }
+  .kpi-flag { font-size: 11px; margin-top: 4px; }
+  .kpi-flag.ok   { color: #4ade80; }
+  .kpi-flag.warn { color: #fbbf24; }
+  .kpi-flag.bad  { color: #ef4444; }
+  .missing-list { display: flex; flex-direction: column; gap: 7px; }
+  .mi { display: flex; align-items: center; gap: 9px; padding: 9px 12px; background: #0f1117; border-radius: 7px; }
+  .mi.p0 { border-left: 3px solid #ef4444; }
+  .mi.p1 { border-left: 3px solid #fbbf24; }
+  .mi.p2 { border-left: 3px solid #374151; }
+  .mi-pri { font-size: 10px; font-weight: 700; min-width: 22px; }
+  .mi-pri.p0 { color: #ef4444; }
+  .mi-pri.p1 { color: #fbbf24; }
+  .mi-pri.p2 { color: #6b7280; }
+  .mi-name   { font-size: 12px; color: #e2e8f0; flex: 1; }
+  .mi-why    { font-size: 11px; color: #4b5563; }
+
+  .fin-tbl { width: 100%; border-collapse: collapse; }
+  .fin-tbl th { font-size: 11px; color: #4b5563; font-weight: 600; text-align: right; padding: 7px 10px; border-bottom: 1px solid #1f2937; }
+  .fin-tbl th:first-child { text-align: left; }
+  .fin-tbl td { padding: 9px 10px; font-size: 12px; color: #9ca3af; border-bottom: 1px solid #1f293710; text-align: right; }
+  .fin-tbl td:first-child { text-align: left; color: #e2e8f0; font-weight: 500; }
+  .fin-tbl td.pos { color: #4ade80; }
+  .fin-tbl td.neg { color: #ef4444; }
+  .fin-tbl td.na  { color: #374151; }
+
+  .rf-stats { display: flex; gap: 10px; margin-bottom: 18px; }
+  .rf-stat  { flex: 1; background: #1a2030; border: 1px solid #1f2937; border-radius: 8px; padding: 12px; text-align: center; }
+  .rf-num   { font-size: 26px; font-weight: 800; line-height: 1; }
+  .rf-num.c { color: #ef4444; }
+  .rf-num.h { color: #f97316; }
+  .rf-num.m { color: #fbbf24; }
+  .rf-num.l { color: #6b7280; }
+  .rf-lbl   { font-size: 10px; color: #6b7280; margin-top: 3px; }
+  .rf-list  { display: flex; flex-direction: column; gap: 7px; }
+  .rf-item  { background: #1a2030; border: 1px solid #1f2937; border-radius: 8px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+  .rf-sev   { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; min-width: 65px; text-align: center; margin-top: 1px; }
+  .rf-sev.c { background: #ef444420; color: #ef4444; }
+  .rf-sev.h { background: #f9731620; color: #f97316; }
+  .rf-sev.m { background: #fbbf2420; color: #fbbf24; }
+  .rf-sev.l { background: #37415120; color: #6b7280; }
+  .rf-body  { flex: 1; }
+  .rf-title { font-size: 12px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+  .rf-desc  { font-size: 11px; color: #6b7280; }
+  .rf-cat   { font-size: 10px; color: #4b5563; margin-top: 3px; }
+  .rf-src   { font-size: 10px; color: #4b5563; min-width: 55px; text-align: right; }
+
+  .rep-header { background: linear-gradient(135deg,#161b27,#1a2030); border: 1px solid #1f2937; border-radius: 10px; padding: 24px; margin-bottom: 16px; }
+  .rep-title  { font-size: 18px; font-weight: 700; color: #f1f5f9; margin-bottom: 3px; }
+  .rep-sub    { font-size: 12px; color: #6b7280; margin-bottom: 16px; }
+  .rec-badge  { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: 7px; font-size: 13px; font-weight: 700; }
+  .rec-cond   { background: #f59e0b20; border: 1px solid #f59e0b40; color: #fbbf24; }
+  .rec-go     { background: #16a34a20; border: 1px solid #16a34a40; color: #4ade80; }
+  .rec-nogo   { background: #ef444420; border: 1px solid #ef444440; color: #f87171; }
+  .rep-meta   { display: flex; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #1f2937; flex-wrap: wrap; }
+  .rmi        { font-size: 11px; }
+  .rmi .lbl   { color: #6b7280; }
+  .rmi .val   { color: #e2e8f0; font-weight: 600; margin-top: 2px; }
+  .cond-list  { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .cond-list li { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: #9ca3af; }
+  .cond-list li::before { content: "→"; color: #fbbf24; font-weight: 700; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: #00000088; z-index: 100; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; width: 520px; max-width: 95vw; padding: 24px; }
+  .modal-title { font-size: 15px; font-weight: 700; color: #f1f5f9; margin-bottom: 3px; }
+  .modal-sub   { font-size: 12px; color: #6b7280; margin-bottom: 20px; }
+  .modal-btns  { display: flex; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+
+  .divider { border: none; border-top: 1px solid #1f2937; margin: 14px 0; }
+  .action-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+
+  /* ── Dokument-Tracking ── */
+  .track-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  .track-table th {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 6px 10px 10px;
+    text-align: left;
+    border-bottom: 1px solid #1f2937;
+  }
+  .track-table th.th-count   { width: 72px;  text-align: center; }
+  .track-table th.th-bar     { width: 120px; }
+  .track-table th.th-detail  { width: 200px; }
+  .track-table th.th-flag    { width: 200px; }
+  .track-table td {
+    padding: 9px 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid #1f293715;
+    font-size: 12px;
+    color: #9ca3af;
+  }
+  .track-table tr:last-child td { border-bottom: none; }
+  .track-table tr:hover td { background: #1f293715; }
+  .track-name {
+    font-size: 12px;
+    color: #e2e8f0;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .track-rule {
+    display: block;
+    font-size: 10px;
+    color: #4b5563;
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .track-count {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .track-count.ok     { color: #4ade80; }
+  .track-count.yellow { color: #fbbf24; }
+  .track-count.red    { color: #ef4444; }
+  .track-bar {
+    height: 6px;
+    background: #1f2937;
+    border-radius: 6px;
+    width: 100%;
+  }
+  .track-fill { height: 100%; border-radius: 6px; }
+  .track-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+  .track-year {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .track-year.ok      { background: #16a34a20; color: #4ade80; }
+  .track-year.missing { background: #37415120; color: #6b7280; }
+  .track-flag {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+  .track-flag.ok     { color: #4ade80; }
+  .track-flag.yellow { color: #fbbf24; }
+  .track-flag.red    { color: #ef4444; }
+  .track-section-hd {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 14px 10px 4px;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #0f1117; }
+  ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+
+  /* ══════════════════════════════
+     DATASHEET
+  ══════════════════════════════ */
+  .ds-grid       { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .ds-field      { margin-bottom: 13px; }
+  .ds-label      { font-size: 10px; color: #4b5563; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 3px; font-weight: 600; }
+  .ds-value      { font-size: 13px; color: #e2e8f0; }
+  .ds-tag        { display: inline-block; background: #1f2937; color: #9ca3af; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+
+  /* ══════════════════════════════
+     KI-ANALYSE (ORCHESTRATOR)
+  ══════════════════════════════ */
+  .orch-status       { display: flex; align-items: center; gap: 16px; background: #1a2030; border: 1px solid #22c55e30; border-radius: 10px; padding: 18px 22px; margin-bottom: 20px; }
+  .orch-coffee       { font-size: 36px; line-height: 1; }
+  .orch-status-text  { flex: 1; }
+  .orch-status-title { font-size: 15px; font-weight: 700; }
+  .orch-status-sub   { font-size: 11px; color: #6b7280; margin-top: 3px; }
+  .orch-eta          { font-size: 13px; font-weight: 700; color: #e2e8f0; white-space: nowrap; }
+  .orch-step         { display: flex; align-items: flex-start; gap: 14px; padding: 13px 0; border-bottom: 1px solid #1f293730; }
+  .orch-step:last-child { border-bottom: none; }
+  .orch-ic           { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+  .orch-ic.done      { background: #16a34a25; color: #4ade80; }
+  .orch-ic.run       { background: #f59e0b25; color: #fbbf24; }
+  .orch-ic.wait      { background: #37415125; color: #4b5563; }
+  .orch-body         { flex: 1; }
+  .orch-name         { font-size: 13px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+  .orch-name.wait    { color: #4b5563; }
+  .orch-detail       { font-size: 11px; color: #6b7280; line-height: 1.5; }
+  .orch-time         { font-size: 12px; font-weight: 600; text-align: right; flex-shrink: 0; min-width: 60px; }
+  .orch-time.done    { color: #4ade80; }
+  .orch-time.run     { color: #fbbf24; }
+  .orch-time.wait    { color: #4b5563; }
+  .orch-bar          { height: 3px; background: #1f2937; border-radius: 3px; margin-top: 6px; }
+  .orch-bar-fill     { height: 100%; border-radius: 3px; background: #fbbf24; }
+
+  /* ══════════════════════════════
+     WIDERSPRÜCHE
+  ══════════════════════════════ */
+  .ws-item        { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; padding: 16px 18px; margin-bottom: 12px; }
+  .ws-header      { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .ws-title       { font-size: 13px; font-weight: 600; color: #f1f5f9; flex: 1; }
+  .ws-docs        { display: grid; grid-template-columns: 1fr 28px 1fr; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .ws-doc         { background: #0f1117; border: 1px solid #1f2937; border-radius: 6px; padding: 8px 10px; }
+  .ws-doc-lbl     { font-size: 10px; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .ws-doc-name    { font-size: 11px; color: #9ca3af; }
+  .ws-doc-val     { font-size: 13px; font-weight: 700; margin-top: 3px; }
+  .ws-vs          { text-align: center; font-size: 10px; color: #4b5563; font-weight: 700; }
+  .ws-footer      { display: flex; gap: 10px; align-items: center; font-size: 11px; color: #6b7280; border-top: 1px solid #1f2937; padding-top: 8px; }
+
+  /* ══════════════════════════════
+     ARGUMENTE
+  ══════════════════════════════ */
+  .arg-scores       { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+  .arg-score-box    { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; padding: 18px; text-align: center; }
+  .arg-score-num    { font-size: 34px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .arg-score-lbl    { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; }
+  .arg-item         { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+  .arg-badge        { width: 46px; height: 46px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; }
+  .arg-badge.pro    { background: #16a34a20; color: #4ade80; border: 1px solid #16a34a30; }
+  .arg-badge.con    { background: #ef444420; color: #ef4444; border: 1px solid #ef444430; }
+  .arg-body         { flex: 1; }
+  .arg-title        { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
+  .arg-desc         { font-size: 12px; color: #9ca3af; line-height: 1.5; }
+  .arg-meta         { font-size: 10px; color: #4b5563; margin-top: 5px; }
+
+  /* ══════════════════════════════
+     UPLOAD — 2-COL LAYOUT
+  ══════════════════════════════ */
+  .upload-layout      { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+  .upload-file-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .upf-card           { background: #0f1117; border: 1px solid #1f2937; border-radius: 8px; padding: 10px 12px; }
+  .upf-card-icon      { font-size: 16px; margin-bottom: 5px; }
+  .upf-card-name      { font-size: 12px; font-weight: 500; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upf-card-meta      { font-size: 10px; color: #6b7280; margin: 2px 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .upf-card-footer    { display: flex; align-items: center; gap: 7px; }
+  .upf-card-footer .upf-prog { flex: 1; }
+
+  /* Checklist Panel */
+  .cl-panel       { background: #1a2030; border: 1px solid #1f2937; border-radius: 10px; padding: 16px; position: sticky; top: 16px; }
+  .cl-score       { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #1f2937; }
+  .cl-score-num   { font-size: 26px; font-weight: 800; color: #fbbf24; line-height: 1; }
+  .cl-bar         { flex: 1; height: 6px; background: #0f1117; border-radius: 6px; }
+  .cl-bar-fill    { height: 100%; border-radius: 6px; }
+  .cl-section     { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin: 10px 0 5px; color: #ef4444; }
+  .cl-section.p1  { color: #fbbf24; }
+  .cl-item        { display: flex; align-items: flex-start; gap: 6px; font-size: 11px; color: #9ca3af; margin-bottom: 4px; line-height: 1.4; }
+  .cl-item .ok    { color: #4ade80; flex-shrink: 0; }
+  .cl-item .no    { color: #ef4444; flex-shrink: 0; }
+  .cl-item .warn  { color: #fbbf24; flex-shrink: 0; }
+
+  /* ══════════════════════════════
+     TUTORIAL
+  ══════════════════════════════ */
+  #tutorial-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 8999;
+    background: transparent;
+    pointer-events: all;
+    cursor: default;
+  }
+  #tutorial-frame {
+    display: none;
+    position: fixed;
+    z-index: 9001;
+    border-radius: 10px;
+    outline: 2px solid #22c55e;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.78), 0 0 24px rgba(34,197,94,0.2);
+    pointer-events: none;
+    transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+  }
+  #tutorial-tooltip {
+    display: none;
+    position: fixed;
+    z-index: 9600;
+    background: #1a2030;
+    border: 1px solid #22c55e40;
+    border-radius: 10px;
+    padding: 16px 20px;
+    width: 300px;
+    pointer-events: all;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .tut-step  { font-size: 10px; color: #4ade80; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .tut-title { font-size: 14px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .tut-text  { font-size: 12px; color: #9ca3af; line-height: 1.6; margin-bottom: 14px; }
+  .tut-btns  { display: flex; gap: 8px; justify-content: flex-end; }
+  #tutorial-stop-btn {
+    display: none;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 10000;
+    background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  #tutorial-stop-btn:hover { background: #ef444420; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     SIDEBAR — VD Standard
+═══════════════════════════════ -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-triangle"></div>
+    <div class="sb-logo-text">THEBEN<br><small>PIS</small></div>
+  </div>
+  <div class="sb-user">
+    <div class="sb-avatar">K</div>
+    <div class="sb-company">Theben AG</div>
+    <div class="sb-name">Team</div>
+    <div class="sb-email">team@theben.de</div>
+    <div class="sb-links">
+      <span class="sb-link">Profil</span>
+      <span class="sb-link">Als User ansehen</span>
+    </div>
+    <div><span class="sb-admin">Admin</span></div>
+  </div>
+  <div class="sb-stats">
+    <div class="sb-stat"><div class="sb-stat-val">34</div><div class="sb-stat-lbl">Projekte</div></div>
+    <div class="sb-stat"><div class="sb-stat-val">5.0</div><div class="sb-stat-lbl">Credits</div></div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-item active" onclick="setSbActive(this);showScreen('dashboard')">
+      <span class="sb-icon">⊞</span> Dashboard
+    </div>
+    <div class="sb-item" onclick="setSbActive(this);showScreen('new-deal');setMNav('new-deal')">
+      <span class="sb-icon">＋</span> Neues Produkt
+    </div>
+    <div class="sb-item" onclick="setSbActive(this);showScreen('dashboard');setMNav('dashboard')">
+      <span class="sb-icon">≡</span> Alle Produkte
+    </div>
+    <div class="sb-item" onclick="setSbActive(this)">
+      <span class="sb-icon">👤</span> User verwalten
+    </div>
+    <div class="sb-item" onclick="setSbActive(this)">
+      <span class="sb-icon">💰</span> Einstellungen
+    </div>
+    <div class="sb-item" onclick="setSbActive(this)">
+      <span class="sb-icon">🎧</span> Dokumentation
+    </div>
+    <div class="sb-item" onclick="setSbActive(this)">
+      <span class="sb-icon">⭐</span> Über das System
+    </div>
+    <div class="sb-item" onclick="setSbActive(this)">
+      <span class="sb-icon">⚙</span> API
+    </div>
+  </div>
+  <div class="sb-bottom">
+    <div class="sb-item" style="color:#4ade80;" onclick="startTutorial()">
+      <span class="sb-icon">🎓</span> Tutorial starten
+    </div>
+    <div class="sb-item" style="color:#6b7280;" onclick="setSbActive(this)">
+      <span class="sb-icon">💬</span> Feedback
+    </div>
+    <div class="sb-lang">
+      Sprache / Language
+      <span class="lang-btn active">🇩🇪 DE</span>
+      <span class="lang-btn">🇬🇧 EN</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     MAIN
+═══════════════════════════════ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <span class="topbar-back" onclick="showScreen('dashboard');setMNav('dashboard')">← Zurück zu Projekten</span>
+    <div class="topbar-title" id="topbar-title">Product Information System — Dashboard</div>
+    <button class="btn btn-ghost">Projekteinstellungen</button>
+    <button class="btn btn-primary" onclick="showScreen('new-deal');setMNav('new-deal')">Neustarten</button>
+  </div>
+
+  <!-- PIS Horizontal Navigation -->
+  <div class="ma-nav">
+    <div class="ma-nav-row">
+      <span class="ma-nav-row-label">Daten</span>
+      <div class="ma-nav-sub-item" id="mnav-datasheet" onclick="showScreen('datasheet');setMNav('datasheet')">DataSheet</div>
+      <div class="ma-nav-sub-item active" id="mnav-upload" onclick="showScreen('upload');setMNav('upload')">Upload</div>
+      <div class="ma-nav-sub-item" id="mnav-verarbeitungsstatus" onclick="showScreen('verarbeitungsstatus');setMNav('verarbeitungsstatus')">Verarbeitungsstatus</div>
+      <div class="ma-nav-sub-item" id="mnav-produktraum" onclick="showScreen('produktraum');setMNav('produktraum')">Produktraum</div>
+      <div class="ma-nav-sub-item" id="mnav-vollstaendigkeits-check" onclick="showScreen('vollstaendigkeits-check');setMNav('vollstaendigkeits-check')">Vollständigkeits-Check</div>
+      <div class="ma-nav-sub-item" id="mnav-iterationen" onclick="showScreen('iterationen');setMNav('iterationen')">Iterationen</div>
+    </div>
+    <div class="ma-nav-row">
+      <span class="ma-nav-row-label">Auswertung</span>
+      <div class="ma-nav-sub-item" id="mnav-finanzkennzahlen" onclick="showScreen('finanzkennzahlen');setMNav('finanzkennzahlen')">Finanzkennzahlen</div>
+      <div class="ma-nav-sub-item" id="mnav-widersprueche" onclick="showScreen('widersprueche');setMNav('widersprueche')" style="opacity:0.55;">Widersprüche <span class="ma-nav-badge" style="background:#4b5563;">v2</span></div>
+      <div class="ma-nav-sub-item" id="mnav-compliance" onclick="showScreen('compliance');setMNav('compliance')">Compliance-Lücken <span class="ma-nav-badge">6</span></div>
+      <div class="ma-nav-sub-item" id="mnav-argumente" onclick="showScreen('argumente');setMNav('argumente')">Argumente</div>
+      <div class="ma-nav-sub-item" id="mnav-quellen" onclick="showScreen('quellen');setMNav('quellen')">Quellen</div>
+      <div class="ma-nav-sub-item" id="mnav-qa" onclick="showScreen('qa');setMNav('qa')">Q&A <span class="ma-nav-badge">3</span></div>
+      <div class="ma-nav-sub-item" id="mnav-report" onclick="showScreen('report');setMNav('report')">Report</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- S1: DASHBOARD -->
+    <div class="screen active" id="screen-dashboard">
+      <div class="page-title">Product Information System</div>
+      <div class="page-sub">Erstellt von: Team &nbsp;·&nbsp; Modul: <span style="color:#22c55e">PIS</span> &nbsp;·&nbsp; 3 Produktfamilien</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-lbl">Aktive Produkte</div><div class="stat-val">3</div><div class="stat-hint">↑ 2 diese Woche</div></div>
+        <div class="stat-box"><div class="stat-lbl">In Bearbeitung</div><div class="stat-val">1</div><div class="stat-hint yellow">Company X läuft</div></div>
+        <div class="stat-box"><div class="stat-lbl">Dokumente gesamt</div><div class="stat-val">207</div><div class="stat-hint">↑ heute</div></div>
+        <div class="stat-box"><div class="stat-lbl">Compliance-Lücken</div><div class="stat-val" style="color:#ef4444">6</div><div class="stat-hint red">Critical: 2 / High: 4</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:15px;font-weight:600;color:#f1f5f9;">Alle Produkte</div>
+        <button class="btn btn-primary" onclick="showScreen('new-deal');setMNav('new-deal')">+ Neues Produkt</button>
+      </div>
+      <div class="deal-grid">
+        <div class="deal-card" onclick="showScreen('upload');setMNav('upload')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div><div class="deal-name">Zeitschaltuhr-Familie</div><div class="deal-type-txt">Produktfamilie · Gebäudeautomation</div></div>
+            <span class="badge badge-yellow">In Bearbeitung</span>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-bottom:6px;">207 Dateien · Analyse läuft</div>
+          <div class="prog-mini"><div class="prog-fill" style="width:60%;background:#fbbf24;"></div></div>
+          <div class="deal-meta-row">
+            <div class="dmi"><strong>Vollständigkeit</strong>60%</div>
+            <div class="dmi"><strong>Compliance-Lücken</strong><span style="color:#ef4444">6 kritisch</span></div>
+            <div class="dmi"><strong>Produktfamilie</strong>Produktfamilie</div>
+          </div>
+        </div>
+        <div class="deal-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div><div class="deal-name">Bewegungsmelder-Familie</div><div class="deal-type-txt">Produktfamilie · Sicherheitstechnik</div></div>
+            <span class="badge badge-yellow">Upload ausstehend</span>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-bottom:6px;">0 Dokumente · Warte auf Daten</div>
+          <div class="prog-mini"><div class="prog-fill" style="width:0%;background:#6b7280;"></div></div>
+          <div class="deal-meta-row">
+            <div class="dmi"><strong>Vollständigkeit</strong>0%</div>
+            <div class="dmi"><strong>Compliance-Lücken</strong>—</div>
+            <div class="dmi"><strong>Produktfamilie</strong>Produktfamilie</div>
+          </div>
+        </div>
+        <div class="deal-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div><div class="deal-name">HVAC-Regler-Familie</div><div class="deal-type-txt">Produktfamilie · Klimasteuerung</div></div>
+            <span class="badge badge-blue">Vollständig</span>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-bottom:6px;">143 Dokumente · Abgeschlossen</div>
+          <div class="prog-mini"><div class="prog-fill" style="width:92%;background:#16a34a;"></div></div>
+          <div class="deal-meta-row">
+            <div class="dmi"><strong>Vollständigkeit</strong>92%</div>
+            <div class="dmi"><strong>Compliance-Lücken</strong><span style="color:#fbbf24">2 medium</span></div>
+            <div class="dmi"><strong>Status</strong><span style="color:#4ade80">Go</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2: NEUER DEAL -->
+    <div class="screen" id="screen-new-deal">
+      <div class="page-title">Neues PIS Projekt</div>
+      <div class="page-sub">Lege einen neuen Produktdaten-Erfassung an</div>
+      <div style="max-width:600px;">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px;">Basisinformationen</div>
+          <div class="form-group"><label class="form-label">Projektname *</label><input class="form-input" type="text" placeholder="z.B. Zeitschaltuhr-Familie – Akquisition 2026"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Unternehmen (Target) *</label><input class="form-input" type="text" placeholder="Zeitschaltuhr-Familie"></div>
+            <div class="form-group"><label class="form-label">Branche</label><select class="form-select"><option>SaaS / Software</option><option>E-Commerce</option><option>HealthTech</option><option>FinTech</option><option>Sonstige</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">Beschreibung</label><textarea class="form-textarea" placeholder="Kurze Beschreibung des Projekts..."></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Produktfamilie *</div>
+          <div class="deal-type-grid">
+            <div class="deal-type-card sel" onclick="selDealType(this)"><div class="dtc-title">📋 Produktfamilie</div><div class="dtc-sub">Kauf von Unternehmensanteilen</div></div>
+            <div class="deal-type-card" onclick="selDealType(this)"><div class="dtc-title">📦 Produktfamilie</div><div class="dtc-sub">Kauf einzelner Vermögenswerte</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Checkliste</div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:12px;">Das System generiert automatisch eine Pflicht-Checkliste basierend auf dem Produktfamilie.</div>
+          <div style="display:flex;gap:8px;align-items:center;background:#16a34a0d;border:1px solid #16a34a30;border-radius:7px;padding:10px 14px;">
+            <span>✅</span>
+            <div><div style="font-size:12px;color:#4ade80;font-weight:600;">20 Pflicht-Dokumente werden angefordert</div><div style="font-size:11px;color:#6b7280;margin-top:1px;">4 P0 · 4 P1 · 4 P2</div></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-ghost" onclick="showScreen('dashboard');setMNav('dashboard')">Abbrechen</button>
+          <button class="btn btn-primary" onclick="showScreen('upload');setMNav('upload')">Projekt anlegen → Zum Upload</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3: UPLOAD -->
+    <div class="screen" id="screen-upload">
+      <div class="page-title">Zeitschaltuhr-Familie — Datei-Upload</div>
+      <div class="page-sub">Phase 3: Produktdaten einpflegen · 207 Dateien hochgeladen · Analyse läuft</div>
+      <div class="analyse-bar">
+        <div class="abar-label">🔄 KI-Analyse läuft — Schritt 4: Attribut-Extraktion</div>
+        <div class="abar-track"><div class="abar-fill" style="width:68%;"></div></div>
+        <div class="abar-pct">68%</div>
+      </div>
+      <div class="upload-zone">
+        <div style="font-size:40px;margin-bottom:10px;">☁️</div>
+        <div style="font-size:15px;font-weight:600;color:#e2e8f0;margin-bottom:5px;">Dateien hier ablegen oder klicken</div>
+        <div style="font-size:12px;color:#6b7280;">PDF, XLSX, CSV, JSON, XML · max. 50 MB pro Datei · Mehrere Dateien gleichzeitig</div>
+        <button class="btn btn-primary" style="margin-top:14px;">Dateien auswählen</button>
+      </div>
+      <div class="upload-layout">
+
+        <!-- Links: Datei-Grid -->
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">Hochgeladene Dateien</div><div class="card-sub">207 Dateien · 120 MB gesamt</div></div>
+            <div style="display:flex;gap:7px;">
+              <span class="badge badge-green">✓ 132 analysiert</span>
+              <span class="badge badge-yellow">⟳ 75 in Bearbeitung</span>
+            </div>
+          </div>
+          <div class="upload-file-grid">
+            <div class="upf-card">
+              <div class="upf-card-icon">📄</div>
+              <div class="upf-card-name">Technisches_Datenblatt_2024.pdf</div>
+              <div class="upf-card-meta">2.4 MB · Technisches Datenblatt (95%)</div>
+              <div class="upf-card-footer"><div class="upf-prog"><div class="upf-fill" style="width:100%;"></div></div><span class="upf-status ok">✓ Fertig</span></div>
+            </div>
+            <div class="upf-card">
+              <div class="upf-card-icon">📊</div>
+              <div class="upf-card-name">Komponentenliste_2024.xlsx</div>
+              <div class="upf-card-meta">0.8 MB · Prüfbericht (88%)</div>
+              <div class="upf-card-footer"><div class="upf-prog"><div class="upf-fill" style="width:100%;"></div></div><span class="upf-status ok">✓ Fertig</span></div>
+            </div>
+            <div class="upf-card">
+              <div class="upf-card-icon">📄</div>
+              <div class="upf-card-name">Lieferanten_Zertifikat_2023.pdf</div>
+              <div class="upf-card-meta">1.1 MB · ⚠️ Parse-Fehler</div>
+              <div class="upf-card-footer"><div class="upf-prog"><div class="upf-fill" style="width:100%;background:#ef4444;"></div></div><span class="upf-status err">✗ Fehler</span></div>
+            </div>
+            <div class="upf-card">
+              <div class="upf-card-icon">📄</div>
+              <div class="upf-card-name">SBOM_v1.2.pdf</div>
+              <div class="upf-card-meta">3.2 MB · Normalisierung läuft...</div>
+              <div class="upf-card-footer"><div class="upf-prog"><div class="upf-fill" style="width:45%;background:#f59e0b;"></div></div><span class="upf-status run">⟳ Normalisierung</span></div>
+            </div>
+            <div class="upf-card">
+              <div class="upf-card-icon">📄</div>
+              <div class="upf-card-name">Materialliste_2024.xlsx</div>
+              <div class="upf-card-meta">0.3 MB · Commercial (92%)</div>
+              <div class="upf-card-footer"><div class="upf-prog"><div class="upf-fill" style="width:100%;"></div></div><span class="upf-status ok">✓ Fertig</span></div>
+            </div>
+            <div class="upf-card">
+              <div class="upf-card-icon">📄</div>
+              <div class="upf-card-name">UL_Zertifikat_2022.pdf</div>
+              <div class="upf-card-meta">1.8 MB · Steuerbescheid (91%)</div>
+              <div class="upf-card-footer"><div class="upf-prog"><div class="upf-fill" style="width:100%;"></div></div><span class="upf-status ok">✓ Fertig</span></div>
+            </div>
+            <div style="grid-column:1/-1;padding:8px 4px;font-size:11px;color:#4b5563;text-align:center;">+ 201 weitere Dateien</div>
+          </div>
+        </div>
+
+        <!-- Rechts: Live-Checkliste -->
+        <div class="cl-panel">
+          <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:10px;">Live-Checkliste</div>
+          <div class="cl-score">
+            <div class="cl-score-num">60%</div>
+            <div style="flex:1;">
+              <div class="cl-bar"><div class="cl-bar-fill" style="width:60%;background:#fbbf24;"></div></div>
+              <div style="font-size:10px;color:#6b7280;margin-top:3px;">12 / 20 Pflichtattribute erkannt</div>
+            </div>
+          </div>
+          <div class="cl-section">P0 — Kritisch</div>
+          <div class="cl-item"><span class="ok">✓</span> Technisches Datenblatt 2024</div>
+          <div class="cl-item"><span class="no">✗</span> Prüfbericht 2023</div>
+          <div class="cl-item"><span class="no">✗</span> CE-Konformitätserklärung</div>
+          <div class="cl-item"><span class="warn">⚠</span> Prüfbericht (6 / 12 Monate)</div>
+          <div class="cl-item"><span class="no">✗</span> RoHS-Konformitätserklärung</div>
+          <div class="cl-item"><span class="warn">⚠</span> Sicherheitsdokumentation</div>
+          <div class="cl-item"><span class="no">✗</span> SBOM</div>
+          <div class="cl-section p1">P1 — Wertrelevant</div>
+          <div class="cl-item"><span class="ok">✓</span> Materialliste 2024</div>
+          <div class="cl-item"><span class="no">✗</span> Lieferantenzertifikate</div>
+          <div class="cl-item"><span class="no">✗</span> Komponentenliste</div>
+          <div class="cl-item"><span class="ok">✓</span> UL-Zertifikat 2022</div>
+          <div class="cl-item"><span class="no">✗</span> Prüfberichte</div>
+        </div>
+
+      </div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="showScreen('produktraum');setMNav('produktraum')">Zur Produktraum-Übersicht →</button>
+      </div>
+    </div>
+
+    <!-- S4: DATENRAUM -->
+    <div class="screen" id="screen-produktraum">
+      <div class="page-title">Zeitschaltuhr-Familie — Produktraum</div>
+      <div class="page-sub">207 Dateien · KI-normalisiert · Phase 4: Datenaggregation abgeschlossen</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-lbl">Financial</div><div class="stat-val" style="color:#60a5fa;font-size:22px;">172</div><div class="stat-hint" style="color:#60a5fa;">83%</div></div>
+        <div class="stat-box"><div class="stat-lbl">Legal</div><div class="stat-val" style="color:#a78bfa;font-size:22px;">7</div><div class="stat-hint yellow">0 Verträge erkannt ⚠</div></div>
+        <div class="stat-box"><div class="stat-lbl">Commercial</div><div class="stat-val" style="color:#fbbf24;font-size:22px;">2</div></div>
+        <div class="stat-box"><div class="stat-lbl">HR</div><div class="stat-val" style="color:#f472b6;font-size:22px;">0</div><div class="stat-hint red">Fehlt komplett</div></div>
+        <div class="stat-box"><div class="stat-lbl">Nicht lesbar</div><div class="stat-val" style="color:#ef4444;font-size:22px;">75</div><div class="stat-hint red">Parse-Fehler</div></div>
+      </div>
+      <!-- Dokument-Tracking -->
+      <div class="card">
+        <div class="card-hd">
+          <div>
+            <div class="card-title">Pflichtattribute Tracking</div>
+            <div class="card-sub">Welche Attribute werden benötigt — und wie viele sind bereits vorhanden?</div>
+          </div>
+          <div style="font-size:11px;color:#6b7280;background:#1f2937;padding:5px 12px;border-radius:6px;">
+            Stand: 17.03.2026 &nbsp;·&nbsp; Basis: Produktfamilie Standard
+          </div>
+        </div>
+
+        <table class="track-table">
+          <thead>
+            <tr>
+              <th>Dokument</th>
+              <th class="th-count">Vorhanden</th>
+              <th class="th-bar">Fortschritt</th>
+              <th class="th-detail">Jahre / Details</th>
+              <th class="th-flag">Hinweis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- P0 -->
+            <tr><td colspan="5" class="track-section-hd" style="color:#ef4444;">P0 — Kritisch (Deal stoppt ohne diese)</td></tr>
+
+            <tr>
+              <td><div class="track-name">Jahresabschlüsse<span class="track-rule">3 neueste Jahre (2021, 2022, 2023)</span></div></td>
+              <td><div class="track-count red">1 / 3</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:33%;background:#ef4444;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year ok">2023 ✓</span><span class="track-year missing">2022 ✗</span><span class="track-year missing">2021 ✗</span></div></td>
+              <td><div class="track-flag red">⚠ 2 Jahre fehlen</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">Prüfbericht – Betr. Auswertung<span class="track-rule">12 Monate lückenlos (aktuellstes Jahr)</span></div></td>
+              <td><div class="track-count yellow">6 / 12</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:50%;background:#fbbf24;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year ok">Jan ✓</span><span class="track-year ok">Feb ✓</span><span class="track-year ok">Mär ✓</span><span class="track-year ok">Apr ✓</span><span class="track-year ok">Mai ✓</span><span class="track-year ok">Jun ✓</span><span class="track-year missing">Jul–Dez ✗</span></div></td>
+              <td><div class="track-flag yellow">⚠ 6 Monate fehlen</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">RoHS-Konformitätserklärung<span class="track-rule">1 aktuell — max. 3 Monate alt</span></div></td>
+              <td><div class="track-count red">0 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Nicht vorhanden</span></div></td>
+              <td><div class="track-flag red">✗ Fehlt komplett</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">Sicherheitsdokumentation / Satzung<span class="track-rule">1 aktuell — neueste Version inkl. Änderungen</span></div></td>
+              <td><div class="track-count yellow">1 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:100%;background:#fbbf24;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year ok">2021 gefunden</span></div></td>
+              <td><div class="track-flag yellow">⚠ Version prüfen</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">SBOM / Gesellschafterliste<span class="track-rule">1 aktuell — Stand Dealzeitpunkt</span></div></td>
+              <td><div class="track-count red">0 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Nicht vorhanden</span></div></td>
+              <td><div class="track-flag red">✗ Ownership unklar</div></td>
+            </tr>
+
+            <!-- P1 -->
+            <tr><td colspan="5" class="track-section-hd" style="color:#fbbf24;">P1 — Wertrelevant (wichtig für Bewertung)</td></tr>
+
+            <tr>
+              <td><div class="track-name">Steuerbescheide<span class="track-rule">3 neueste Jahre (2020, 2021, 2022)</span></div></td>
+              <td><div class="track-count yellow">1 / 3</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:33%;background:#fbbf24;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year ok">2022 ✓</span><span class="track-year missing">2021 ✗</span><span class="track-year missing">2020 ✗</span></div></td>
+              <td><div class="track-flag yellow">⚠ 2 Jahre fehlen</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">Lieferantenzertifikate<span class="track-rule">10 aktuelle Verträge nach Umsatz</span></div></td>
+              <td><div class="track-count red">0 / 10</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Keine erkannt</span></div></td>
+              <td><div class="track-flag red">✗ KI-Bug: 0 Verträge</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">Kundenliste + Umsatz-Breakdown<span class="track-rule">1 aktuell — letztes GJ + YTD</span></div></td>
+              <td><div class="track-count ok">1 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:100%;background:#16a34a;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year ok">2023 ✓</span></div></td>
+              <td><div class="track-flag ok">✓ Vorhanden</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">Komponentenliste + Gehaltsübersicht<span class="track-rule">1 aktuell — anonymisiert, Stand Dealzeitpunkt</span></div></td>
+              <td><div class="track-count red">0 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Nicht vorhanden</span></div></td>
+              <td><div class="track-flag red">✗ Kostenstruktur unklar</div></td>
+            </tr>
+            <tr>
+              <td><div class="track-name">Prüfberichte (Top 5)<span class="track-rule">5 aktuelle Verträge nach Kosten</span></div></td>
+              <td><div class="track-count red">0 / 5</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Keine erkannt</span></div></td>
+              <td><div class="track-flag red">✗ Fehlt</div></td>
+            </tr>
+
+            <!-- P2 -->
+            <tr><td colspan="5" class="track-section-hd" style="color:#6b7280;">P2 — Nice-to-have (für vollständiges Bild)</td></tr>
+
+            <tr style="opacity:0.75;">
+              <td><div class="track-name">Forecasts / Business Plan<span class="track-rule">1 aktuell — max. 12 Monate alt</span></div></td>
+              <td><div class="track-count red">0 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Nicht vorhanden</span></div></td>
+              <td><div class="track-flag" style="color:#6b7280;">— Fehlt</div></td>
+            </tr>
+            <tr style="opacity:0.75;">
+              <td><div class="track-name">IP-Dokumentation (Patente, Marken)<span class="track-rule">1 aktuelle Übersicht</span></div></td>
+              <td><div class="track-count red">0 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Nicht vorhanden</span></div></td>
+              <td><div class="track-flag" style="color:#6b7280;">— Fehlt</div></td>
+            </tr>
+            <tr style="opacity:0.75;">
+              <td><div class="track-name">Tech-Stack Dokumentation<span class="track-rule">1 aktuell — für Tech-DD</span></div></td>
+              <td><div class="track-count red">0 / 1</div></td>
+              <td><div class="track-bar"><div class="track-fill" style="width:0%;"></div></div></td>
+              <td><div class="track-detail"><span class="track-year missing">Nicht vorhanden</span></div></td>
+              <td><div class="track-flag" style="color:#6b7280;">— Fehlt</div></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- /tracking -->
+
+      <div class="card">
+        <div class="cat-tabs">
+          <div class="cat-tab active" onclick="selCatTab(this)">Alle (207)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Financial (172)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Legal (7)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Commercial (2)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Nicht lesbar (75)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Manuell prüfen (12)</div>
+        </div>
+        <table class="tbl">
+          <thead><tr><th>Dateiname</th><th>Typ (KI)</th><th>Kategorie</th><th>Confidence</th><th>Größe</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#e2e8f0;">Technisches_Datenblatt_2024.pdf</td><td>Technisches Datenblatt</td><td><span class="doc-badge fin">Financial</span></td><td><div class="conf-bar"><div class="conf-fill" style="width:95%;background:#16a34a;"></div></div><span style="font-size:10px;color:#4ade80;">95%</span></td><td>2.4 MB</td><td style="color:#4ade80;">✓ Analysiert</td></tr>
+            <tr><td style="color:#e2e8f0;">Komponentenliste_2024.xlsx</td><td>Prüfbericht</td><td><span class="doc-badge fin">Financial</span></td><td><div class="conf-bar"><div class="conf-fill" style="width:88%;background:#16a34a;"></div></div><span style="font-size:10px;color:#4ade80;">88%</span></td><td>0.8 MB</td><td style="color:#4ade80;">✓ Analysiert</td></tr>
+            <tr><td style="color:#e2e8f0;">Materialliste_2024.xlsx</td><td>Commercial</td><td><span class="doc-badge com">Commercial</span></td><td><div class="conf-bar"><div class="conf-fill" style="width:92%;background:#16a34a;"></div></div><span style="font-size:10px;color:#4ade80;">92%</span></td><td>0.3 MB</td><td style="color:#4ade80;">✓ Analysiert</td></tr>
+            <tr><td style="color:#e2e8f0;">Lieferanten_Zertifikat_2023.pdf</td><td>—</td><td><span class="doc-badge unk">Unknown</span></td><td><div class="conf-bar"></div><span style="font-size:10px;color:#ef4444;">Fehler</span></td><td>1.1 MB</td><td style="color:#ef4444;">✗ Parse-Fehler</td></tr>
+            <tr><td style="color:#e2e8f0;">SBOM_v1.2.pdf</td><td>Unbekannt</td><td><span class="doc-badge unk">Unknown</span></td><td><div class="conf-bar"><div class="conf-fill" style="width:45%;background:#f59e0b;"></div></div><span style="font-size:10px;color:#fbbf24;">45%</span></td><td>3.2 MB</td><td style="color:#fbbf24;">⚠ Manuell prüfen</td></tr>
+            <tr><td style="color:#e2e8f0;">UL_Zertifikat_2022.pdf</td><td>Steuerbescheid</td><td><span class="doc-badge fin">Financial</span></td><td><div class="conf-bar"><div class="conf-fill" style="width:91%;background:#16a34a;"></div></div><span style="font-size:10px;color:#4ade80;">91%</span></td><td>1.8 MB</td><td style="color:#4ade80;">✓ Analysiert</td></tr>
+            <tr><td style="color:#4b5563;font-style:italic;" colspan="6">+ 201 weitere Dokumente ...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-ghost" title="Exportiert die vollständige Dokument-Liste (Dateiname, Typ, Kategorie, Confidence, Status) als CSV-Datei">Produktraum exportieren ↓</button>
+        <button class="btn btn-primary" onclick="showScreen('vollstaendigkeits-check');setMNav('vollstaendigkeits-check')">Zum Vollständigkeits-Check →</button>
+      </div>
+    </div>
+
+    <!-- S5: DATENRAUM-CHECK -->
+    <div class="screen" id="screen-vollstaendigkeits-check">
+      <div class="page-title">Zeitschaltuhr-Familie — Vollständigkeits-Check</div>
+      <div class="page-sub">Vollständigkeitsprüfung gegen Pflicht-Checkliste · 17.03.2026</div>
+      <div class="inner-tabs">
+        <div class="inner-tab active" onclick="switchATab(this,'av')">Vollständigkeit</div>
+        <div class="inner-tab" onclick="switchATab(this,'am')">Fehlende Dokumente</div>
+      </div>
+      <div id="av">
+        <div class="two-col">
+          <div class="card">
+            <div class="compl-big">
+              <div class="compl-score yellow">60%</div>
+              <div style="font-size:12px;color:#6b7280;margin-top:6px;">Vollständigkeits-Score</div>
+              <div class="compl-track"><div class="compl-fill" style="width:60%;background:#fbbf24;"></div></div>
+              <div style="font-size:12px;color:#9ca3af;">12 von 20 Pflicht-Dokumenten vorhanden</div>
+              <div style="margin-top:14px;padding:9px 14px;background:#f59e0b10;border:1px solid #f59e0b30;border-radius:7px;">
+                <div style="font-size:12px;font-weight:600;color:#fbbf24;">🟡 Important Gaps</div>
+                <div style="font-size:11px;color:#9ca3af;margin-top:3px;">Wichtige Dokumente fehlen, kein sofortiger Deal-Stopper</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">Vollständigkeit nach Priorität</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:#ef4444;font-weight:700;">P0 Kritisch</span><span style="color:#9ca3af;">2 / 4</span></div><div style="height:7px;background:#1f2937;border-radius:7px;"><div style="height:100%;width:50%;border-radius:7px;background:#ef4444;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:#fbbf24;font-weight:700;">P1 Wertrelevant</span><span style="color:#9ca3af;">6 / 8</span></div><div style="height:7px;background:#1f2937;border-radius:7px;"><div style="height:100%;width:75%;border-radius:7px;background:#fbbf24;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;"><span style="color:#6b7280;font-weight:700;">P2 Nice-to-have</span><span style="color:#9ca3af;">4 / 8</span></div><div style="height:7px;background:#1f2937;border-radius:7px;"><div style="height:100%;width:50%;border-radius:7px;background:#6b7280;"></div></div></div>
+            </div>
+            <hr class="divider">
+            <div style="font-size:11px;color:#6b7280;">⚠️ P0 fehlen → Seller nachfordern</div>
+          </div>
+        </div>
+      </div>
+      <div id="am" style="display:none;">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px;">Fehlende Pflicht-Dokumente (8 von 20)</div>
+          <div class="missing-list">
+            <div class="mi p0"><span class="mi-pri p0">P0</span><span class="mi-name">Prüfbericht 2023</span><span class="mi-why">Historische Financial Analysis</span></div>
+            <div class="mi p0"><span class="mi-pri p0">P0</span><span class="mi-name">CE-Konformitätserklärung</span><span class="mi-why">3-Jahres-Trend erforderlich</span></div>
+            <div class="mi p0"><span class="mi-pri p0">P0</span><span class="mi-name">Bilanz 2023</span><span class="mi-why">Eigenkapital-Situation unklar</span></div>
+            <div class="mi p0"><span class="mi-pri p0">P0</span><span class="mi-name">SBOM (Aktionärsstruktur)</span><span class="mi-why">Ownership für Produktfamilie kritisch</span></div>
+            <div class="mi p1"><span class="mi-pri p1">P1</span><span class="mi-name">Partner B Vertrag</span><span class="mi-why">Abhängigkeit prüfen</span></div>
+            <div class="mi p1"><span class="mi-pri p1">P1</span><span class="mi-name">Komponentenliste mit Gehältern</span><span class="mi-why">HR-Kostenstruktur</span></div>
+            <div class="mi p2"><span class="mi-pri p2">P2</span><span class="mi-name">Tech-Stack Dokumentation</span><span class="mi-why">Tech-DD Vorbereitung</span></div>
+            <div class="mi p2"><span class="mi-pri p2">P2</span><span class="mi-name">Org Chart</span><span class="mi-why">Unternehmensstruktur</span></div>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-ghost">📧 Seller anfordern</button>
+          <button class="btn btn-primary" onclick="showScreen('compliance');setMNav('compliance')">Weiter zu Compliance-Lücken →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6: RED FLAGS -->
+    <div class="screen" id="screen-compliance">
+      <div class="page-title">Zeitschaltuhr-Familie — Compliance-Lücken</div>
+      <div class="page-sub">Phase 6: Red Flag Detection · 18 Flags · KI + Manuell</div>
+      <div class="rf-stats">
+        <div class="rf-stat"><div class="rf-num c">2</div><div class="rf-lbl">Critical</div></div>
+        <div class="rf-stat"><div class="rf-num h">4</div><div class="rf-lbl">High</div></div>
+        <div class="rf-stat"><div class="rf-num m">8</div><div class="rf-lbl">Medium</div></div>
+        <div class="rf-stat"><div class="rf-num l">4</div><div class="rf-lbl">Low</div></div>
+        <div class="rf-stat"><div class="rf-num" style="color:#e2e8f0;">18</div><div class="rf-lbl">Gesamt</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Red Flag Liste</div>
+          <button class="btn btn-ghost" style="font-size:11px;" onclick="openModal()">+ Manuell hinzufügen</button>
+        </div>
+        <div class="rf-list">
+          <div class="rf-item"><div class="rf-sev c">CRITICAL</div><div class="rf-body"><div class="rf-title">Extreme Kundenkonzentration — Partner A = 89% Umsatz</div><div class="rf-desc">Kündigung = Deal-Killer.</div><div class="rf-cat">🤖 KI · Operational</div></div><div class="rf-src">🤖 KI</div></div>
+          <div class="rf-item"><div class="rf-sev c">CRITICAL</div><div class="rf-body"><div class="rf-title">Fehlende Jahresabschlüsse 2019–2022 (4 Jahre)</div><div class="rf-desc">Historische Entwicklung nicht prüfbar.</div><div class="rf-cat">🤖 KI · Data Quality</div></div><div class="rf-src">🤖 KI</div></div>
+          <div class="rf-item"><div class="rf-sev h">HIGH</div><div class="rf-body"><div class="rf-title">EBIT -€380K — Massive Verluste 2023</div><div class="rf-desc">Ursache unklar (Abschreibungen einmalig oder strukturell?).</div><div class="rf-cat">🤖 KI · Financial</div></div><div class="rf-src">🤖 KI</div></div>
+          <div class="rf-item"><div class="rf-sev h">HIGH</div><div class="rf-body"><div class="rf-title">Umsatz-Kliff Jan–Jul 2023 = €0</div><div class="rf-desc">Keine Erklärung vorhanden.</div><div class="rf-cat">🤖 KI · Financial</div></div><div class="rf-src">🤖 KI</div></div>
+          <div class="rf-item"><div class="rf-sev h">HIGH</div><div class="rf-body"><div class="rf-title">75 PDFs nicht lesbar (Parse-Fehler)</div><div class="rf-desc">35% aller Dokumente nicht analysierbar.</div><div class="rf-cat">🤖 KI · Data Quality</div></div><div class="rf-src">🤖 KI</div></div>
+          <div class="rf-item"><div class="rf-sev h">HIGH</div><div class="rf-body"><div class="rf-title">22 Q&A-Fragen unbeantwortet (100%)</div><div class="rf-desc">Alle offenen Fragen blieben unbeantwortet.</div><div class="rf-cat">👤 Manuell · Data Quality</div></div><div class="rf-src">👤 Manuell</div></div>
+          <div class="rf-item"><div class="rf-sev m">MEDIUM</div><div class="rf-body"><div class="rf-title">Bilanz 2023 fehlt</div><div class="rf-desc">Eigenkapitalsituation nicht beurteilbar.</div><div class="rf-cat">🤖 KI · Data Quality</div></div><div class="rf-src">🤖 KI</div></div>
+          <div class="rf-item"><div class="rf-sev m">MEDIUM</div><div class="rf-body"><div class="rf-title">Partner B Vertrag fehlt</div><div class="rf-desc">Abhängigkeit und Konditionen unklar.</div><div class="rf-cat">🤖 KI · Legal</div></div><div class="rf-src">🤖 KI</div></div>
+          <div style="padding:10px;font-size:11px;color:#4b5563;text-align:center;">+ 10 weitere — <span style="color:#4ade80;cursor:pointer;">alle anzeigen</span></div>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-ghost" onclick="showScreen('vollstaendigkeits-check');setMNav('vollstaendigkeits-check')">← Vollständigkeits-Check</button>
+        <button class="btn btn-primary" onclick="showScreen('report');setMNav('report')">Zum Report →</button>
+      </div>
+    </div>
+
+    <!-- S8: Q&A -->
+    <div class="screen" id="screen-qa">
+      <div class="page-title">Zeitschaltuhr-Familie — Q&A</div>
+      <div class="page-sub">Offene Fragen an Seller · Stand: 17.03.2026 · 8 Fragen gestellt</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-lbl">Fragen gesamt</div><div class="stat-val">8</div></div>
+        <div class="stat-box"><div class="stat-lbl">Offen</div><div class="stat-val" style="color:#ef4444">3</div><div class="stat-hint red">Antwort ausstehend</div></div>
+        <div class="stat-box"><div class="stat-lbl">In Klärung</div><div class="stat-val" style="color:#fbbf24">2</div><div class="stat-hint yellow">Seller informiert</div></div>
+        <div class="stat-box"><div class="stat-lbl">Beantwortet</div><div class="stat-val" style="color:#4ade80">3</div><div class="stat-hint">Abgeschlossen</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div class="cat-tabs">
+          <div class="cat-tab active" onclick="selCatTab(this)">Alle (8)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Offen (3)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">In Klärung (2)</div>
+          <div class="cat-tab" onclick="selCatTab(this)">Beantwortet (3)</div>
+        </div>
+        <button class="btn btn-primary">+ Frage stellen</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Q1: Offen P0 -->
+        <div class="card" style="border-left:3px solid #ef4444;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#001</span>
+              <span class="badge badge-red">OFFEN</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Financial</span>
+              <span style="background:#16a34a30;color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P0</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">15.03.2026 · Team</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:4px;">Jahresabschlüsse 2022–2024 fehlen im Produktraum — Bitte vollständig nachliefern</div>
+          <div style="font-size:12px;color:#6b7280;">Pflicht für Produktfamilie (P0). Ohne diese Dokumente kann keine Bewertung erfolgen. Bitte liefern Sie geprüfte HGB-Abschlüsse für 2022, 2023 und 2024.</div>
+        </div>
+
+        <!-- Q2: Offen P0 -->
+        <div class="card" style="border-left:3px solid #ef4444;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#002</span>
+              <span class="badge badge-red">OFFEN</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Legal</span>
+              <span style="background:#16a34a30;color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P0</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">15.03.2026 · Team</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:4px;">Gibt es laufende Rechtsstreitigkeiten oder drohende Klagen?</div>
+          <div style="font-size:12px;color:#6b7280;">Bitte alle laufenden, drohenden oder abgeschlossenen Rechtsstreitigkeiten seit Gründung offenlegen (§ 311 BGB Disclosure).</div>
+        </div>
+
+        <!-- Q3: In Klärung P0 -->
+        <div class="card" style="border-left:3px solid #fbbf24;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#003</span>
+              <span class="badge badge-yellow">IN KLÄRUNG</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Legal</span>
+              <span style="background:#16a34a30;color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P0</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">14.03.2026 · KI-Analyse</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:4px;">RoHS-Konformitätserklärung vom 01.11.2025 ist älter als 3 Monate — aktualisierter Auszug erforderlich</div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:8px;">Hochgeladener Auszug überschreitet die 3-Monatsfrist. Seller wurde am 15.03.2026 kontaktiert.</div>
+          <div style="background:#fbbf2415;border-radius:6px;padding:8px 10px;font-size:11px;color:#fbbf24;">⏳ Antwort erwartet bis: 20.03.2026</div>
+        </div>
+
+        <!-- Q4: In Klärung P1 -->
+        <div class="card" style="border-left:3px solid #fbbf24;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#004</span>
+              <span class="badge badge-yellow">IN KLÄRUNG</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Financial</span>
+              <span style="background:#1f293760;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P1</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">14.03.2026 · Team</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:4px;">EBIT-Verlust -€380.000 in 2023: Bitte schriftliche Aufschlüsselung</div>
+          <div style="font-size:12px;color:#6b7280;margin-bottom:8px;">Diskrepanz zwischen EBITDA +€120K und Net Profit -€380K. Bitte Abschreibungen, Sonderposten und außerordentliche Aufwendungen aufschlüsseln.</div>
+          <div style="background:#fbbf2415;border-radius:6px;padding:8px 10px;font-size:11px;color:#fbbf24;">⏳ Antwort erwartet bis: 21.03.2026</div>
+        </div>
+
+        <!-- Q5: Beantwortet P1 -->
+        <div class="card" style="border-left:3px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#005</span>
+              <span style="background:#16a34a20;color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid #16a34a50;">BEANTWORTET</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">HR</span>
+              <span style="background:#1f293760;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P1</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">Beantwortet: 16.03.2026</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:6px;">Wie viele Vollzeitmitarbeiter (FTE) sind aktuell beschäftigt?</div>
+          <div style="background:#16a34a15;border-radius:6px;padding:8px 10px;">
+            <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:3px;">✓ Antwort vom Seller (16.03.2026)</div>
+            <div style="font-size:12px;color:#e2e8f0;">12 FTE + 3 Werkstudenten. Davon: 4 Entwicklung, 3 Sales, 5 Operations/Management.</div>
+          </div>
+        </div>
+
+        <!-- Q6: Beantwortet P1 -->
+        <div class="card" style="border-left:3px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#006</span>
+              <span style="background:#16a34a20;color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid #16a34a50;">BEANTWORTET</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Commercial</span>
+              <span style="background:#1f293760;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P1</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">Beantwortet: 17.03.2026</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:6px;">Welche Top-Kunden haben in den letzten 12 Monaten gekündigt?</div>
+          <div style="background:#16a34a15;border-radius:6px;padding:8px 10px;">
+            <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:3px;">✓ Antwort vom Seller (17.03.2026)</div>
+            <div style="font-size:12px;color:#e2e8f0;">2 Kunden: Beta GmbH (€8K ARR, Jan 2026) und Delta AG (€3K ARR, Nov 2025). Beide Budget-Gründe, keine Qualitätsprobleme.</div>
+          </div>
+        </div>
+
+        <!-- Q7: Offen P1 -->
+        <div class="card" style="border-left:3px solid #ef4444;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#007</span>
+              <span class="badge badge-red">OFFEN</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Tech</span>
+              <span style="background:#1f293760;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P1</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">16.03.2026 · Team</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:4px;">IP-Rechte: Wer ist rechtlicher Eigentümer der entwickelten Software?</div>
+          <div style="font-size:12px;color:#6b7280;">Vollständige IP-Dokumentation + Eigentumsnachweis erforderlich. Waren Freelancer beteiligt? Falls ja: Work-for-Hire-Regelung vorhanden?</div>
+        </div>
+
+        <!-- Q8: Beantwortet P1 -->
+        <div class="card" style="border-left:3px solid #22c55e;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <span style="font-size:10px;color:#6b7280;font-weight:600;">#008</span>
+              <span style="background:#16a34a20;color:#4ade80;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid #16a34a50;">BEANTWORTET</span>
+              <span style="background:#1f2937;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">Financial</span>
+              <span style="background:#1f293760;color:#9ca3af;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;">P1</span>
+            </div>
+            <span style="font-size:11px;color:#6b7280;white-space:nowrap;">Beantwortet: 17.03.2026</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:#f1f5f9;margin-bottom:6px;">Umsatz Jan–Jul 2023 fehlt — Erklärung für Umsatzunterbrechung</div>
+          <div style="background:#16a34a15;border-radius:6px;padding:8px 10px;">
+            <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:3px;">✓ Antwort vom Seller (17.03.2026)</div>
+            <div style="font-size:12px;color:#e2e8f0;">Unternehmen wurde im August 2023 gegründet. Erster Umsatz mit Partner A ab Oktober 2023. Technisches Datenblatt deckt daher nur Aug–Dez ab.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="action-row" style="margin-top:18px;">
+        <button class="btn btn-ghost">📧 Alle offenen Fragen an Seller senden</button>
+        <button class="btn btn-ghost">⬇ Q&A Export (PDF)</button>
+        <button class="btn btn-primary" onclick="showScreen('report');setMNav('report')">Zum Report →</button>
+      </div>
+    </div>
+
+    <!-- S7: REPORT -->
+    <div class="screen" id="screen-report">
+      <div class="page-title">Zeitschaltuhr-Familie — Executive Summary</div>
+      <div class="page-sub">Phase 7: Report generiert · 17.03.2026 · Bereit für Buyer-Briefing</div>
+      <div class="rep-header">
+        <div class="rep-title">Zeitschaltuhr-Familie — Product Information System Report</div>
+        <div class="rep-sub">Produktfamilie · Generiert von: Team · 17.03.2026</div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="rec-badge rec-cond">⚠ Conditional Go</div>
+          <div style="font-size:12px;color:#6b7280;">Nur unter 10 Bedingungen empfohlen</div>
+        </div>
+        <div class="rep-meta">
+          <div class="rmi"><div class="lbl">Vollständigkeit</div><div class="val" style="color:#fbbf24;">60% 🟡</div></div>
+          <div class="rmi"><div class="lbl">Dokumente</div><div class="val">207</div></div>
+          <div class="rmi"><div class="lbl">Compliance-Lücken</div><div class="val" style="color:#ef4444;">18 (2 Critical)</div></div>
+          <div class="rmi"><div class="lbl">Produktfamilie</div><div class="val">Produktfamilie</div></div>
+          <div class="rmi"><div class="lbl">Umsatz 2023</div><div class="val">€152K</div></div>
+          <div class="rmi"><div class="lbl">EBITDA-Marge</div><div class="val" style="color:#4ade80;">79.6%</div></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Top 3 Compliance-Lücken</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;gap:9px;align-items:center;"><span class="badge badge-red">CRITICAL</span><span style="font-size:12px;color:#e2e8f0;">Partner A = 89% Umsatz</span></div>
+            <div style="display:flex;gap:9px;align-items:center;"><span class="badge badge-red">CRITICAL</span><span style="font-size:12px;color:#e2e8f0;">Jahresabschlüsse 2019–2022 fehlen</span></div>
+            <div style="display:flex;gap:9px;align-items:center;"><span style="background:#f9731620;color:#f97316;font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;">HIGH</span><span style="font-size:12px;color:#e2e8f0;">EBIT -€380K ungeklärt</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Finanz-Highlights</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6b7280;">Umsatz 2023</span><span style="color:#e2e8f0;font-weight:600;">€152.000</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6b7280;">EBITDA</span><span style="color:#4ade80;font-weight:600;">€120.000 (79.6%)</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6b7280;">Net Profit</span><span style="color:#ef4444;font-weight:600;">-€380.000</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:#6b7280;">Umsatzzeitraum</span><span style="color:#fbbf24;font-weight:600;">Aug–Dez (5 Monate)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px;">Bedingungen für Deal (10 Punkte)</div>
+        <ul class="cond-list">
+          <li>Partner A Vertrag prüfen — Change of Control Clause vorhanden?</li>
+          <li>Jahresabschlüsse 2019–2022 vollständig nachfordern</li>
+          <li>Partner-Diversifikations-Strategie vom Seller fordern</li>
+          <li>Bilanz 2023 nachfordern — Eigenkapital klären</li>
+          <li>Alle 22 Q&A-Fragen beantworten lassen</li>
+          <li>75 unlesbare PDFs neu hochladen</li>
+          <li>Umsatz-Kliff Jan–Jul 2023 schriftlich erklären</li>
+          <li>EBIT-Verlust -€380K aufschlüsseln</li>
+          <li>Partner B Vertrag nachfordern</li>
+          <li>Tech-Stack Dokumentation bereitstellen</li>
+        </ul>
+      </div>
+      <div class="action-row">
+        <button class="btn btn-ghost">📄 HTML Report</button>
+        <button class="btn btn-ghost">⬇ PDF Export</button>
+        <button class="btn btn-ghost">📧 An Buyer senden</button>
+        <button class="btn btn-primary">✓ Finalisieren</button>
+      </div>
+    </div>
+
+    <!-- S-DATASHEET -->
+    <div class="screen" id="screen-datasheet">
+      <div class="page-title">Zeitschaltuhr-Familie — DataSheet</div>
+      <div class="page-sub">Stammdaten &amp; Kerninformationen · Automatisch extrahiert + manuell ergänzbar</div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:14px;">Unternehmen</div>
+        <div class="ds-grid">
+          <div>
+            <div class="ds-field"><div class="ds-label">Firma</div><div class="ds-value">Zeitschaltuhr-Familie</div></div>
+            <div class="ds-field"><div class="ds-label">Handelsregister</div><div class="ds-value">HRB 123456 · Amtsgericht München</div></div>
+            <div class="ds-field"><div class="ds-label">Gründungsdatum</div><div class="ds-value">14. März 2018</div></div>
+            <div class="ds-field"><div class="ds-label">Rechtsform</div><div class="ds-value">GmbH</div></div>
+            <div class="ds-field"><div class="ds-label">Stammkapital</div><div class="ds-value">€ 25.000</div></div>
+          </div>
+          <div>
+            <div class="ds-field"><div class="ds-label">Branche</div><div class="ds-value">SaaS / B2B Software</div></div>
+            <div class="ds-field"><div class="ds-label">Standort (HQ)</div><div class="ds-value">München, Bayern</div></div>
+            <div class="ds-field"><div class="ds-label">Weitere Standorte</div><div class="ds-value">Berlin (Sales), Wien (Support)</div></div>
+            <div class="ds-field"><div class="ds-label">Website</div><div class="ds-value" style="color:#22c55e;">companyx.io</div></div>
+            <div class="ds-field"><div class="ds-label">Mitarbeiter (FTE)</div><div class="ds-value">38</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:14px;">Gesellschafter</div>
+        <div class="ds-grid">
+          <div>
+            <div class="ds-field"><div class="ds-label">Gesellschafter 1</div><div class="ds-value">Max Mustermann — 60%</div></div>
+            <div class="ds-field"><div class="ds-label">Gesellschafter 2</div><div class="ds-value">Anna Schmidt — 25%</div></div>
+            <div class="ds-field"><div class="ds-label">Gesellschafter 3</div><div class="ds-value">Seed Fund GmbH &amp; Co. KG — 15%</div></div>
+          </div>
+          <div>
+            <div class="ds-field"><div class="ds-label">Geschäftsführer</div><div class="ds-value">Max Mustermann (CEO), Anna Schmidt (CTO)</div></div>
+            <div class="ds-field"><div class="ds-label">Prokuristen</div><div class="ds-value">Thomas Weber (CFO)</div></div>
+            <div class="ds-field"><div class="ds-label">Beirat</div><div class="ds-value">3 Mitglieder (extern)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:14px;">Deal-Parameter</div>
+        <div class="ds-grid">
+          <div>
+            <div class="ds-field"><div class="ds-label">Produktfamilie</div><div class="ds-value">Produktfamilie</div></div>
+            <div class="ds-field"><div class="ds-label">Transaktionsumfang</div><div class="ds-value">100% der Anteile</div></div>
+            <div class="ds-field"><div class="ds-label">Kaufpreisvorstellung</div><div class="ds-value">€ 8,5 Mio.</div></div>
+          </div>
+          <div>
+            <div class="ds-field"><div class="ds-label">Projektstart</div><div class="ds-value">01. März 2026</div></div>
+            <div class="ds-field"><div class="ds-label">Ziel Signing</div><div class="ds-value">Q3 2026</div></div>
+            <div class="ds-field"><div class="ds-label">Berater Seller-Side</div><div class="ds-value">Müller &amp; Partner PIS GmbH</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-ghost">✏️ Manuell bearbeiten</button>
+        <button class="btn btn-primary" onclick="showScreen('upload');setMNav('upload')">Zum Upload →</button>
+      </div>
+    </div>
+
+    <!-- S-VERARBEITUNGSSTATUS -->
+    <div class="screen" id="screen-verarbeitungsstatus">
+      <div class="page-title">Zeitschaltuhr-Familie — Verarbeitungsstatus</div>
+      <div class="page-sub">Analysepipeline · 7 Schritte · Gestartet 10:14 Uhr</div>
+
+      <div class="orch-status">
+        <div style="font-size:28px;">☕</div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:3px;">Analyse läuft — Schritt 4 von 7</div>
+          <div style="font-size:12px;color:#9ca3af;">Dokumenten-Klassifizierung · ca. 4 Minuten verbleibend</div>
+          <div style="margin-top:10px;background:#0f1117;border-radius:6px;height:6px;overflow:hidden;">
+            <div style="height:100%;width:55%;background:#22c55e;border-radius:6px;"></div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:22px;font-weight:800;color:#22c55e;">55%</div>
+          <div style="font-size:11px;color:#6b7280;">abgeschlossen</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:12px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">Pipeline-Schritte</div>
+
+        <div class="orch-step">
+          <div class="orch-ic done">✓</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#e2e8f0;">1 · Datei-Ingestion &amp; Validierung</div>
+            <div style="font-size:11px;color:#6b7280;margin-top:2px;">207 Dateien eingelesen · 3 fehlerhaft übersprungen · 12,4 GB verarbeitet</div>
+          </div>
+          <div style="font-size:11px;color:#4ade80;white-space:nowrap;">✓ 2 Min.</div>
+        </div>
+
+        <div class="orch-step">
+          <div class="orch-ic done">✓</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#e2e8f0;">2 · Normalisierung &amp; Text-Extraktion</div>
+            <div style="font-size:11px;color:#6b7280;margin-top:2px;">183 PDFs verarbeitet · 24 XLSX/DOCX nativ gelesen · Tesseract für 41 Scan-PDFs</div>
+          </div>
+          <div style="font-size:11px;color:#4ade80;white-space:nowrap;">✓ 8 Min.</div>
+        </div>
+
+        <div class="orch-step">
+          <div class="orch-ic done">✓</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#e2e8f0;">3 · Dateinamen-Klassifizierung (Stufe 1)</div>
+            <div style="font-size:11px;color:#6b7280;margin-top:2px;">89 Dokumente per Dateiname klassifiziert · 118 weitergereicht</div>
+          </div>
+          <div style="font-size:11px;color:#4ade80;white-space:nowrap;">✓ 1 Min.</div>
+        </div>
+
+        <div class="orch-step">
+          <div class="orch-ic run">→</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#fbbf24;">4 · Content-Klassifizierung (Stufe 2 + GPT-4)</div>
+            <div style="font-size:11px;color:#6b7280;margin-top:2px;">62 von 118 klassifiziert · 56 verbleibend · GPT-4 Turbo (zero-retention mode)</div>
+            <div style="margin-top:8px;background:#0f1117;border-radius:4px;height:4px;overflow:hidden;">
+              <div style="height:100%;width:52%;background:#f59e0b;border-radius:4px;"></div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:#fbbf24;white-space:nowrap;">~4 Min.</div>
+        </div>
+
+        <div class="orch-step">
+          <div class="orch-ic wait">○</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#4b5563;">5 · Financial Metric Extraktion</div>
+            <div style="font-size:11px;color:#4b5563;margin-top:2px;">Umsatz, EBITDA, Cashflow aus Jahresabschlüssen · wartet auf Schritt 4</div>
+          </div>
+          <div style="font-size:11px;color:#4b5563;white-space:nowrap;">wartend</div>
+        </div>
+
+        <div class="orch-step">
+          <div class="orch-ic wait">○</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#4b5563;">6 · Vollständigkeits-Check</div>
+            <div style="font-size:11px;color:#4b5563;margin-top:2px;">Abgleich gegen P0/P1/P2-Checkliste · wartet auf Schritt 4</div>
+          </div>
+          <div style="font-size:11px;color:#4b5563;white-space:nowrap;">wartend</div>
+        </div>
+
+        <div class="orch-step" style="border-bottom:none;">
+          <div class="orch-ic wait">○</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:#4b5563;">7 · Red Flag Detection &amp; Widersprüche</div>
+            <div style="font-size:11px;color:#4b5563;margin-top:2px;">Kritische Muster · Cross-Dokument-Abgleich · wartet auf Schritte 5 &amp; 6</div>
+          </div>
+          <div style="font-size:11px;color:#4b5563;white-space:nowrap;">wartend</div>
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top:14px;">
+        <button class="btn btn-ghost">⏸ Analyse pausieren</button>
+        <button class="btn btn-primary" onclick="showScreen('produktraum');setMNav('produktraum')">Zum Produktraum →</button>
+      </div>
+    </div>
+
+    <!-- S-WIDERSPRÜCHE -->
+    <div class="screen" id="screen-widersprueche">
+      <div class="page-title">Zeitschaltuhr-Familie — Widersprüche</div>
+      <div class="page-sub">5 Inkonsistenzen zwischen Dokumenten erkannt · Bitte prüfen und klären</div>
+      <div style="background:#f59e0b15;border:1px solid #f59e0b40;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;">🚧</span>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#fbbf24;">In Planung — nicht im MVP</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Dieses Feature kommt in v2. Cross-Dokument-Analyse wird erst gebaut wenn Financial Extraction zuverlässig läuft. Die Ansicht zeigt den geplanten Funktionsumfang.</div>
+        </div>
+      </div>
+
+      <div class="stats-row" style="margin-bottom:18px;">
+        <div class="stat-box"><div class="stat-lbl">Kritisch</div><div class="stat-val" style="color:#ef4444;">2</div><div class="stat-hint red">Deal-relevant</div></div>
+        <div class="stat-box"><div class="stat-lbl">Mittel</div><div class="stat-val" style="color:#fbbf24;">2</div><div class="stat-hint yellow">Klärung nötig</div></div>
+        <div class="stat-box"><div class="stat-lbl">Gering</div><div class="stat-val">1</div><div class="stat-hint">Marginal</div></div>
+        <div class="stat-box"><div class="stat-lbl">Geklärt</div><div class="stat-val" style="color:#22c55e;">0</div><div class="stat-hint">von 5 offen</div></div>
+      </div>
+
+      <div class="ws-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#ef4444;">⚠ Kritisch · Finanzen</div>
+          <span class="badge badge-red">Ungeklärt</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#e2e8f0;margin-bottom:8px;">Umsatz 2024 weicht um €420k ab</div>
+        <div class="ws-docs">
+          <div style="background:#0f1117;border:1px solid #1f2937;border-radius:6px;padding:10px 12px;">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px;">Technisches Datenblatt 2024 (HGB)</div>
+            <div style="font-size:13px;font-weight:700;color:#e2e8f0;">€ 3.840.000</div>
+          </div>
+          <div style="text-align:center;font-size:18px;color:#ef4444;">≠</div>
+          <div style="background:#0f1117;border:1px solid #1f2937;border-radius:6px;padding:10px 12px;">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px;">Management-Präsentation (Feb 2025)</div>
+            <div style="font-size:13px;font-weight:700;color:#e2e8f0;">€ 4.260.000</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:#9ca3af;">Differenz: +€420k im Pitch-Deck. Mögliche Erklärungen: Umsatzabgrenzung, Stichtagseffekt oder selektive Darstellung.</div>
+        <div class="action-row" style="margin-top:10px;padding-top:10px;border-top:1px solid #1f293730;">
+          <button class="btn btn-ghost" style="font-size:11px;">Frage stellen (→ Q&amp;A)</button>
+          <button class="btn btn-ghost" style="font-size:11px;">Als Red Flag markieren</button>
+          <button class="btn btn-primary" style="font-size:11px;">Als geklärt markieren</button>
+        </div>
+      </div>
+
+      <div class="ws-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#ef4444;">⚠ Kritisch · Personal</div>
+          <span class="badge badge-red">Ungeklärt</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#e2e8f0;margin-bottom:8px;">Mitarbeiterzahl divergiert in 3 Dokumenten</div>
+        <div class="ws-docs">
+          <div style="background:#0f1117;border:1px solid #1f2937;border-radius:6px;padding:10px 12px;">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px;">Impressum / Website (März 2026)</div>
+            <div style="font-size:13px;font-weight:700;color:#e2e8f0;">50+ Mitarbeiter</div>
+          </div>
+          <div style="text-align:center;font-size:18px;color:#ef4444;">≠</div>
+          <div style="background:#0f1117;border:1px solid #1f2937;border-radius:6px;padding:10px 12px;">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px;">Lohnliste (Dez 2024)</div>
+            <div style="font-size:13px;font-weight:700;color:#e2e8f0;">38 FTE</div>
+          </div>
+        </div>
+        <div style="margin-top:6px;font-size:11px;color:#9ca3af;">Dritte Quelle (Pitch-Deck): "42 Vollzeit-Mitarbeiter". Mögliche Erklärungen: Freelancer inkl., Marketing-Übertreibung, Lücke im Abschluss.</div>
+        <div class="action-row" style="margin-top:10px;padding-top:10px;border-top:1px solid #1f293730;">
+          <button class="btn btn-ghost" style="font-size:11px;">Frage stellen (→ Q&amp;A)</button>
+          <button class="btn btn-ghost" style="font-size:11px;">Als Red Flag markieren</button>
+          <button class="btn btn-primary" style="font-size:11px;">Als geklärt markieren</button>
+        </div>
+      </div>
+
+      <div class="ws-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#fbbf24;">◆ Mittel · Kunden</div>
+          <span class="badge badge-yellow">Ungeklärt</span>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:#e2e8f0;margin-bottom:8px;">Top-Kunde: unterschiedliche Umsatzanteile</div>
+        <div class="ws-docs">
+          <div style="background:#0f1117;border:1px solid #1f2937;border-radius:6px;padding:10px 12px;">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px;">Kundenliste (Excel, Jan 2025)</div>
+            <div style="font-size:13px;font-weight:700;color:#e2e8f0;">Kunde A: 28% Umsatz</div>
+          </div>
+          <div style="text-align:center;font-size:18px;color:#fbbf24;">≠</div>
+          <div style="background:#0f1117;border:1px solid #1f2937;border-radius:6px;padding:10px 12px;">
+            <div style="font-size:10px;color:#6b7280;margin-bottom:3px;">Management-Präsentation</div>
+            <div style="font-size:13px;font-weight:700;color:#e2e8f0;">Kunde A: 19% Umsatz</div>
+          </div>
+        </div>
+        <div class="action-row" style="margin-top:10px;padding-top:10px;border-top:1px solid #1f293730;">
+          <button class="btn btn-ghost" style="font-size:11px;">Frage stellen (→ Q&amp;A)</button>
+          <button class="btn btn-ghost" style="font-size:11px;">Als Red Flag markieren</button>
+          <button class="btn btn-primary" style="font-size:11px;">Als geklärt markieren</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:12px;color:#6b7280;font-size:12px;">+ 2 weitere Widersprüche (Mittel/Gering)</div>
+
+      <div class="action-row">
+        <button class="btn btn-ghost" onclick="showScreen('vollstaendigkeits-check');setMNav('vollstaendigkeits-check')">← Vollständigkeits-Check</button>
+        <button class="btn btn-primary" onclick="showScreen('compliance');setMNav('compliance')">Zu Compliance-Lücken →</button>
+      </div>
+    </div>
+
+    <!-- S-ARGUMENTE -->
+    <div class="screen" id="screen-argumente">
+      <div class="page-title">Zeitschaltuhr-Familie — Argumente</div>
+      <div class="page-sub">KI-gestützte Pro/Contra-Analyse · Basis: alle Dokumente + extrahierte Metriken</div>
+
+      <div class="arg-scores">
+        <div class="card" style="text-align:center;padding:20px 16px;">
+          <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Pro-Score</div>
+          <div class="arg-score-num" style="color:#4ade80;">28.2</div>
+          <div style="font-size:11px;color:#4b5563;margin-top:4px;">von 100</div>
+        </div>
+        <div class="card" style="text-align:center;padding:20px 16px;">
+          <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Contra-Score</div>
+          <div class="arg-score-num" style="color:#ef4444;">47.1</div>
+          <div style="font-size:11px;color:#4b5563;margin-top:4px;">von 100</div>
+        </div>
+        <div class="card" style="text-align:center;padding:20px 16px;">
+          <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;">Net Score</div>
+          <div class="arg-score-num" style="color:#ef4444;">−18.9</div>
+          <div style="font-size:11px;color:#4b5563;margin-top:4px;">Contra überwiegt</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button class="btn btn-ghost" style="font-size:11px;background:#16a34a20;color:#4ade80;border-color:#16a34a40;">✓ Pro (6)</button>
+        <button class="btn btn-ghost" style="font-size:11px;background:#ef444420;color:#ef4444;border-color:#ef444440;">✗ Contra (9)</button>
+        <button class="btn btn-ghost" style="font-size:11px;">Alle (15)</button>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;border-left:3px solid #22c55e;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <span class="arg-badge pro">Pro · Wachstum</span>
+          <div style="font-size:11px;color:#6b7280;">Gewichtung: 8/10</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px;">ARR +47% YoY — überdurchschnittliches SaaS-Wachstum</div>
+        <div style="font-size:12px;color:#9ca3af;">Annual Recurring Revenue stieg von €1,8M (2023) auf €2,65M (2024). Im B2B-SaaS-Vergleich liegt das im Top-Quartil für Unternehmen dieser Größe.</div>
+        <div style="font-size:11px;color:#4b5563;margin-top:6px;">Quelle: Technisches Datenblatt 2024, Kundenliste Jan 2025</div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;border-left:3px solid #22c55e;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <span class="arg-badge pro">Pro · Markt</span>
+          <div style="font-size:11px;color:#6b7280;">Gewichtung: 7/10</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px;">Starke Marktposition im DACH-Mittelstand mit 89% Retention</div>
+        <div style="font-size:12px;color:#9ca3af;">Net Revenue Retention von 89% zeigt hohe Kundenzufriedenheit. 3 der Top-5-Kunden verlängerten vertragsgebunden für 3+ Jahre.</div>
+        <div style="font-size:11px;color:#4b5563;margin-top:6px;">Quelle: Kundenliste, Vertragsübersicht</div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;border-left:3px solid #ef4444;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <span class="arg-badge con">Contra · Risiko</span>
+          <div style="font-size:11px;color:#6b7280;">Gewichtung: 9/10</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px;">Kundenkonzentration: Top-3 = 61% des Umsatzes</div>
+        <div style="font-size:12px;color:#9ca3af;">Verlust eines einzelnen Großkunden würde den Umsatz um bis zu 28% reduzieren. Kein Escrow-Mechanismus im Kaufvertragsentwurf vorgesehen.</div>
+        <div style="font-size:11px;color:#4b5563;margin-top:6px;">Quelle: Kundenliste, Pitch-Deck S.14</div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;border-left:3px solid #ef4444;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <span class="arg-badge con">Contra · Finanzen</span>
+          <div style="font-size:11px;color:#6b7280;">Gewichtung: 8/10</div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px;">EBITDA-Marge negativ: −4,2% (2024)</div>
+        <div style="font-size:12px;color:#9ca3af;">Trotz Umsatzwachstum ist das EBITDA 2024 mit −€160k negativ. Haupttreiber: Personalaufbau (+12 FTE) und Marketingkosten. Break-even erst für Q2 2026 geplant.</div>
+        <div style="font-size:11px;color:#4b5563;margin-top:6px;">Quelle: Technisches Datenblatt 2024, Finanzplanung 2025-2027</div>
+      </div>
+
+      <div style="text-align:center;padding:12px;color:#6b7280;font-size:12px;">+ 11 weitere Argumente</div>
+
+      <div class="action-row">
+        <button class="btn btn-ghost" onclick="showScreen('widersprueche');setMNav('widersprueche')">← Zu Widersprüchen</button>
+        <button class="btn btn-primary" onclick="showScreen('quellen');setMNav('quellen')">Zu Quellen →</button>
+      </div>
+    </div>
+
+    <!-- S-FINANZKENNZAHLEN -->
+    <div class="screen" id="screen-finanzkennzahlen">
+      <div class="page-title">Zeitschaltuhr-Familie — Finanzkennzahlen</div>
+      <div class="page-sub">Automatisch extrahiert aus Jahresabschlüssen · Stand: 17.03.2026</div>
+
+      <div class="kpi-grid" style="margin-bottom:16px;">
+        <div class="kpi-box"><div class="kpi-lbl">Umsatz 2024</div><div class="kpi-val">€3,84 Mio.</div><div class="kpi-yr">HGB · Technisches Datenblatt</div><div class="kpi-flag warn">⚠ Abweichung zum Pitch-Deck</div></div>
+        <div class="kpi-box"><div class="kpi-lbl">EBITDA 2024</div><div class="kpi-val" style="color:#ef4444;">-€160K</div><div class="kpi-yr">-4,2% Marge</div><div class="kpi-flag bad">✗ Negativ — Break-even Q2 2026</div></div>
+        <div class="kpi-box"><div class="kpi-lbl">ARR (SaaS)</div><div class="kpi-val">€2,65 Mio.</div><div class="kpi-yr">+47% YoY</div><div class="kpi-flag ok">✓ Top-Quartil SaaS-Wachstum</div></div>
+        <div class="kpi-box"><div class="kpi-lbl">NRR</div><div class="kpi-val">89%</div><div class="kpi-yr">Net Revenue Retention</div><div class="kpi-flag warn">⚠ Unter SaaS-Benchmark (100%+)</div></div>
+        <div class="kpi-box"><div class="kpi-lbl">Gross Margin</div><div class="kpi-val">71%</div><div class="kpi-yr">2024 (geschätzt)</div><div class="kpi-flag ok">✓ Solide für B2B SaaS</div></div>
+        <div class="kpi-box"><div class="kpi-lbl">Free Cashflow</div><div class="kpi-val" style="color:#ef4444;">-€240K</div><div class="kpi-yr">2024</div><div class="kpi-flag bad">✗ Cash Burn läuft</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:14px;">Multi-Year Entwicklung</div>
+        <table class="fin-tbl">
+          <thead><tr><th>Kennzahl</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>Plan 2025</th></tr></thead>
+          <tbody>
+            <tr><td>Umsatz</td><td class="na">—</td><td class="na">—</td><td>€2,61 Mio.</td><td>€3,84 Mio.</td><td>€5,20 Mio.</td></tr>
+            <tr><td>Wachstum YoY</td><td class="na">—</td><td class="na">—</td><td class="na">—</td><td class="pos">+47%</td><td>+35%</td></tr>
+            <tr><td>EBITDA</td><td class="na">—</td><td class="na">—</td><td class="pos">€180K</td><td class="neg">-€160K</td><td>€80K</td></tr>
+            <tr><td>EBITDA-Marge</td><td class="na">—</td><td class="na">—</td><td class="pos">6,9%</td><td class="neg">-4,2%</td><td>1,5%</td></tr>
+            <tr><td>ARR</td><td class="na">—</td><td class="na">—</td><td>€1,80 Mio.</td><td>€2,65 Mio.</td><td>€3,80 Mio.</td></tr>
+            <tr><td>Mitarbeiter (FTE)</td><td class="na">—</td><td class="na">—</td><td>26</td><td>38</td><td>44</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:10px;font-size:11px;color:#ef4444;">⚠ Jahresabschlüsse 2021–2022 fehlen — Daten aus Pitch-Deck (ungeprüft)</div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title" style="margin-bottom:14px;">Bewertungsindikation</div>
+        <div class="ds-grid">
+          <div>
+            <div class="ds-field"><div class="ds-label">Kaufpreisvorstellung</div><div class="ds-value">€ 8,5 Mio.</div></div>
+            <div class="ds-field"><div class="ds-label">EV / Umsatz 2024</div><div class="ds-value">2,2x</div></div>
+            <div class="ds-field"><div class="ds-label">EV / ARR</div><div class="ds-value">3,2x</div></div>
+          </div>
+          <div>
+            <div class="ds-field"><div class="ds-label">EV / EBITDA 2024</div><div class="ds-value" style="color:#ef4444;">n/m (negativ)</div></div>
+            <div class="ds-field"><div class="ds-label">Benchmark SaaS (vergl.)</div><div class="ds-value" style="color:#9ca3af;">4–8x ARR bei 40%+ Wachstum</div></div>
+            <div class="ds-field"><div class="ds-label">Einschätzung</div><div class="ds-value" style="color:#fbbf24;">Kaufpreis ambitioniert</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-ghost" onclick="showScreen('iterationen');setMNav('iterationen')">← Iterationen</button>
+        <button class="btn btn-primary" onclick="showScreen('widersprueche');setMNav('widersprueche')">Zu Widersprüchen →</button>
+      </div>
+    </div>
+
+    <!-- S-ITERATIONEN -->
+    <div class="screen" id="screen-iterationen">
+      <div class="page-title">Zeitschaltuhr-Familie — Iterationen</div>
+      <div class="page-sub">Analyse-Versionshistorie · 3 Durchläufe · Letzte Iteration heute 10:14 Uhr</div>
+
+      <div class="stats-row" style="margin-bottom:18px;">
+        <div class="stat-box"><div class="stat-lbl">Iterationen</div><div class="stat-val">3</div><div class="stat-hint">seit Projektstart</div></div>
+        <div class="stat-box"><div class="stat-lbl">Vollständigkeit</div><div class="stat-val" style="color:#fbbf24;">60%</div><div class="stat-hint yellow">+22% seit It. 1</div></div>
+        <div class="stat-box"><div class="stat-lbl">Neue Docs (It. 3)</div><div class="stat-val">41</div><div class="stat-hint">heute nachgeliefert</div></div>
+        <div class="stat-box"><div class="stat-lbl">Neue Findings</div><div class="stat-val" style="color:#ef4444;">3</div><div class="stat-hint red">2 Compliance-Lücken · 1 Widerspruch</div></div>
+      </div>
+
+      <!-- Iteration 3 — aktiv -->
+      <div class="card" style="margin-bottom:12px;border-color:#22c55e40;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:13px;font-weight:700;color:#4ade80;">Iteration 3</div>
+            <span class="badge" style="font-size:10px;background:#22c55e20;color:#4ade80;border:1px solid #22c55e30;">Aktuell</span>
+          </div>
+          <div style="font-size:11px;color:#6b7280;">27. März 2026 · 10:14 Uhr</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;">
+          <div><div class="ds-label">Dokumente gesamt</div><div class="ds-value">207</div></div>
+          <div><div class="ds-label">Neu hinzugefügt</div><div class="ds-value" style="color:#4ade80;">+41</div></div>
+          <div><div class="ds-label">Vollständigkeit</div><div class="ds-value" style="color:#fbbf24;">60%</div></div>
+          <div><div class="ds-label">Laufzeit Pipeline</div><div class="ds-value">18 Min.</div></div>
+        </div>
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;">Neu erkannt: Technisches Datenblatt 2024 (vollständig), Lohnliste Dez 2024, 39 weitere Dokumente. Neue Compliance-Lücken: EBITDA negativ (2024), Kundenkonzentration verschärft.</div>
+        <div style="display:flex;gap:6px;">
+          <span class="badge badge-red" style="font-size:10px;">+2 Compliance-Lücken</span>
+          <span class="badge badge-yellow" style="font-size:10px;">+1 Widerspruch</span>
+          <span class="badge" style="font-size:10px;background:#22c55e20;color:#4ade80;border:1px solid #22c55e30;">+12% Vollständigkeit</span>
+        </div>
+      </div>
+
+      <!-- Iteration 2 -->
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:700;color:#e2e8f0;">Iteration 2</div>
+          <div style="font-size:11px;color:#6b7280;">19. März 2026 · 14:32 Uhr</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;">
+          <div><div class="ds-label">Dokumente gesamt</div><div class="ds-value">166</div></div>
+          <div><div class="ds-label">Neu hinzugefügt</div><div class="ds-value" style="color:#4ade80;">+82</div></div>
+          <div><div class="ds-label">Vollständigkeit</div><div class="ds-value" style="color:#fbbf24;">48%</div></div>
+          <div><div class="ds-label">Laufzeit Pipeline</div><div class="ds-value">14 Min.</div></div>
+        </div>
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;">Großer Nachlieferungsblock vom Seller: Verträge, Kundenliste, Management-Präsentation. Vollständigkeit von 38% auf 48% gestiegen.</div>
+        <div style="display:flex;gap:6px;">
+          <span class="badge badge-red" style="font-size:10px;">+4 Compliance-Lücken</span>
+          <span class="badge badge-yellow" style="font-size:10px;">+2 Widersprüche</span>
+          <span class="badge" style="font-size:10px;background:#22c55e20;color:#4ade80;border:1px solid #22c55e30;">+10% Vollständigkeit</span>
+        </div>
+      </div>
+
+      <!-- Iteration 1 -->
+      <div class="card" style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:700;color:#e2e8f0;">Iteration 1 — Erstanalyse</div>
+          <div style="font-size:11px;color:#6b7280;">12. März 2026 · 09:05 Uhr</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;">
+          <div><div class="ds-label">Dokumente gesamt</div><div class="ds-value">84</div></div>
+          <div><div class="ds-label">Neu hinzugefügt</div><div class="ds-value">84</div></div>
+          <div><div class="ds-label">Vollständigkeit</div><div class="ds-value" style="color:#ef4444;">38%</div></div>
+          <div><div class="ds-label">Laufzeit Pipeline</div><div class="ds-value">9 Min.</div></div>
+        </div>
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;">Erste Analyse mit initialem Produktraum-Paket. Kritische P0-Dokumente fehlen noch: Jahresabschlüsse, SBOM, Bilanz. 12 Compliance-Lücken erkannt.</div>
+        <div style="display:flex;gap:6px;">
+          <span class="badge badge-red" style="font-size:10px;">12 Compliance-Lücken</span>
+          <span class="badge badge-yellow" style="font-size:10px;">2 Widersprüche</span>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-ghost" onclick="showScreen('vollstaendigkeits-check');setMNav('vollstaendigkeits-check')">← Vollständigkeits-Check</button>
+        <button class="btn btn-primary" onclick="showScreen('finanzkennzahlen');setMNav('finanzkennzahlen')">Zu Finanzkennzahlen →</button>
+      </div>
+    </div>
+
+    <!-- S-QUELLEN -->
+    <div class="screen" id="screen-quellen">
+      <div class="page-title">Zeitschaltuhr-Familie — Quellen</div>
+      <div class="page-sub">207 Dateien · alle klassifizierten Dateien mit Verlinkung zu Findings</div>
+
+      <div class="stats-row" style="margin-bottom:18px;">
+        <div class="stat-box"><div class="stat-lbl">Gesamt</div><div class="stat-val">207</div><div class="stat-hint">Dokumente hochgeladen</div></div>
+        <div class="stat-box"><div class="stat-lbl">Klassifiziert</div><div class="stat-val" style="color:#22c55e;">151</div><div class="stat-hint">73% abgeschlossen</div></div>
+        <div class="stat-box"><div class="stat-lbl">Mit Findings</div><div class="stat-val" style="color:#fbbf24;">34</div><div class="stat-hint">Compliance-Lücken / Widersprüche</div></div>
+        <div class="stat-box"><div class="stat-lbl">Fehler</div><div class="stat-val" style="color:#ef4444;">3</div><div class="stat-hint">Nicht lesbar</div></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button class="btn btn-ghost" style="font-size:11px;background:#16a34a20;color:#4ade80;border-color:#16a34a40;">Alle (207)</button>
+        <button class="btn btn-ghost" style="font-size:11px;">Finanzen (41)</button>
+        <button class="btn btn-ghost" style="font-size:11px;">Verträge (38)</button>
+        <button class="btn btn-ghost" style="font-size:11px;">Personal (22)</button>
+        <button class="btn btn-ghost" style="font-size:11px;">Legal (19)</button>
+        <button class="btn btn-ghost" style="font-size:11px;">Sonstige (87)</button>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;">
+            <div style="font-size:18px;">📄</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Technisches Datenblatt_2024_HGB.pdf</div>
+              <div style="font-size:11px;color:#6b7280;margin-top:1px;">Finanzen · Technisches Datenblatt · 4,2 MB · hochgeladen 12.03.2026</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="badge badge-red" style="font-size:10px;">1 Widerspruch</span>
+            <span class="badge badge-yellow" style="font-size:10px;">2 Compliance-Lücken</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;">
+            <div style="font-size:18px;">📊</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Kundenliste_Januar_2025.xlsx</div>
+              <div style="font-size:11px;color:#6b7280;margin-top:1px;">Kunden · Kundenliste · 0,8 MB · hochgeladen 13.03.2026</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="badge badge-yellow" style="font-size:10px;">1 Widerspruch</span>
+            <span class="badge badge-red" style="font-size:10px;">1 Red Flag</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;">
+            <div style="font-size:18px;">📄</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Management_Praesentation_Feb2025.pdf</div>
+              <div style="font-size:11px;color:#6b7280;margin-top:1px;">Pitch · Management-Präsentation · 12,1 MB · hochgeladen 12.03.2026</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="badge badge-red" style="font-size:10px;">2 Widersprüche</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;">
+            <div style="font-size:18px;">📋</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Gesellschafterliste_aktuell.pdf</div>
+              <div style="font-size:11px;color:#6b7280;margin-top:1px;">Legal · Gesellschafterliste · 0,3 MB · hochgeladen 14.03.2026</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="badge" style="font-size:10px;background:#22c55e20;color:#4ade80;border:1px solid #22c55e30;">✓ Keine Findings</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:10px;border-color:#ef444430;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;">
+            <div style="font-size:18px;">⚠️</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:#ef4444;">Scan_Vertrag_2019_unleserlich.pdf</div>
+              <div style="font-size:11px;color:#6b7280;margin-top:1px;">Unbekannt · Normalisierung fehlgeschlagen · 1,1 MB · hochgeladen 15.03.2026</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <span class="badge badge-red" style="font-size:10px;">Fehler: Parse-Fehler</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:12px;color:#6b7280;font-size:12px;">+ 202 weitere Dokumente</div>
+
+      <div class="action-row">
+        <button class="btn btn-ghost" onclick="showScreen('argumente');setMNav('argumente')">← Argumente</button>
+        <button class="btn btn-primary" onclick="showScreen('qa');setMNav('qa')">Zum Q&amp;A →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Tutorial Elements -->
+<div id="tutorial-overlay"></div>
+<div id="tutorial-frame"></div>
+<div id="tutorial-tooltip"></div>
+<button id="tutorial-stop-btn" onclick="stopTutorial()">✕ Tutorial beenden</button>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">Red Flag manuell hinzufügen</div>
+    <div class="modal-sub">Ergänze einen Red Flag den die KI nicht erkannt hat</div>
+    <div class="form-group"><label class="form-label">Titel *</label><input class="form-input" type="text" placeholder="z.B. Gründer = Key Person Risk"></div>
+    <div class="form-group"><label class="form-label">Beschreibung</label><textarea class="form-textarea" style="min-height:72px;" placeholder="Beschreibung..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Severity</label><select class="form-select"><option>Critical</option><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+      <div class="form-group"><label class="form-label">Kategorie</label><select class="form-select"><option>Financial</option><option>Operational</option><option>Legal</option><option>Data Quality</option></select></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="closeModal()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    const titles = {
+      dashboard: 'Product Information System — Dashboard',
+      'new-deal': 'Product Information System — Neues Produkt',
+      datasheet: 'Zeitschaltuhr-Familie — DataSheet',
+      upload: 'Zeitschaltuhr-Familie — Datei-Upload',
+      verarbeitungsstatus: 'Zeitschaltuhr-Familie — Verarbeitungsstatus',
+      produktraum: 'Zeitschaltuhr-Familie — Produktraum',
+      'vollstaendigkeits-check': 'Zeitschaltuhr-Familie — Vollständigkeits-Check',
+      iterationen: 'Zeitschaltuhr-Familie — Iterationen',
+      finanzkennzahlen: 'Zeitschaltuhr-Familie — Finanzkennzahlen',
+      widersprueche: 'Zeitschaltuhr-Familie — Widersprüche',
+      compliance: 'Zeitschaltuhr-Familie — Compliance-Lücken',
+      argumente: 'Zeitschaltuhr-Familie — Argumente',
+      quellen: 'Zeitschaltuhr-Familie — Quellen',
+      qa: 'Zeitschaltuhr-Familie — Q&A',
+      report: 'Zeitschaltuhr-Familie — Report',
+    };
+    document.getElementById('topbar-title').textContent = titles[name] || '';
+  }
+
+  function setMNav(active) {
+    document.querySelectorAll('.ma-nav-sub-item').forEach(el => el.classList.remove('active'));
+    const el = document.getElementById('mnav-' + active);
+    if (el) el.classList.add('active');
+  }
+
+  function setSbActive(el) {
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selCatTab(el) {
+    el.closest('.cat-tabs').querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function selDealType(el) {
+    document.querySelectorAll('.deal-type-card').forEach(c => c.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+
+  function switchATab(el, targetId) {
+    ['av','am'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById(targetId).style.display = 'block';
+    document.querySelectorAll('.inner-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function openModal()  { document.getElementById('modal').classList.add('open'); }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  document.getElementById('modal').addEventListener('click', e => { if(e.target===document.getElementById('modal')) closeModal(); });
+
+  /* ── Tutorial ── */
+  const tutorialSteps = [
+    {
+      screen: 'dashboard',
+      selector: '.deal-grid',
+      title: 'Deine Projektübersicht',
+      text: 'Hier siehst du alle laufenden PIS-Projekte auf einen Blick. Jede Karte zeigt Vollständigkeit, Compliance-Lücken und Status. Klicke auf ein Projekt um in die Analyse einzusteigen.'
+    },
+    {
+      screen: 'dashboard',
+      selector: '.deal-grid .deal-card:first-child',
+      title: 'Projekt auswählen',
+      text: 'Zeitschaltuhr-Familie ist in Analyse. 207 Dateien hochgeladen, Vollständigkeit bei 60% — es fehlen noch kritische Unterlagen. Wir öffnen dieses Projekt jetzt.'
+    },
+    {
+      screen: 'datasheet',
+      selector: '#screen-datasheet .card',
+      title: 'DataSheet — Stammdaten',
+      text: 'Das DataSheet fasst alle Kerninformationen zusammen: Firma, HRB, Gesellschafter, Geschäftsführung und Deal-Parameter. Die KI extrahiert diese Daten automatisch aus den Dokumenten — der User ergänzt manuell was fehlt.'
+    },
+    {
+      screen: 'upload',
+      selector: '.upload-zone',
+      title: 'Dokumente hochladen',
+      text: 'Der User lädt hier Dokumente hoch — chaotisch ist OK. PDF, Excel, Word bis 50 MB. Das System startet die KI-Analyse automatisch nach dem Upload.'
+    },
+    {
+      screen: 'upload',
+      selector: '.upload-list',
+      title: 'KI-Analyse läuft',
+      text: 'Jede Datei wird automatisch klassifiziert. Grün = fertig analysiert. Rot = Fehler (z.B. Parse-Fehler, nicht lesbar). Orange = Normalisierung läuft. Du musst nichts manuell sortieren.'
+    },
+    {
+      screen: 'verarbeitungsstatus',
+      selector: '.orch-status',
+      title: 'Verarbeitungsstatus — Transparenz',
+      text: 'Hier sieht der User in Echtzeit was die KI macht: Welcher Pipeline-Schritt läuft gerade? Wie lange noch? 7 Schritte von Ingestion über Normalisierung bis zu Red Flag Detection. Kein Black-Box-Feeling.'
+    },
+    {
+      screen: 'produktraum',
+      selector: '#screen-produktraum .card',
+      title: 'Vollständigkeits-Tracking',
+      text: 'Das System vergleicht automatisch was hochgeladen wurde gegen die Pflicht-Checkliste. P0 = kritisch, P1 = wertrelevant, P2 = nice-to-have. Rot = fehlt. Gelb = unvollständig.'
+    },
+    {
+      screen: 'vollstaendigkeits-check',
+      selector: '.compl-big',
+      title: 'Vollständigkeits-Check',
+      text: '60% bedeutet: 12 von 20 Pflicht-Dokumenten vorhanden. Gelb = wichtige Lücken, kein sofortiger Deal-Stopper. Unter 50% würde Rot anzeigen und den Deal blockieren.'
+    },
+    {
+      screen: 'iterationen',
+      selector: '#screen-iterationen .stats-row',
+      title: 'Iterationen — Analyse-Historie',
+      text: 'Jedes Mal wenn neue Dokumente nachgeliefert werden, läuft die Pipeline erneut — eine neue Iteration entsteht. Der User sieht sofort: Was hat sich verbessert? Welche neuen Findings kamen dazu? Vollständigkeit von 38% auf 60% in 3 Runden.'
+    },
+    {
+      screen: 'finanzkennzahlen',
+      selector: '.kpi-grid',
+      title: 'Finanzkennzahlen',
+      text: 'Die KI extrahiert alle Finanzkennzahlen automatisch aus den Jahresabschlüssen: Umsatz, EBITDA, ARR, NRR, Gross Margin. Dazu eine Bewertungsindikation — EV/ARR, EV/Umsatz — damit der User sofort einschätzen kann ob der Kaufpreis realistisch ist.'
+    },
+    {
+      screen: 'widersprueche',
+      selector: '.ws-item',
+      title: 'Widersprüche erkennen',
+      text: '🚧 In Planung (v2) — Die KI vergleicht alle Dokumente miteinander und findet Inkonsistenzen automatisch. Wird erst gebaut wenn Financial Extraction zuverlässig funktioniert. Dieser Screen zeigt den geplanten Funktionsumfang.'
+    },
+    {
+      screen: 'compliance',
+      selector: '.rf-list',
+      title: 'Automatische Red Flag Erkennung',
+      text: 'Die KI erkennt kritische Probleme automatisch: Kundenkonzentration, fehlende Jahresabschlüsse, negative EBITDA-Trends. Du kannst Compliance-Lücken auch manuell ergänzen. 2 Critical Flags müssen vor Deal-Abschluss geklärt werden.'
+    },
+    {
+      screen: 'argumente',
+      selector: '.arg-scores',
+      title: 'Pro / Contra — KI-Bewertung',
+      text: 'Die KI gewichtet alle Erkenntnisse und gibt eine strukturierte Status: Pro-Score, Contra-Score, Net Score. Jedes Argument ist mit seiner Quelle belegt. So entsteht eine nachvollziehbare Investitionsbasis.'
+    },
+    {
+      screen: 'quellen',
+      selector: '#screen-quellen .stats-row',
+      title: 'Quellen — Belegbibliothek',
+      text: 'Alle 207 Dateien auf einen Blick: welche Datei hat welche Findings ausgelöst? Jedes Red Flag und jeder Widerspruch ist direkt mit dem Quelldokument verknüpft. So ist jede Aussage im Report nachvollziehbar und prüfbar.'
+    },
+    {
+      screen: 'qa',
+      selector: '#screen-qa .stats-row',
+      title: 'Offene Fragen',
+      text: 'Unklare Punkte werden direkt im Tool als strukturierte Fragen gestellt. Status: Offen → In Klärung → Beantwortet. Alle offenen Fragen erscheinen im finalen Report als Bedingungen.'
+    },
+    {
+      screen: 'report',
+      selector: '.rep-header',
+      title: 'Executive Summary generieren',
+      text: 'Auf Knopfdruck entsteht ein professioneller Report: Vollständigkeit, Financial Highlights, Top Compliance-Lücken und Bedingungen. Export als HTML oder PDF — bereit für das Briefing.'
+    }
+  ];
+
+  const tutorialState = { active: false, step: 0 };
+
+  function startTutorial() {
+    tutorialState.active = true;
+    tutorialState.step = 0;
+    document.getElementById('tutorial-overlay').style.display = 'block';
+    document.getElementById('tutorial-frame').style.display = 'block';
+    document.getElementById('tutorial-tooltip').style.display = 'block';
+    document.getElementById('tutorial-stop-btn').style.display = 'block';
+    renderTutorialStep();
+  }
+
+  function stopTutorial() {
+    tutorialState.active = false;
+    ['tutorial-overlay','tutorial-frame','tutorial-tooltip','tutorial-stop-btn']
+      .forEach(id => document.getElementById(id).style.display = 'none');
+  }
+
+  function renderTutorialStep() {
+    const step  = tutorialSteps[tutorialState.step];
+    const idx   = tutorialState.step;
+    const total = tutorialSteps.length;
+
+    showScreen(step.screen);
+    setMNav(step.screen);
+
+    setTimeout(() => {
+      const el = document.querySelector(step.selector);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'instant', block: 'center' });
+
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        const pad  = 6;
+        const frame = document.getElementById('tutorial-frame');
+        frame.style.top    = (rect.top  - pad) + 'px';
+        frame.style.left   = (rect.left - pad) + 'px';
+        frame.style.width  = (rect.width  + pad * 2) + 'px';
+        frame.style.height = (rect.height + pad * 2) + 'px';
+
+        const isFirst = idx === 0;
+        const isLast  = idx === total - 1;
+        const tooltip = document.getElementById('tutorial-tooltip');
+        tooltip.innerHTML = `
+          <div class="tut-step">Schritt ${idx + 1} von ${total}</div>
+          <div class="tut-title">${step.title}</div>
+          <div class="tut-text">${step.text}</div>
+          <div class="tut-btns">
+            ${!isFirst ? '<button class="btn btn-ghost" style="font-size:11px;" onclick="prevStep()">← Zurück</button>' : ''}
+            ${isLast
+              ? '<button class="btn btn-primary" style="font-size:11px;" onclick="stopTutorial()">✓ Tutorial abschließen</button>'
+              : '<button class="btn btn-primary" style="font-size:11px;" onclick="nextStep()">Weiter →</button>'
+            }
+          </div>`;
+        positionTooltip(rect);
+      }, 150);
+    }, 100);
+  }
+
+  function positionTooltip(targetRect) {
+    const tooltip = document.getElementById('tutorial-tooltip');
+    const tw = 300;
+    const th = tooltip.offsetHeight || 180;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const m  = 16;
+    let left, top;
+
+    if (targetRect.right + m + tw <= vw) {
+      left = targetRect.right + m;
+      top  = Math.max(m, Math.min(targetRect.top, vh - th - m));
+    } else if (targetRect.left - m - tw >= 0) {
+      left = targetRect.left - m - tw;
+      top  = Math.max(m, Math.min(targetRect.top, vh - th - m));
+    } else if (targetRect.bottom + m + th <= vh) {
+      top  = targetRect.bottom + m;
+      left = Math.max(m, Math.min(targetRect.left, vw - tw - m));
+    } else {
+      top  = Math.max(m, targetRect.top - m - th);
+      left = Math.max(m, Math.min(targetRect.left, vw - tw - m));
+    }
+
+    tooltip.style.left = left + 'px';
+    tooltip.style.top  = top  + 'px';
+  }
+
+  function nextStep() {
+    if (tutorialState.step < tutorialSteps.length - 1) {
+      tutorialState.step++;
+      renderTutorialStep();
+    }
+  }
+
+  function prevStep() {
+    if (tutorialState.step > 0) {
+      tutorialState.step--;
+      renderTutorialStep();
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (!tutorialState.active) return;
+    if (e.key === 'Escape')     stopTutorial();
+    if (e.key === 'ArrowRight') nextStep();
+    if (e.key === 'ArrowLeft')  prevStep();
+  });
+</script>
+</body>
+</html>
