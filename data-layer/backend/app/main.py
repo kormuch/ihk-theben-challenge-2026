@@ -33,6 +33,8 @@ def health():
     return {"status": "ok", "service": "PAUL data-layer"}
 
 
-# Routers registered in later steps
-# from app.api import products, families, ingest, documents
-# app.include_router(products.router, prefix=settings.API_PREFIX)
+from app.api import families, products, ingest
+
+app.include_router(families.router, prefix=settings.API_PREFIX)
+app.include_router(products.router, prefix=settings.API_PREFIX)
+app.include_router(ingest.router, prefix=settings.API_PREFIX)
