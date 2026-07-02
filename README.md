@@ -31,6 +31,9 @@ Skalierbare Plattform zur Aggregation, Normalisierung und Verwaltung von Produkt
 - REST API
 - OpenAPI / Swagger Dokumentation
 - Web-UI: Upload, Produktübersicht, Attribut-Editor, DPP-Preview
+- data lakehouse
+- modules for different users (governance model)
+- 
 
 ---
 

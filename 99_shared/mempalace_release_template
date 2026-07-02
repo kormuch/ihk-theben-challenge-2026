@@ -1,0 +1,27 @@
+# {{ID}} - {{Version}} - {{Title}}
+
+## Released on
+Date and environment.
+
+## What changed
+- Item 1
+- Item 2
+- Item 3
+
+## Affected areas
+- Product layer
+- Data layer
+- Tests
+- Metadata
+- Access control
+
+## Verification
+What passed, what was checked, what remains open?
+
+## Known limitations
+Anything intentionally deferred.
+
+## Related links
+- GitHub release/tag:
+- GitHub PRs:
+- Quality run:

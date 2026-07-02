@@ -1,0 +1,30 @@
+# {{ID}} - {{Title}}
+
+## Context
+What problem or choice is this about?
+
+## Decision
+What did we decide?
+
+## Alternatives considered
+- Option 1
+- Option 2
+- Option 3
+
+## Rationale
+Why this option fits the architecture goal.
+
+## Impact
+What changes in product-layer, data-layer, operations, or governance?
+
+## Related links
+- GitHub issue:
+- GitHub PR:
+- Related pages:
+
+## Tags
+- product-layer
+- data-layer
+- governance
+- metadata
+- access-control

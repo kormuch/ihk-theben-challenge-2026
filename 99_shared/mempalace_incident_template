@@ -1,0 +1,39 @@
+# {{ID}} - {{Title}}
+
+## Summary
+What happened?
+
+## Environment
+- Repo:
+- Branch:
+- Runtime:
+- Docker/VM:
+- Date:
+
+## Symptoms
+What failed, error text, or behavior appeared?
+
+## Root cause
+What caused it?
+
+## Fix
+What was changed?
+
+## Preventive action
+How do we avoid repeat issues?
+
+## Verification
+How was the fix tested?
+
+## Related links
+- GitHub issue:
+- GitHub PR:
+- Logs:
+- Tests:
+
+## Tags
+- incident
+- test
+- sandbox
+- docker
+- quality

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thebenpaul Product Layer</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Thebenpaul Product Layer</h1>
+      <p>Product overview, governed edits, validation, visualization, and Digital Product Passport preview.</p>
+    </div>
+    <nav>
+      <a href="/docs">API Docs</a>
+      <a href="/api/openapi.json">OpenAPI</a>
+      <a href="/api/export/products.csv">CSV</a>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <label>Search <input id="search" type="search" placeholder="SKU, name, attribute"></label>
+      <label>Family
+        <select id="family">
+          <option value="">All</option>
+          <option>Time Switch</option>
+          <option>Motion Detector</option>
+          <option>HVAC Controller</option>
+          <option>KNX Actuator</option>
+          <option>Energy Meter</option>
+        </select>
+      </label>
+      <label>Status
+        <select id="status">
+          <option value="">All</option>
+          <option value="certified">Certified</option>
+          <option value="needs_review">Needs review</option>
+          <option value="draft">Draft</option>
+        </select>
+      </label>
+      <label>Role
+        <select id="role">
+          <option value="viewer">Viewer</option>
+          <option value="editor">Editor</option>
+          <option value="steward">Steward</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+      <button id="refresh">Refresh</button>
+    </section>
+
+    <section class="summary-grid" id="summary"></section>
+
+    <section class="workspace">
+      <div class="panel list-panel">
+        <div class="section-head">
+          <h2>Products</h2>
+          <span id="count"></span>
+        </div>
+        <div id="products" class="product-list"></div>
+      </div>
+
+      <aside class="panel detail-panel">
+        <div class="section-head">
+          <h2>Detail</h2>
+          <div class="actions">
+            <a id="htmlExport" href="#" target="_blank">HTML</a>
+            <a id="svgExport" href="#" target="_blank">SVG</a>
+          </div>
+        </div>
+        <div id="detail" class="detail"></div>
+      </aside>
+    </section>
+
+    <section class="panel import-panel">
+      <div>
+        <h2>Upload / Import</h2>
+        <p>Paste a JSON array or CSV with columns like <code>sku,name,family,attributes.gtin,metadata.classification</code>.</p>
+      </div>
+      <textarea id="importText" spellcheck="false" placeholder='[{"sku":"THB-DEMO-1","name":"Demo Product","family":"Time Switch","attributes":{"gtin":"4003468999999","nominal_voltage":"230V","ip_rating":"IP20","co2_kg":1.2,"recyclable_share_pct":82}}]'></textarea>
+      <div class="actions">
+        <button id="importJson">Import JSON</button>
+        <button id="importCsv">Import CSV</button>
+        <span id="importResult"></span>
+      </div>
+    </section>
+
+    <section class="panel validation-panel">
+      <div class="section-head">
+        <h2>Validation / Status</h2>
+        <button id="validate">Run validation</button>
+      </div>
+      <div id="validation"></div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

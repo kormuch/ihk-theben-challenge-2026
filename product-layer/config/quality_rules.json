@@ -1,0 +1,28 @@
+{
+  "required_metadata": [
+    "owner",
+    "domain",
+    "source_system",
+    "lineage",
+    "refresh_frequency",
+    "sla",
+    "classification",
+    "certification_status"
+  ],
+  "required_attributes": {
+    "*": ["gtin", "nominal_voltage", "ip_rating", "co2_kg", "recyclable_share_pct"],
+    "Time Switch": ["channels", "program_slots"],
+    "Motion Detector": ["detection_angle", "range_m"],
+    "HVAC Controller": ["control_loops", "protocol"],
+    "KNX Actuator": ["knx_channels", "bus_current_ma"],
+    "Energy Meter": ["measurement_accuracy", "phases"]
+  },
+  "numeric_ranges": [
+    {"attribute": "co2_kg", "min": 0, "max": 250},
+    {"attribute": "recyclable_share_pct", "min": 0, "max": 100}
+  ],
+  "certification_policy": {
+    "certified_requires_no_error_issues": true,
+    "needs_review_on_warning": true
+  }
+}

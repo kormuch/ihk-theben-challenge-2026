@@ -1,0 +1,38 @@
+{
+  "data_product": {
+    "name": "product-master-dpp",
+    "domain": "product",
+    "purpose": "Curated product information and Digital Product Passport preview for Thebenpaul products.",
+    "owner": "Product Data Domain",
+    "steward": "product-data-steward@thebenpaul.local",
+    "target_consumers": [
+      "product management",
+      "compliance",
+      "service",
+      "analytics",
+      "Digital Product Passport applications"
+    ],
+    "target_lakehouse_table_format": "Apache Iceberg",
+    "target_table": "curated_product.product_master_dpp",
+    "contract_version": "0.1.0"
+  },
+  "mandatory_metadata": [
+    "owner",
+    "domain",
+    "source_system",
+    "lineage",
+    "refresh_frequency",
+    "sla",
+    "classification",
+    "certification_status"
+  ],
+  "lineage_contract": {
+    "current_mvp": "mock-generator/import -> product-layer-json-store -> REST/UI/export",
+    "target": "data-layer normalized store -> Iceberg standardized table -> Iceberg curated product data product -> REST/UI/export"
+  },
+  "lifecycle": {
+    "states": ["draft", "certified", "deprecated", "retired"],
+    "deprecation_notice_days": 90,
+    "release_tracking": "GitHub releases and pull requests"
+  }
+}

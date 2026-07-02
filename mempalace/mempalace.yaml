@@ -1,0 +1,19 @@
+wing: mempalace
+rooms:
+- name: product_layer
+  description: Files from product-layer/
+  keywords:
+  - product_layer
+  - product-layer
+- name: data_layer
+  description: Files from data-layer/
+  keywords:
+  - data_layer
+  - data-layer
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []
+- name: 99_shared
+  description: shared over product and data-layer
+  keywords:
+  - 99_shared

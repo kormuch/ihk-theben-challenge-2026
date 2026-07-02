@@ -1,0 +1,45 @@
+{
+  "roles": {
+    "viewer": {
+      "description": "Can read governed product data in the user's region.",
+      "permissions": ["product:read"]
+    },
+    "editor": {
+      "description": "Can read, import, and update product attributes.",
+      "permissions": ["product:read", "product:write", "product:import"]
+    },
+    "steward": {
+      "description": "Domain steward with cross-region access and unmasked commercial attributes.",
+      "permissions": [
+        "product:read",
+        "product:write",
+        "product:import",
+        "product:read_all_regions",
+        "unmask:attributes.commercial_price_eur"
+      ]
+    },
+    "admin": {
+      "description": "Central IT/platform administrator for local MVP operations.",
+      "permissions": ["*"]
+    }
+  },
+  "abac_attributes": ["role", "purpose", "region", "classification"],
+  "row_level_security": [
+    {
+      "name": "regional_product_visibility",
+      "field": "metadata.region",
+      "mode": "match_user_region",
+      "except_values": ["GLOBAL"],
+      "bypass_permission": "product:read_all_regions"
+    }
+  ],
+  "masking": {
+    "confidential": ["attributes.commercial_price_eur"]
+  },
+  "layer_access": {
+    "raw": ["central_it", "data_engineering"],
+    "standardized": ["central_it", "data_engineering", "domain_steward"],
+    "curated": ["domain_steward", "approved_business_user"],
+    "consumption": ["approved_business_user", "application"]
+  }
+}

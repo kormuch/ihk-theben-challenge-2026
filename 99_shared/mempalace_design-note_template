@@ -1,0 +1,25 @@
+# {{ID}} - {{Topic}}
+
+## Goal
+What capability are we designing?
+
+## Scope
+What is included and excluded?
+
+## Structure
+What files, modules, services, or layers are affected?
+
+## Interfaces
+What inputs, outputs, APIs, views, or tables are involved?
+
+## Governance
+What metadata, ownership, access rules, or lifecycle rules apply?
+
+## Implementation notes
+Practical decisions for code and deployment.
+
+## Related links
+- GitHub issue:
+- GitHub PR:
+- Related decision:
+- Related incident:

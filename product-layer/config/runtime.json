@@ -1,0 +1,23 @@
+{
+  "service": {
+    "name": "thebenpaul-product-layer",
+    "host": "0.0.0.0",
+    "port": 8080,
+    "persistence": "./data/products.json"
+  },
+  "data_layer_contract": {
+    "status": "todo_external_integration",
+    "expected_sources": [
+      "PostgreSQL normalized product tables",
+      "document object storage references",
+      "future Apache Iceberg curated tables via Trino"
+    ],
+    "mvp_adapter": "JSON file store with import endpoint"
+  },
+  "ollama": {
+    "base_url": "http://ollama:11434",
+    "lan_bind": "0.0.0.0:11434",
+    "models": ["llama3.2", "mistral"],
+    "note": "Model pull is intentionally not done by the product-layer tests because network installs are out of scope."
+  }
+}

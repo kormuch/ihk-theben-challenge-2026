@@ -1,0 +1,24 @@
+# {{ID}} - {{Run Name}}
+
+## Purpose
+What was validated?
+
+## Scope
+Which tests, models, tables, or endpoints?
+
+## Results
+- Passed:
+- Failed:
+- Skipped:
+
+## Observations
+Patterns, warnings, regressions, or anomalies.
+
+## Action items
+- Item 1
+- Item 2
+
+## Related links
+- GitHub workflow:
+- Logs:
+- Release:
