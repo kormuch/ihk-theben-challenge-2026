@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,6 +8,14 @@ from app.core.database import Base, engine
 
 # Import models so Alembic/SQLAlchemy picks them up
 import app.models  # noqa
+from app.api import families, products, ingest
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -13,6 +23,7 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_url="/openapi.json",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -23,17 +34,10 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
-
-
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "PAUL data-layer"}
 
-
-from app.api import families, products, ingest
 
 app.include_router(families.router, prefix=settings.API_PREFIX)
 app.include_router(products.router, prefix=settings.API_PREFIX)
