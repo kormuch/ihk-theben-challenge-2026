@@ -35,13 +35,19 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 ```
 start-paul.bat
 ```
-This builds containers, waits for health check, opens the browser, and streams logs.
+Starts both data-layer and product-layer, waits for health checks, opens browser, streams logs.
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| PAUL UI | http://localhost:3000 | AI Ingest, Products, Families |
+| PAUL API | http://localhost:8000/docs | FastAPI Swagger docs |
+| Product Layer | http://localhost:8080 | Governance, DPP preview, exports |
+| Product Layer API | http://localhost:8080/docs | OpenAPI docs |
 
 **Manual:**
 ```bash
-cd data-layer
-docker compose up -d --build
-# Open http://localhost:3000
+cd data-layer && docker compose up -d --build
+cd ../product-layer && docker compose up -d --build product-layer
 ```
 
 **Requirements:**
