@@ -21,7 +21,7 @@ STORAGE = Path(settings.STORAGE_PATH)
 def upload_and_ingest(
     file: UploadFile = File(...),
     product_id: str = Form(...),
-    doc_category: str = Form("Technisch"),
+    doc_category: str = Form("Technical"),
     db: Session = Depends(get_db),
 ):
     """

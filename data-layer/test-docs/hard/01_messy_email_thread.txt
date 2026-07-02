@@ -1,0 +1,40 @@
+Von: Markus Weber <m.weber@theben.de>
+An: Sarah Chen <s.chen@theben.de>
+CC: Thomas Berger <t.berger@theben.de>
+Betreff: RE: RE: RE: LUXA 300 specs for customer Elektro Schmidt
+Datum: 2024-11-28 14:37
+
+Sarah,
+
+hab nochmal mit dem Labor gesprochen. Die endgültigen Werte für den LUXA 300-180 sind:
+
+- Betriebsspannung natürlich 230V AC wie immer
+- Erfassungswinkel 180 Grad (nicht 200 wie im alten Datenblatt!!)
+- Reichweite: wir sagen jetzt 12m, war vorher 14m aber das war bei optimalen Bedingungen
+- Schaltleistung max 2000W ohmsch, 600W LED
+- IP44 (NICHT IP55 wie der Kollege dem Kunden gesagt hat, das ist der 360er!)
+- Nachlaufzeit 5s bis 30min einstellbar
+- Temp -20 bis +50°C
+
+CE und VDE haben wir, RoHS sowieso. Der REACH status ist noch in Klärung,
+ich würde dem Kunden erstmal nichts dazu sagen.
+
+Ach ja, die Artikelnummer ist LUXA 300-180/V2 (nicht V1, die ist abgekündigt!)
+
+Bzgl. dem anderen Produkt für den gleichen Kunden: der TR 800 top3 Zeitschaltuhr,
+da bitte die Daten aus dem SAP nehmen, ich hab die hier nicht griffbereit.
+Nur soviel: 230V, 3680W, IP20, 2TE breit, CE+VDE certified.
+Artikelnummer TR 800 top3.
+
+Gruß
+Markus
+
+PS: Die Montage beim LUXA ist Wand, NICHT Decke. Der Installateur hat
+letztes Mal an die Decke geschraubt und sich dann beschwert dass der
+Erfassungsbereich nicht stimmt...
+
+---
+Von: Sarah Chen <s.chen@theben.de>
+Datum: 2024-11-28 09:15
+
+Markus, kannst du mir die finalen Specs schicken? Kunde braucht das bis Freitag.

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAUL — Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f1117; color: #e2e8f0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; padding: 40px; }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  h1 span { color: #22c55e; }
+  .subtitle { color: #6b7280; font-size: 13px; margin-bottom: 48px; }
+  .diagram { display: flex; flex-direction: column; gap: 0; max-width: 1000px; margin: 0 auto; }
+
+  /* ── Flow rows ── */
+  .flow-row { display: flex; align-items: stretch; gap: 16px; }
+  .flow-row.center { justify-content: center; }
+
+  /* ── Arrow connectors ── */
+  .arrow-down { display: flex; justify-content: center; padding: 6px 0; }
+  .arrow-down svg { width: 24px; height: 32px; }
+  .arrow-down-wide { display: flex; justify-content: center; padding: 6px 0; }
+  .arrow-down-wide svg { width: 24px; height: 32px; }
+  .arrow-right { display: flex; align-items: center; padding: 0 2px; }
+  .arrow-right svg { width: 32px; height: 24px; }
+
+  /* ── Box styles ── */
+  .box { border-radius: 10px; padding: 20px 24px; flex: 1; min-width: 0; }
+  .box h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .box p { font-size: 12px; line-height: 1.5; color: #9ca3af; }
+  .box .tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-top: 8px; margin-right: 4px; font-weight: 600; }
+
+  .input    { background: #1a2030; border: 1px solid #1f2937; }
+  .ai       { background: #0c1a2e; border: 1px solid #1e3a5f; }
+  .ai h3    { color: #60a5fa; }
+  .ai .tag  { background: #1e3a5f40; color: #60a5fa; }
+  .human    { background: #1a1a10; border: 1px solid #3f3f00; }
+  .human h3 { color: #fbbf24; }
+  .human .tag { background: #3f3f0040; color: #fbbf24; }
+  .output   { background: #0a1f0a; border: 1px solid #16a34a40; }
+  .output h3 { color: #4ade80; }
+  .output .tag { background: #16a34a20; color: #4ade80; }
+  .infra    { background: #1a1020; border: 1px solid #2d1f3f; }
+  .infra h3 { color: #c084fc; }
+  .infra .tag { background: #2d1f3f40; color: #c084fc; }
+  .store    { background: #1f1a10; border: 1px solid #78350f; }
+  .store h3 { color: #fb923c; }
+  .store .tag { background: #78350f40; color: #fb923c; }
+
+  /* ── Stage label ── */
+  .stage-label { font-size: 10px; color: #4b5563; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; text-align: center; margin: 24px 0 8px; }
+  .stage-label:first-child { margin-top: 0; }
+
+  /* ── Side-by-side layout ── */
+  .split { display: flex; gap: 16px; }
+  .split > * { flex: 1; }
+
+  /* ── Bottom infra row ── */
+  .infra-row { display: flex; gap: 16px; margin-top: 12px; }
+  .infra-row > * { flex: 1; }
+
+  /* ── Legend ── */
+  .legend { display: flex; gap: 24px; margin-top: 48px; padding-top: 24px; border-top: 1px solid #1f2937; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #6b7280; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ── Footer ── */
+  .footer { margin-top: 32px; font-size: 11px; color: #374151; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1><span>PAUL</span> — Product Attribute Unified Layer</h1>
+<p class="subtitle">Conceptual Architecture &middot; IHK Innovationstage Zollernalb 2026 &middot; Theben AG</p>
+
+<div class="diagram">
+
+  <!-- STAGE: INPUT -->
+  <div class="stage-label">Stage 0 &mdash; Input</div>
+  <div class="flow-row">
+    <div class="box input">
+      <h3>File Drop</h3>
+      <p>User drops one or multiple files into the web UI. Bulk upload, sequential processing.</p>
+      <span class="tag">PDF</span><span class="tag">CSV</span><span class="tag">JSON</span><span class="tag">XML</span><span class="tag">XLSX</span><span class="tag">TXT</span>
+    </div>
+    <div class="arrow-right">
+      <svg viewBox="0 0 32 24"><path d="M4 12h20m0 0l-6-5m6 5l-6 5" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="box input">
+      <h3>Text Extraction</h3>
+      <p>Raw text extracted from any format. PDFs get table-aware extraction with page markers. Stored on disk for re-processing.</p>
+      <span class="tag">pdfplumber</span><span class="tag">openpyxl</span>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-down">
+    <svg viewBox="0 0 24 32"><path d="M12 4v20m0 0l-5-6m5 6l5-6" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- STAGE 1: CLASSIFY -->
+  <div class="stage-label">Stage 1 &mdash; AI Classification</div>
+  <div class="flow-row">
+    <div class="box ai">
+      <h3>Classifier Agent</h3>
+      <p>Pre-prompted LLM reads raw text and determines document type, confidence score, reasoning, and detected product names. 10 known types.</p>
+      <span class="tag">Gemini 2.0 Flash</span><span class="tag">Groq Fallback</span><span class="tag">Confidence %</span>
+    </div>
+  </div>
+
+  <!-- ARROW + BRANCH -->
+  <div class="arrow-down">
+    <svg viewBox="0 0 24 32"><path d="M12 4v20m0 0l-5-6m5 6l5-6" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- CONFIDENCE GATE -->
+  <div class="split">
+    <div class="box output" style="flex: 2;">
+      <h3>&ge; 85% Confidence &rarr; Auto-Extract</h3>
+      <p>High confidence: proceed directly to Stage 2 extraction.</p>
+    </div>
+    <div class="box human" style="flex: 2;">
+      <h3>&lt; 85% Confidence &rarr; User Override</h3>
+      <p>Low confidence: user picks the correct document type from dropdown or types a custom type. Then re-triggers extraction.</p>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-down">
+    <svg viewBox="0 0 24 32"><path d="M12 4v20m0 0l-5-6m5 6l5-6" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- STAGE 2: EXTRACT -->
+  <div class="stage-label">Stage 2 &mdash; AI Extraction</div>
+  <div class="flow-row">
+    <div class="box ai">
+      <h3>Specialized Extractor Agent</h3>
+      <p>Per-document-type prompt extracts structured product data: article number, name, family suggestion, and all technical attributes. Every value includes a <strong style="color:#4ade80">citation</strong> &mdash; where in the source it was found.</p>
+      <span class="tag">10 Extractor Prompts</span><span class="tag">JSON Output</span><span class="tag">Source Citations</span>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-down">
+    <svg viewBox="0 0 24 32"><path d="M12 4v20m0 0l-5-6m5 6l5-6" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- STAGE: SMART CHECKS -->
+  <div class="stage-label">Smart Checks</div>
+  <div class="split">
+    <div class="box ai">
+      <h3>DB Lookup</h3>
+      <p>Checks extracted article numbers against existing products. Shows attribute-level diff: <span style="color:#fbbf24">changed</span>, <span style="color:#4ade80">new</span>, <span style="color:#6b7280">kept</span>.</p>
+      <span class="tag">UPDATE Banner</span>
+    </div>
+    <div class="box ai">
+      <h3>Cross-File Dedup</h3>
+      <p>In bulk uploads, flags when the same article number appears in multiple files to prevent double-imports.</p>
+      <span class="tag">DUPLICATE Banner</span>
+    </div>
+    <div class="box ai">
+      <h3>Family Matching</h3>
+      <p>AI suggests product family. Matched against existing families in DB. User can override via dropdown.</p>
+      <span class="tag">Auto-Match</span>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-down">
+    <svg viewBox="0 0 24 32"><path d="M12 4v20m0 0l-5-6m5 6l5-6" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- STAGE 3: HUMAN REVIEW -->
+  <div class="stage-label">Stage 3 &mdash; Human Review</div>
+  <div class="flow-row">
+    <div class="box human">
+      <h3>Review & Edit</h3>
+      <p>User sees every extracted product with editable fields: article number, name, family, and all attributes. Green citation text shows the AI's reasoning for each value. User can edit, remove products, or change families before confirming.</p>
+      <span class="tag">Editable Fields</span><span class="tag">Diff View</span><span class="tag">Per-File or Bulk Confirm</span>
+    </div>
+  </div>
+
+  <!-- ARROW -->
+  <div class="arrow-down">
+    <svg viewBox="0 0 24 32"><path d="M12 4v20m0 0l-5-6m5 6l5-6" stroke="#4b5563" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <!-- STAGE 4: PERSIST -->
+  <div class="stage-label">Stage 4 &mdash; Persist</div>
+  <div class="flow-row">
+    <div class="box output">
+      <h3>Create / Update Products</h3>
+      <p>On confirm: new products created, existing products get attributes merged. Source document linked to each product. Full traceability from attribute &rarr; citation &rarr; source file.</p>
+      <span class="tag">Create</span><span class="tag">Merge Attributes</span><span class="tag">Link Document</span>
+    </div>
+  </div>
+
+  <!-- SEPARATOR -->
+  <div style="margin-top: 40px; border-top: 1px dashed #1f2937; padding-top: 12px;">
+    <div class="stage-label">Infrastructure</div>
+  </div>
+
+  <div class="infra-row">
+    <div class="box infra">
+      <h3>Frontend</h3>
+      <p>React + Vite + Tailwind CSS. Dark theme. Drag & drop upload, product management, family management.</p>
+      <span class="tag">:3000</span>
+    </div>
+    <div class="box infra">
+      <h3>Backend</h3>
+      <p>FastAPI + SQLAlchemy. REST API. AI pipeline orchestration. File storage.</p>
+      <span class="tag">:8000</span>
+    </div>
+    <div class="box store">
+      <h3>PostgreSQL 16</h3>
+      <p>Products, families (with attribute schemas), documents. JSON attributes column for dynamic data.</p>
+      <span class="tag">:5432</span>
+    </div>
+    <div class="box infra">
+      <h3>LLM Layer</h3>
+      <p>Gemini 2.0 Flash primary. Groq (Llama 3.3 70B) fallback. Retry with exponential backoff on 429. 4s cooldown between calls.</p>
+      <span class="tag">Auto-Retry</span>
+    </div>
+  </div>
+
+  <div class="infra-row" style="margin-top: 8px;">
+    <div class="box input" style="text-align: center;">
+      <p style="color: #6b7280;">All services run in <strong style="color: #e2e8f0;">Docker Compose</strong>. One-click start via <code style="color: #e2e8f0;">start-paul.bat</code></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background: #1e3a5f;"></div> AI Agent</div>
+  <div class="legend-item"><div class="legend-dot" style="background: #3f3f00;"></div> Human-in-the-Loop</div>
+  <div class="legend-item"><div class="legend-dot" style="background: #16a34a40;"></div> Output / Decision</div>
+  <div class="legend-item"><div class="legend-dot" style="background: #2d1f3f;"></div> Infrastructure</div>
+  <div class="legend-item"><div class="legend-dot" style="background: #78350f;"></div> Data Store</div>
+  <div class="legend-item"><div class="legend-dot" style="background: #1f2937;"></div> Input / Processing</div>
+</div>
+
+<div class="footer">
+  PAUL &middot; Product Attribute Unified Layer &middot; Kollege Codex &middot; IHK Innovationstage Zollernalb 2026
+</div>
+
+</body>
+</html>

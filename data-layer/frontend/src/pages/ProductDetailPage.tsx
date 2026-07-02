@@ -21,7 +21,7 @@ export function ProductDetailPage({ productId, onBack }: Props) {
 
   useEffect(reload, [productId]);
 
-  if (!product) return <div className="text-sm text-gray-500 py-8">Lade...</div>;
+  if (!product) return <div className="text-sm text-gray-500 py-8">Loading...</div>;
 
   const schema = family?.attribute_schema ?? {};
   const allKeys = new Set([...Object.keys(schema), ...Object.keys(product.attributes)]);
@@ -51,9 +51,21 @@ export function ProductDetailPage({ productId, onBack }: Props) {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <button onClick={onBack} className="text-xs text-gray-500 hover:text-gray-300 mb-2 cursor-pointer">
-          &larr; Zurück zu Produkte
-        </button>
+        <div className="flex items-center justify-between mb-2">
+          <button onClick={onBack} className="text-xs text-gray-500 hover:text-gray-300 cursor-pointer">
+            &larr; Back to Products
+          </button>
+          <button
+            onClick={async () => {
+              if (!confirm('Delete this product?')) return;
+              await products.delete(productId);
+              onBack();
+            }}
+            className="text-xs text-gray-600 hover:text-red-400 cursor-pointer transition-colors"
+          >
+            Delete product
+          </button>
+        </div>
         <h1 className="text-xl font-bold text-[#f1f5f9]">{product.name}</h1>
         <p className="text-xs text-gray-500">
           {product.article_number}
@@ -68,7 +80,7 @@ export function ProductDetailPage({ productId, onBack }: Props) {
       <div className="grid grid-cols-[1fr_320px] gap-4">
         {/* Attributes */}
         <div className="bg-[#1a2030] border border-[#1f2937] rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-[#e2e8f0] mb-4">Attribute</h2>
+          <h2 className="text-sm font-semibold text-[#e2e8f0] mb-4">Attributes</h2>
           <div className="space-y-3">
             {[...allKeys].sort().map((key) => {
               const schemaDef = schema[key];
@@ -85,7 +97,7 @@ export function ProductDetailPage({ productId, onBack }: Props) {
                       {schemaDef?.unit && <span className="text-gray-700 ml-1">({schemaDef.unit})</span>}
                     </div>
                     {isRequired && isMissing && (
-                      <span className="text-[9px] text-red-400 font-semibold">PFLICHT — fehlt</span>
+                      <span className="text-[9px] text-red-400 font-semibold">REQUIRED — missing</span>
                     )}
                   </div>
                   <div className="flex-1">
@@ -130,7 +142,7 @@ export function ProductDetailPage({ productId, onBack }: Props) {
                         {isMissing
                           ? '—'
                           : typeof value === 'boolean'
-                          ? value ? '✓ Ja' : '✗ Nein'
+                          ? value ? '✓ Yes' : '✗ No'
                           : Array.isArray(value)
                           ? value.join(', ')
                           : String(value)}
@@ -145,12 +157,12 @@ export function ProductDetailPage({ productId, onBack }: Props) {
 
         {/* Documents */}
         <div className="bg-[#1a2030] border border-[#1f2937] rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-[#e2e8f0] mb-4">Dokumente</h2>
+          <h2 className="text-sm font-semibold text-[#e2e8f0] mb-4">Documents</h2>
 
           {/* Upload */}
           <label className="block border-2 border-dashed border-[#2d3748] rounded-lg p-6 text-center cursor-pointer hover:border-[#22c55e] hover:bg-[#22c55e06] transition-colors mb-4">
             <div className="text-2xl mb-2">☁</div>
-            <div className="text-xs text-gray-500">Datei hier ablegen oder klicken</div>
+            <div className="text-xs text-gray-500">Drop file here or click</div>
             <input type="file" className="hidden" onChange={handleUpload} />
           </label>
 
@@ -175,7 +187,7 @@ export function ProductDetailPage({ productId, onBack }: Props) {
                           : 'bg-[#f59e0b25] text-[#fbbf24]'
                       }`}
                     >
-                      {doc.status === 'done' ? '✓ Fertig' : doc.status === 'error' ? '✗ Fehler' : '⟳ ...'}
+                      {doc.status === 'done' ? '✓ Done' : doc.status === 'error' ? '✗ Error' : '⟳ ...'}
                     </span>
                   </div>
                   {doc.status === 'error' && doc.error_message && (
@@ -186,20 +198,20 @@ export function ProductDetailPage({ productId, onBack }: Props) {
                       href={ingest.downloadUrl(doc.id)}
                       className="text-[10px] text-[#4ade80] hover:underline"
                     >
-                      Original ansehen
+                      View original
                     </a>
                     <button
                       onClick={() => ingest.deleteDocument(doc.id).then(reload)}
                       className="text-[10px] text-gray-600 hover:text-red-400 cursor-pointer"
                     >
-                      Löschen
+                      Delete
                     </button>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-xs text-gray-600 text-center py-4">Noch keine Dokumente.</div>
+            <div className="text-xs text-gray-600 text-center py-4">No documents yet.</div>
           )}
         </div>
       </div>

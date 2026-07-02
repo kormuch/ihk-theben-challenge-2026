@@ -1,0 +1,49 @@
+{
+  "export": "SAP Material Master Extract",
+  "date": "2025-01-15",
+  "plant": "Haigerloch",
+  "items": [
+    {
+      "matnr": "TR 610 top2",
+      "maktx": "Timer TR 610 top2",
+      "matkl": "TIMER",
+      "specs": {"voltage": "230 V AC", "switching_capacity": "3680 W", "ip": "IP 20", "width_te": 2}
+    },
+    {
+      "matnr": "LUXA 102-360",
+      "maktx": "Bewegungsmelder LUXA 102-360",
+      "matkl": "SENSOR",
+      "specs": {"voltage": "230 V AC", "angle": 360, "range_m": 12, "ip": "IP 44", "switching_w": 1000}
+    },
+    {
+      "matnr": "RAMSES 831 top2",
+      "maktx": "Raumthermostat RAMSES 831",
+      "matkl": "HVAC",
+      "specs": {"voltage": "230 V AC", "temp_range": "+5...+30°C", "output": "Relay 1A", "ip": "IP 30"}
+    },
+    {
+      "matnr": "KNX GW 100",
+      "maktx": "KNX IP Gateway",
+      "matkl": "SYSTEM",
+      "specs": {"voltage": "29 V DC", "interfaces": ["KNX TP", "IP RJ45"], "protocols": ["KNXnet/IP", "BACnet"], "ip": "IP 20"}
+    },
+    {
+      "matnr": "SPHINX 104-300 KNX",
+      "maktx": "Präsenzmelder SPHINX",
+      "matkl": "SENSOR",
+      "specs": {"voltage": "29 V DC", "angle": 300, "range_m": 10, "ip": "IP 20", "bus": "KNX"}
+    },
+    {
+      "matnr": "CHEOPS 280 KNX",
+      "maktx": "CO2/VOC Sensor CHEOPS 280",
+      "matkl": "SENSOR_ENV",
+      "specs": {"voltage": "29 V DC", "co2_range": "0-2000 ppm", "voc_range": "0-60000 ppb", "temp_sensor": true, "humidity_sensor": true, "ip": "IP 20"}
+    },
+    {
+      "matnr": "TR 648 top2 RC",
+      "maktx": "Astro-Zeitschaltuhr TR 648",
+      "matkl": "TIMER",
+      "specs": {"voltage": "230 V AC", "switching_capacity": "3680 W", "ip": "IP 20", "width_te": 4, "channels": 2, "astro": true, "bluetooth": "BLE 5.0"}
+    }
+  ]
+}

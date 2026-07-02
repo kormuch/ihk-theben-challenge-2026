@@ -4,9 +4,9 @@ interface SidebarProps {
 }
 
 const NAV_ITEMS = [
-  { id: 'products', icon: '⊞', label: 'Produkte' },
-  { id: 'upload', icon: '☁', label: 'Upload' },
-  { id: 'families', icon: '≡', label: 'Produktfamilien' },
+  { id: 'products', icon: '⊞', label: 'Products' },
+  { id: 'upload', icon: '☁', label: 'AI Ingest' },
+  { id: 'families', icon: '≡', label: 'Product Families' },
 ];
 
 export function Sidebar({ active, onNavigate }: SidebarProps) {

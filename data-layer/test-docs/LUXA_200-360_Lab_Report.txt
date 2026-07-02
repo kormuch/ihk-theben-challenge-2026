@@ -1,0 +1,74 @@
+═══════════════════════════════════════════════════
+TEST REPORT No. PR-2024-08471
+═══════════════════════════════════════════════════
+
+Testing Laboratory: TÜV SÜD Product Service GmbH
+Accreditation: DAkkS D-PL-12047-01-00
+Report Date: 2024-09-23
+Pages: 12
+
+1. PRODUCT UNDER TEST
+─────────────────────
+Manufacturer:     Theben AG
+Product:          Motion Sensor LUXA 200-360
+Article Number:   LUXA 200-360
+Sample ID:        SMP-2024-3847
+Firmware Version: v2.4.1
+
+2. TEST STANDARDS
+─────────────────
+- IEC 60669-2-1:2021 — Switches for household installations
+- EN 55014-1:2017 — EMC Emission
+- EN 55014-2:2015 — EMC Immunity
+- EN 62311:2020 — Human exposure to electromagnetic fields
+- IEC 60529:2013 — Degrees of protection (IP Code)
+
+3. TEST CONDITIONS
+──────────────────
+Ambient Temperature: 23 ± 2 °C
+Relative Humidity: 45 ± 10 %
+Supply Voltage: 230 V AC, 50 Hz
+Test Duration: 2024-08-12 to 2024-09-20
+
+4. TEST RESULTS
+───────────────
+
+4.1 IP Protection Test (IEC 60529)
+  Test: IP55 — Dust protected, water jet protection
+  Result: PASS
+  Notes: No ingress of dust in harmful quantity after 8h test.
+         Water jet from all directions (6.3mm nozzle, 12.5 l/min)
+         for 3 minutes — no malfunction detected.
+
+4.2 EMC Emission (EN 55014-1)
+  Conducted emissions (150 kHz – 30 MHz): PASS
+  Radiated emissions (30 MHz – 1 GHz): PASS
+  Notes: All measurements below Class B limits.
+
+4.3 EMC Immunity (EN 55014-2)
+  ESD (EN 61000-4-2): ±4 kV contact, ±8 kV air — PASS
+  Burst (EN 61000-4-4): ±2 kV — PASS
+  Surge (EN 61000-4-5): ±1 kV L-N, ±2 kV L-PE — PASS
+  Notes: No malfunction during or after tests.
+
+4.4 Electrical Safety (IEC 60669-2-1)
+  Dielectric strength: 2000 V AC for 1 min — PASS
+  Insulation resistance: >100 MΩ at 500 V DC — PASS
+  Temperature rise at rated load: ΔT = 22 K (limit: 45 K) — PASS
+  Switching endurance: 100,000 cycles at rated load — PASS
+
+4.5 Human Exposure (EN 62311)
+  RF field strength at 20 cm: 0.012 V/m (limit: 28 V/m) — PASS
+
+5. CONCLUSION
+─────────────
+The product under test LUXA 200-360 meets all requirements
+of the referenced standards. No deviations or non-conformities
+were identified during testing.
+
+Classification: PASSED — all tests
+
+Signed:
+Dr. Michael Krause, Test Engineer
+TÜV SÜD Product Service GmbH
+Munich, Germany

@@ -1,0 +1,46 @@
+
+    EU DECLARATION OF CONFORMITY
+    ════════════════════════════
+
+    Document No.: DoC-LUXA-200-2024-001
+
+    Manufacturer:
+      Theben AG
+      Hohenbergstraße 32
+      72401 Haigerloch, Germany
+
+    Product Description:
+      Motion Sensor for Building Automation
+      Model: LUXA 200-360
+      Article Numbers: LUXA 200-360, LUXA 200-360/WH, LUXA 200-360/BK
+
+    The manufacturer hereby declares that the above product
+    is in conformity with the following EU Directives:
+
+    ┌──────────────────────────────────────────────────┐
+    │ Directive               │ Standard Applied        │
+    ├──────────────────────────────────────────────────┤
+    │ 2014/35/EU (LVD)       │ EN 60669-2-1:2021      │
+    │ 2014/30/EU (EMC)       │ EN 55014-1:2017        │
+    │                        │ EN 55014-2:2015        │
+    │ 2011/65/EU (RoHS)      │ EN IEC 63000:2018      │
+    │ 2014/53/EU (RED)       │ EN 62311:2020          │
+    │ (EU) 2023/1542 (Batt.) │ n/a (no battery)       │
+    └──────────────────────────────────────────────────┘
+
+    Additional Compliance:
+    - REACH Regulation (EC) 1907/2006: No SVHC above 0.1% w/w
+    - WEEE Directive 2012/19/EU: Registered (DE 12345678)
+
+    Test Reports:
+    - TÜV SÜD Report PR-2024-08471 (2024-09-23)
+    - VDE Report VDE-2024-3192 (2024-07-15)
+
+    This declaration is issued under the sole responsibility
+    of the manufacturer.
+
+    Haigerloch, 2024-10-01
+
+    ___________________________
+    Thomas Sell
+    CEO, Theben AG

@@ -86,7 +86,7 @@ export const products = {
 // ── Ingest ─────────────────────────────────────────────────────────────────
 
 export const ingest = {
-  upload: (file: File, productId: string, docCategory: string = 'Technisch') => {
+  upload: (file: File, productId: string, docCategory: string = 'Technical') => {
     const form = new FormData();
     form.append('file', file);
     form.append('product_id', productId);
@@ -99,4 +99,74 @@ export const ingest = {
   downloadUrl: (documentId: string) => `${BASE}/ingest/documents/${documentId}/download`,
   deleteDocument: (documentId: string) =>
     request<void>(`/ingest/documents/${documentId}`, { method: 'DELETE' }),
+};
+
+// ── Analyze (AI) ──────────────────────────────────────────────────────────
+
+export interface AnalyzeResult {
+  status: string;
+  filename: string;
+  stored_as: string;
+  error?: string;
+  classification?: {
+    document_type: string;
+    confidence: number;
+    reasoning: string;
+    multi_product: boolean;
+    detected_products: string[];
+  };
+  needs_review?: boolean;
+  extraction?: {
+    products: ExtractedProduct[];
+  };
+  extraction_error?: string;
+}
+
+export interface ExtractedProduct {
+  article_number: string;
+  name: string;
+  family_suggestion: string;
+  family_id: string | null;
+  family_name: string;
+  attributes: Record<string, any>;
+  citations: Record<string, string>;
+}
+
+export interface ConfirmResult {
+  created: string[];
+  updated: string[];
+  errors: { article_number: string; error: string }[];
+}
+
+export interface ExistingProductInfo {
+  id: string;
+  name: string;
+  family_id: string;
+  attributes: Record<string, any>;
+}
+
+export const analyze = {
+  upload: (file: File): Promise<AnalyzeResult> => {
+    const form = new FormData();
+    form.append('file', file);
+    return fetch(`${BASE}/analyze/`, { method: 'POST', body: form }).then(async (res) => {
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    });
+  },
+  lookup: (articleNumbers: string[]) =>
+    request<Record<string, ExistingProductInfo>>('/analyze/lookup', {
+      method: 'POST',
+      body: JSON.stringify({ article_numbers: articleNumbers }),
+    }),
+  reExtract: (storedAs: string, docType: string) =>
+    request<{ status: string; doc_type: string; extraction: { products: ExtractedProduct[] } }>(
+      '/analyze/re-extract',
+      { method: 'POST', body: JSON.stringify({ stored_as: storedAs, doc_type: docType }) },
+    ),
+  confirm: (data: {
+    stored_as: string;
+    doc_type: string;
+    products: { article_number: string; name: string; family_id: string; attributes: Record<string, any> }[];
+  }) => request<ConfirmResult>('/analyze/confirm', { method: 'POST', body: JSON.stringify(data) }),
 };

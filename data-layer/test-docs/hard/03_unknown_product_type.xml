@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductSpecification xmlns="http://theben.de/schema/product/2024">
+  <Header>
+    <DocumentType>Product Specification</DocumentType>
+    <Revision>4.2</Revision>
+    <Date>2024-12-01</Date>
+  </Header>
+
+  <Product>
+    <ArticleNumber>KNX GW 100</ArticleNumber>
+    <Name>KNX IP Gateway KNX GW 100</Name>
+    <Category>System Component / Gateway</Category>
+    <Description>
+      KNX/IP Gateway for connecting KNX bus systems to IP networks.
+      Enables remote access, visualization, and integration with
+      third-party building management systems via BACnet/IP.
+    </Description>
+
+    <TechnicalData>
+      <Parameter name="Power Supply" value="29 V DC (KNX bus)" />
+      <Parameter name="Additional Power" value="PoE (IEEE 802.3af) or 12-24V DC" />
+      <Parameter name="KNX Connections" value="2 (TP1, TP2)" />
+      <Parameter name="IP Interface" value="RJ45, 10/100 Mbit/s" />
+      <Parameter name="Max Telegram Rate" value="50 telegrams/s per line" />
+      <Parameter name="Protocol Support" value="KNXnet/IP, BACnet/IP, MQTT" />
+      <Parameter name="Encryption" value="TLS 1.3, KNX Secure" />
+      <Parameter name="Web Interface" value="Yes (HTTPS)" />
+      <Parameter name="Protection Class" value="IP 20" />
+      <Parameter name="Operating Temperature" value="-5 to +45 °C" />
+      <Parameter name="Module Width" value="4 MW (DIN rail)" />
+      <Parameter name="Weight" value="145 g" />
+      <Parameter name="Firmware" value="v3.2.1" />
+    </TechnicalData>
+
+    <Compliance>
+      <Certification standard="CE" status="passed" />
+      <Certification standard="KNX" status="certified" number="KNX-2024-DE-0847" />
+      <Certification standard="BACnet BTL" status="listed" />
+      <Certification standard="RoHS" status="compliant" />
+      <Certification standard="CRA" status="in preparation" note="Cyber Resilience Act — SBOM available" />
+    </Compliance>
+
+    <Cybersecurity>
+      <SBOM format="CycloneDX" version="1.5" />
+      <VulnerabilityDisclosure url="https://theben.de/.well-known/security.txt" />
+      <UpdatePolicy>Security patches for 10 years from launch date</UpdatePolicy>
+      <LastSecurityAudit date="2024-09-15" auditor="BSI-certified lab" />
+    </Cybersecurity>
+  </Product>
+</ProductSpecification>

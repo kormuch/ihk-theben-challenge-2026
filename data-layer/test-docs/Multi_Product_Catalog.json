@@ -1,0 +1,61 @@
+{
+  "catalog": "Theben Motion Sensor Product Line 2024",
+  "revision": "2024-Q4",
+  "products": [
+    {
+      "article_number": "LUXA 200-180",
+      "name": "Motion Sensor LUXA 200-180",
+      "type": "Motion Detector",
+      "specs": {
+        "voltage": "230 V AC",
+        "detection_angle_deg": 180,
+        "range_m": 12,
+        "switching_capacity_W": 2300,
+        "protection_class": "IP 44",
+        "mounting": "Wall",
+        "operating_temp": "-20 to +55 °C",
+        "certifications": ["CE", "VDE"],
+        "rohs": true,
+        "color": "White"
+      }
+    },
+    {
+      "article_number": "LUXA 200-360",
+      "name": "Motion Sensor LUXA 200-360 Outdoor",
+      "type": "Motion Detector",
+      "specs": {
+        "voltage": "230 V AC",
+        "detection_angle_deg": 360,
+        "range_m": 16,
+        "switching_capacity_W": 2300,
+        "protection_class": "IP 55",
+        "mounting": "Ceiling / Wall",
+        "operating_temp": "-25 to +55 °C",
+        "certifications": ["CE", "VDE"],
+        "rohs": true,
+        "reach": true,
+        "color": "White"
+      }
+    },
+    {
+      "article_number": "LUXA 200-360/BLE",
+      "name": "Motion Sensor LUXA 200-360 BLE",
+      "type": "Motion Detector",
+      "specs": {
+        "voltage": "230 V AC",
+        "detection_angle_deg": 360,
+        "range_m": 16,
+        "switching_capacity_W": 2300,
+        "protection_class": "IP 55",
+        "mounting": "Ceiling",
+        "operating_temp": "-25 to +55 °C",
+        "certifications": ["CE", "VDE"],
+        "rohs": true,
+        "reach": true,
+        "bluetooth": "BLE 5.0",
+        "app_control": true,
+        "color": "White"
+      }
+    }
+  ]
+}
