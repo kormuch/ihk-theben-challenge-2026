@@ -101,6 +101,12 @@ export const ingest = {
     request<void>(`/ingest/documents/${documentId}`, { method: 'DELETE' }),
 };
 
+// ── Export ─────────────────────────────────────────────────────────────────
+
+export const exportApi = {
+  productsJson: () => request<{ schema_version: string; generated_at: string; products: any[] }>('/export/products.json'),
+};
+
 // ── Analyze (AI) ──────────────────────────────────────────────────────────
 
 export interface AnalyzeResult {

@@ -24,9 +24,11 @@ services:
     environment:
       DATABASE_URL: postgresql://paul:paul@db:5432/paul
       STORAGE_PATH: /storage/originals
+      PRODUCT_LAYER_DATA_DIR: /product-layer-data
     volumes:
       - ./backend:/app
       - ./storage:/storage
+      - ../product-layer/data:/product-layer-data
     depends_on:
       db:
         condition: service_healthy

@@ -8,7 +8,7 @@ from app.core.database import Base, engine
 
 # Import models so Alembic/SQLAlchemy picks them up
 import app.models  # noqa
-from app.api import families, products, ingest, analyze
+from app.api import families, products, ingest, analyze, export
 
 
 @asynccontextmanager
@@ -50,3 +50,4 @@ app.include_router(families.router, prefix=settings.API_PREFIX)
 app.include_router(products.router, prefix=settings.API_PREFIX)
 app.include_router(ingest.router, prefix=settings.API_PREFIX)
 app.include_router(analyze.router, prefix=settings.API_PREFIX)
+app.include_router(export.router, prefix=settings.API_PREFIX)

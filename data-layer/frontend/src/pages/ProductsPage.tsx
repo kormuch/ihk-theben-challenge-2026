@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { products, families, type Product, type ProductFamily } from '../lib/api';
+import { products, families, exportApi, type Product, type ProductFamily } from '../lib/api';
 
 interface Props {
   onSelectProduct: (id: string) => void;
@@ -64,12 +64,27 @@ export function ProductsPage({ onSelectProduct }: Props) {
           <h1 className="text-xl font-bold text-[#f1f5f9]">Products</h1>
           <p className="text-xs text-gray-500">{items.length} products loaded</p>
         </div>
-        <button
-          onClick={() => setShowCreate(!showCreate)}
-          className="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#22c55e] text-[#0f1117] hover:bg-[#16a34a] cursor-pointer transition-colors"
-        >
-          + New Product
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              try {
+                const res = await exportApi.productsJson();
+                alert(`Exported ${res.products.length} products to product-layer.`);
+              } catch (err: any) {
+                alert('Export failed: ' + err.message);
+              }
+            }}
+            className="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#3b82f6] text-white hover:bg-[#2563eb] cursor-pointer transition-colors"
+          >
+            Export to Product Layer
+          </button>
+          <button
+            onClick={() => setShowCreate(!showCreate)}
+            className="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#22c55e] text-[#0f1117] hover:bg-[#16a34a] cursor-pointer transition-colors"
+          >
+            + New Product
+          </button>
+        </div>
       </div>
 
       {/* Create form */}
