@@ -34,12 +34,14 @@
 - Overview
 - Decisions
   - `data-layer/01_decisions/ADR-2026-07-02-002-data-layer-product-layer-contract.md`
+  - `data-layer/01_decisions/ADR-2026-07-03-003-data-layer-llm-agent-config.md`
 - Incidents
 - Learnings
   - `data-layer/04_learnings/LEARN-2026-07-02-001-contract-first-data-layer.md`
 - Releases
   - `data-layer/05_releases/REL-2026-07-02-001-data-layer-contract-baseline.md`
 - Quality runs
+  - `data-layer/06_quality-runs/QR-2026-07-03-001-data-layer-llm-config-validation.md`
 - Open items
   - `data-layer/07_open-items/OI-2026-07-02-001-data-layer-iceberg-contract.md`
 

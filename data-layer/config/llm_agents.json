@@ -1,0 +1,268 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Config-as-code registry for data-layer LLM agents used during document analysis, classification, and extraction.",
+  "default_chain": "local_ollama_lan",
+  "chains": {
+    "analysis_default": [
+      "ollama_lan"
+    ],
+    "local_ollama_lan": [
+      "ollama_lan"
+    ],
+    "enterprise_deepseek_existing": [
+      "deepseek"
+    ],
+    "enterprise_cloud_fallback": [
+      "ollama_lan",
+      "deepseek",
+      "gemini",
+      "groq"
+    ],
+    "local_only": [
+      "ollama_lan"
+    ],
+    "certification_expert": [
+      "ollama_certification_expert",
+      "ollama_lan",
+      "deepseek"
+    ]
+  },
+  "providers": {
+    "ollama_lan": {
+      "label": "Ollama LAN default analyst",
+      "type": "ollama_generate",
+      "enabled": true,
+      "base_url": "http://192.168.178.35:11434",
+      "endpoint": "/api/generate",
+      "model": "gpt-oss:20b",
+      "timeout_seconds": 120,
+      "temperature": 0.1,
+      "max_tokens": 4096,
+      "api_key_env": "OLLAMA_API_KEY",
+      "api_key_required": false,
+      "expertise": [
+        "document classification",
+        "product data extraction",
+        "metadata review",
+        "DPP drafting"
+      ],
+      "data_policy": "Only send data allowed for the local LAN Ollama environment. Human review remains required before changing product data or certification state."
+    },
+    "ollama_certification_expert": {
+      "label": "Environment-local certification expert",
+      "type": "ollama_generate",
+      "enabled": false,
+      "base_url": "http://192.168.178.35:11434",
+      "endpoint": "/api/generate",
+      "model": "gpt-oss:20b",
+      "timeout_seconds": 120,
+      "temperature": 0.05,
+      "max_tokens": 4096,
+      "api_key_env": "OLLAMA_CERTIFICATION_API_KEY",
+      "api_key_required": false,
+      "expertise": [
+        "CE declarations",
+        "RoHS",
+        "REACH",
+        "VDE",
+        "UN 38.3",
+        "product certification evidence"
+      ],
+      "data_policy": "Enable only in environments where this expert model is approved for certification-supporting analysis."
+    },
+    "deepseek": {
+      "label": "DeepSeek existing enterprise alternative",
+      "type": "openai_chat",
+      "enabled": false,
+      "url": "https://api.deepseek.com/chat/completions",
+      "model": "deepseek-chat",
+      "timeout_seconds": 60,
+      "temperature": 0.1,
+      "max_tokens": 4096,
+      "api_key_env": "DEEPSEEK_API_KEY",
+      "api_key_required": true,
+      "data_policy": "Alternative enterprise configuration. Enable only if the environment already has an approved DeepSeek contract, API key handling, and data movement policy."
+    },
+    "gemini": {
+      "label": "Gemini cloud fallback",
+      "type": "gemini_generate",
+      "enabled": false,
+      "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+      "model": "gemini-2.0-flash",
+      "timeout_seconds": 60,
+      "temperature": 0.1,
+      "max_tokens": 4096,
+      "api_key_env": "GEMINI_API_KEY",
+      "api_key_required": true,
+      "data_policy": "Use only if the environment is approved to send the document classification prompt to Gemini."
+    },
+    "groq": {
+      "label": "Groq cloud fallback",
+      "type": "openai_chat",
+      "enabled": false,
+      "url": "https://api.groq.com/openai/v1/chat/completions",
+      "model": "llama-3.3-70b-versatile",
+      "timeout_seconds": 60,
+      "temperature": 0.1,
+      "max_tokens": 4096,
+      "api_key_env": "GROQ_API_KEY",
+      "api_key_required": true,
+      "data_policy": "Use only if the environment is approved to send the document classification prompt to Groq."
+    }
+  },
+  "request_examples": {
+    "ollama_lan": {
+      "description": "Default LAN Ollama generate call for local document analysis.",
+      "method": "POST",
+      "url": "http://192.168.178.35:11434/api/generate",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "model": "gpt-oss:20b",
+        "prompt": "Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.",
+        "stream": false,
+        "options": {
+          "temperature": 0.1,
+          "num_predict": 4096
+        }
+      },
+      "example_curl": "curl http://192.168.178.35:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\",\"stream\":false,\"options\":{\"temperature\":0.1,\"num_predict\":4096}}'"
+    },
+    "ollama_certification_expert": {
+      "description": "Environment-local Ollama expert call for certification evidence review. Enable the provider before using this chain.",
+      "method": "POST",
+      "url": "http://192.168.178.35:11434/api/generate",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "model": "gpt-oss:20b",
+        "prompt": "Review this product evidence for CE, RoHS, REACH, VDE, and UN 38.3 relevance. Return structured JSON with findings, missing_evidence, and human_review_required.",
+        "stream": false,
+        "options": {
+          "temperature": 0.05,
+          "num_predict": 4096
+        }
+      },
+      "example_curl": "curl http://192.168.178.35:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Review this product evidence for CE, RoHS, REACH, VDE, and UN 38.3 relevance. Return structured JSON with findings, missing_evidence, and human_review_required.\",\"stream\":false,\"options\":{\"temperature\":0.05,\"num_predict\":4096}}'"
+    },
+    "deepseek": {
+      "description": "DeepSeek OpenAI-compatible chat completion fallback.",
+      "method": "POST",
+      "url": "https://api.deepseek.com/chat/completions",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${DEEPSEEK_API_KEY}"
+      },
+      "body": {
+        "model": "deepseek-chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You classify product and certification documents. Return strict JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products."
+          }
+        ],
+        "temperature": 0.1,
+        "max_tokens": 4096
+      },
+      "example_curl": "curl https://api.deepseek.com/chat/completions -H \"Content-Type: application/json\" -H \"Authorization: Bearer ${DEEPSEEK_API_KEY}\" -d '{\"model\":\"deepseek-chat\",\"messages\":[{\"role\":\"system\",\"content\":\"You classify product and certification documents. Return strict JSON only.\"},{\"role\":\"user\",\"content\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\"}],\"temperature\":0.1,\"max_tokens\":4096}'"
+    },
+    "gemini": {
+      "description": "Gemini generateContent fallback.",
+      "method": "POST",
+      "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "contents": [
+          {
+            "parts": [
+              {
+                "text": "Classify this product document and return strict JSON with document_type, confidence, reasoning, multi_product, and detected_products."
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "temperature": 0.1,
+          "maxOutputTokens": 4096
+        }
+      },
+      "example_curl": "curl \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}\" -H \"Content-Type: application/json\" -d '{\"contents\":[{\"parts\":[{\"text\":\"Classify this product document and return strict JSON with document_type, confidence, reasoning, multi_product, and detected_products.\"}]}],\"generationConfig\":{\"temperature\":0.1,\"maxOutputTokens\":4096}}'"
+    },
+    "groq": {
+      "description": "Groq OpenAI-compatible chat completion fallback.",
+      "method": "POST",
+      "url": "https://api.groq.com/openai/v1/chat/completions",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${GROQ_API_KEY}"
+      },
+      "body": {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You classify product and certification documents. Return strict JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products."
+          }
+        ],
+        "temperature": 0.1,
+        "max_tokens": 4096
+      },
+      "example_curl": "curl https://api.groq.com/openai/v1/chat/completions -H \"Content-Type: application/json\" -H \"Authorization: Bearer ${GROQ_API_KEY}\" -d '{\"model\":\"llama-3.3-70b-versatile\",\"messages\":[{\"role\":\"system\",\"content\":\"You classify product and certification documents. Return strict JSON only.\"},{\"role\":\"user\",\"content\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\"}],\"temperature\":0.1,\"max_tokens\":4096}'"
+    }
+  },
+  "configuration_examples": {
+    "default_local_ollama_lan": {
+      "description": "Default data-layer setup. Keeps document analysis on the LAN and mirrors the product-layer Ollama integration.",
+      "environment": {
+        "DATA_LAYER_LLM_CONFIG": "/config/llm_agents.json",
+        "DATA_LAYER_LLM_CHAIN": "local_ollama_lan"
+      },
+      "provider_changes": {
+        "ollama_lan.enabled": true
+      }
+    },
+    "alternative_existing_deepseek": {
+      "description": "Alternative enterprise setup for an environment that already has approved DeepSeek access. This is intentionally not the default.",
+      "environment": {
+        "DATA_LAYER_LLM_CONFIG": "/config/llm_agents.json",
+        "DATA_LAYER_LLM_CHAIN": "enterprise_deepseek_existing",
+        "DEEPSEEK_API_KEY": "set-through-env-file-docker-secret-or-ci-secret"
+      },
+      "provider_changes": {
+        "deepseek.enabled": true
+      }
+    },
+    "enterprise_cloud_fallback": {
+      "description": "Optional enterprise fallback chain. Use only after central IT approves external provider data movement for the relevant dataset classification.",
+      "environment": {
+        "DATA_LAYER_LLM_CONFIG": "/config/llm_agents.json",
+        "DATA_LAYER_LLM_CHAIN": "enterprise_cloud_fallback"
+      },
+      "provider_changes": {
+        "deepseek.enabled": true,
+        "gemini.enabled": true,
+        "groq.enabled": true
+      }
+    }
+  },
+  "governance": {
+    "owner": "Central IT / Data Platform",
+    "domain": "data-layer",
+    "classification": "internal",
+    "lakehouse_policy": "LLM provider configuration is environment-specific. Curated data products, lineage, classification, and access controls remain governed centrally across lakehouse modules.",
+    "secret_policy": "Do not store API keys in this JSON file. Store secrets in environment variables, .env files, Docker secrets, or CI secret stores.",
+    "review_policy": "LLM output is advisory. Human review is required before confirming extracted product data, metadata, or certification meaning."
+  }
+}

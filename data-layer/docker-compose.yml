@@ -25,8 +25,11 @@ services:
       DATABASE_URL: postgresql://paul:paul@db:5432/paul
       STORAGE_PATH: /storage/originals
       PRODUCT_LAYER_DATA_DIR: /product-layer-data
+      DATA_LAYER_LLM_CONFIG: /config/llm_agents.json
+      DATA_LAYER_LLM_CHAIN: local_ollama_lan
     volumes:
       - ./backend:/app
+      - ./config:/config:ro
       - ./storage:/storage
       - ../product-layer/data:/product-layer-data
     depends_on:
