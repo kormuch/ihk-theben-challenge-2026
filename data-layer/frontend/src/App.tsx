@@ -4,6 +4,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
 import { UploadPage } from './pages/UploadPage';
 import { FamiliesPage } from './pages/FamiliesPage';
+import { PromptsPage } from './pages/PromptsPage';
 
 export default function App() {
   const [page, setPage] = useState('products');
@@ -34,6 +35,7 @@ export default function App() {
         )}
         {page === 'upload' && <UploadPage />}
         {page === 'families' && <FamiliesPage />}
+        {page === 'prompts' && <PromptsPage />}
       </main>
     </>
   );

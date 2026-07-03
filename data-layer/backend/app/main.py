@@ -1,14 +1,22 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger("paul")
 
 from app.core.config import settings
 from app.core.database import Base, engine
 
 # Import models so Alembic/SQLAlchemy picks them up
 import app.models  # noqa
-from app.api import families, products, ingest, analyze, export
+from app.api import families, products, ingest, analyze, export, prompts
 
 
 @asynccontextmanager
@@ -51,3 +59,4 @@ app.include_router(products.router, prefix=settings.API_PREFIX)
 app.include_router(ingest.router, prefix=settings.API_PREFIX)
 app.include_router(analyze.router, prefix=settings.API_PREFIX)
 app.include_router(export.router, prefix=settings.API_PREFIX)
+app.include_router(prompts.router, prefix=settings.API_PREFIX)

@@ -151,6 +151,29 @@ export interface ExistingProductInfo {
   attributes: Record<string, any>;
 }
 
+// ── Prompts ───────────────────────────────────────────────────────────────
+
+export interface PromptsConfig {
+  document_types: string[];
+  classifier_prompt: string;
+  extractor_base_template: string;
+  extractor_prompts: Record<string, string>;
+  generic_extractor_instructions: string;
+}
+
+export const prompts = {
+  get: () => request<PromptsConfig>('/prompts/'),
+  update: (data: Partial<PromptsConfig>) =>
+    request<PromptsConfig>('/prompts/', { method: 'PUT', body: JSON.stringify(data) }),
+  updateExtractor: (docType: string, instructions: string) =>
+    request<{ doc_type: string; instructions: string }>(`/prompts/extractors/${encodeURIComponent(docType)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ instructions }),
+    }),
+};
+
+// ── Analyze (AI) ──────────────────────────────────────────────────────────
+
 export const analyze = {
   upload: (file: File): Promise<AnalyzeResult> => {
     const form = new FormData();

@@ -1,0 +1,4 @@
+article_number,name,family,operating_voltage,ip_protection,certifications,rohs_compliance,reach_compliance,co2_kg,recyclable_share_pct,gtin,batch_lot_number,serial_number
+TEST-001,TEST Zeitschaltuhr Alpha,Timer,230V AC,IP20,"CE (2014/35/EU LVD), VDE (0620)",compliant,compliant,1.8,85,04003468100001,LOT-TEST-001,SN-TEST-000001
+TEST-002,TEST Bewegungsmelder Beta,Motion Sensor,24V DC,IP55,CE,compliant,compliant,2.1,78,04003468100002,LOT-TEST-001,SN-TEST-000002
+TEST-003,TEST Raumthermostat Gamma,Room Thermostat,230V AC,IP30,"CE, VDE",compliant,compliant,0.9,91,04003468100003,LOT-TEST-002,SN-TEST-000003
