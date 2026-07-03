@@ -257,6 +257,13 @@ def confirm_extraction(
                     db.add(doc)
                     db.commit()
 
+    # Auto-export to product-layer after every confirm
+    from app.api.export import export_products_json
+    try:
+        export_products_json(db)
+    except Exception:
+        pass  # export is best-effort
+
     return {
         "created": created,
         "updated": updated,
