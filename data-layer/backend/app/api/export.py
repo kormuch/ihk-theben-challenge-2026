@@ -14,10 +14,13 @@ Mapping:
   (generated)              → metadata, quality, lifecycle_status
 """
 import json
+import logging
 import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+
+logger = logging.getLogger("paul.export")
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -171,7 +174,10 @@ def export_products_json(db: Session = Depends(get_db)):
                 json.dump(payload, f, indent=2, sort_keys=True)
                 f.write("\n")
             payload["_written_to"] = str(shared_path)
-        except Exception:
-            pass  # shared write is best-effort
+            logger.info("EXPORT OK: wrote %d products to %s", len(exported), shared_path)
+        except Exception as exc:
+            logger.error("EXPORT FAILED: could not write to shared dir %s: %s", shared_dir, exc)
+    else:
+        logger.warning("EXPORT: no shared product-layer dir found (set PRODUCT_LAYER_DATA_DIR or ensure product-layer/data/ exists)")
 
     return JSONResponse(content=payload)

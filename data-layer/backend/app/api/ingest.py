@@ -1,3 +1,4 @@
+import logging
 import shutil
 import uuid
 from pathlib import Path
@@ -11,6 +12,8 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.ingestion.registry import ingest_file
 from app.models.product import Product, ProductDocument
+
+logger = logging.getLogger("paul.ingest")
 
 router = APIRouter(prefix="/ingest", tags=["ingest"])
 
@@ -72,6 +75,12 @@ def upload_and_ingest(
         product.attributes = merged_attrs
         doc.status = "done"
         db.commit()
+        logger.info(
+            "INGEST OK: %s -> product %s (%s), %d records merged",
+            filename, product.article_number, product.name, len(records),
+        )
+        # Auto-trigger export so product-layer gets updated data immediately
+        _trigger_export(db)
         return IngestResult(
             document_id=doc.id,
             filename=filename,
@@ -83,6 +92,7 @@ def upload_and_ingest(
         doc.status = "error"
         doc.error_message = str(exc)
         db.commit()
+        logger.error("INGEST FAILED: %s -> product %s: %s", filename, product_id, exc)
         return IngestResult(
             document_id=doc.id,
             filename=filename,
@@ -106,6 +116,16 @@ def download_original(document_id: uuid.UUID, db: Session = Depends(get_db)):
         filename=doc.original_filename,
         media_type="application/octet-stream",
     )
+
+
+def _trigger_export(db: Session) -> None:
+    """Auto-trigger export to product-layer shared dir after successful ingestion."""
+    try:
+        from app.api.export import export_products_json
+        export_products_json(db=db)
+        logger.info("AUTO-EXPORT: triggered after ingestion, product-layer data updated")
+    except Exception as exc:
+        logger.error("AUTO-EXPORT FAILED: %s", exc)
 
 
 @router.delete("/documents/{document_id}", status_code=204)

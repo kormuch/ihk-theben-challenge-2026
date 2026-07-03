@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { id: 'products', icon: '⊞', label: 'Products' },
   { id: 'upload', icon: '☁', label: 'AI Ingest' },
   { id: 'families', icon: '≡', label: 'Product Families' },
+  { id: 'prompts', icon: '✎', label: 'AI Prompts' },
 ];
 
 export function Sidebar({ active, onNavigate }: SidebarProps) {

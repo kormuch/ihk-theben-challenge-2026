@@ -8,6 +8,7 @@ import csv
 import html
 import io
 import json
+import logging
 import os
 import random
 import re
@@ -23,6 +24,13 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger("product-layer")
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -527,6 +535,8 @@ class ProductStore:
             try:
                 imported.append(self.upsert_product(product))
             except ValueError as exc:
+                logger.error("IMPORT row %d FAILED: %s (product data: %s)",
+                             index + 1, exc, {k: product.get(k) for k in ("id", "sku", "name")})
                 errors.append({"row": index + 1, "error": str(exc)})
         if source is not None:
             self.sync_state = {
@@ -1066,8 +1076,12 @@ def sync_from_data_layer(store: ProductStore, config: dict[str, Any] | None = No
     source_url = str(effective.get("source_url") or "").strip()
     if not source_url:
         raise ValueError("data-layer sync source_url is not configured")
+    logger.info("SYNC: starting from %s", source_url)
     validate_data_layer_url(source_url, effective.get("allowed_hosts") or [])
     payload = fetch_data_layer_export(source_url, float(effective.get("timeout_seconds", 5)))
+    product_count = len(payload.get("products", []))
+    logger.info("SYNC: fetched %d products from data-layer (schema %s, generated %s)",
+                product_count, payload.get("schema_version"), payload.get("generated_at"))
     products = prepare_data_layer_products(payload, source_url)
     source = {
         "type": "data-layer-export",
@@ -1079,6 +1093,13 @@ def sync_from_data_layer(store: ProductStore, config: dict[str, Any] | None = No
         "domain_module": "product",
     }
     result = store.import_products(products, source)
+    imported_count = result.get("imported", 0)
+    error_count = len(result.get("errors", []))
+    if error_count:
+        logger.warning("SYNC DONE: %d imported, %d ERRORS: %s",
+                       imported_count, error_count, result["errors"])
+    else:
+        logger.info("SYNC DONE: %d/%d products imported successfully", imported_count, product_count)
     result["source"] = source
     result["sync_state"] = store.sync_state
     return result
@@ -1284,21 +1305,27 @@ def fetch_data_layer_export(url: str, timeout: float = 10.0) -> dict[str, Any]:
     if not url:
         raise ValueError("data-layer export URL is not configured")
     request = Request(url, headers={"Accept": JSON})
+    logger.info("FETCH: GET %s (timeout=%.1fs)", url, timeout)
     try:
         with urlopen(request, timeout=timeout) as response:
             raw = response.read(20_000_000)
     except HTTPError as exc:
+        logger.error("FETCH FAILED: HTTP %d from %s", exc.code, url)
         raise ValueError(f"data-layer export returned HTTP {exc.code}") from exc
     except URLError as exc:
+        logger.error("FETCH FAILED: %s unreachable: %s", url, exc.reason)
         raise ValueError(f"data-layer export is unavailable: {exc.reason}") from exc
+    logger.info("FETCH: received %d bytes", len(raw))
     try:
         payload = json.loads(raw.decode("utf-8"))
     except json.JSONDecodeError as exc:
+        logger.error("FETCH FAILED: invalid JSON from %s: %s", url, exc)
         raise ValueError(f"data-layer export returned invalid JSON: {exc}") from exc
     if not isinstance(payload, dict):
         raise ValueError("data-layer export must be a JSON object")
     products = payload.get("products")
     if not isinstance(products, list):
+        logger.error("FETCH FAILED: no 'products' array in response from %s", url)
         raise ValueError("data-layer export must contain a products array")
     return payload
 
@@ -2264,12 +2291,52 @@ def local_ip_hint() -> str:
         return "127.0.0.1"
 
 
+def _startup_sync(store: ProductStore) -> None:
+    """Attempt data-layer sync on startup. Non-fatal if data-layer is unreachable."""
+    try:
+        config = data_layer_sync_config()
+        if not config.get("enabled"):
+            logger.info("STARTUP-SYNC: disabled via config")
+            return
+        result = sync_from_data_layer(store, config)
+        logger.info("STARTUP-SYNC: success — %d products synced", result.get("imported", 0))
+    except Exception as exc:
+        logger.warning("STARTUP-SYNC: data-layer not reachable (%s) — using local store", exc)
+
+
+def _file_watcher(store: ProductStore) -> None:
+    """Watch products.json for external changes (data-layer writing directly) and reload."""
+    path = store.path
+    last_mtime = path.stat().st_mtime if path.exists() else 0
+    while True:
+        time.sleep(2)
+        try:
+            if not path.exists():
+                continue
+            mtime = path.stat().st_mtime
+            if mtime > last_mtime:
+                last_mtime = mtime
+                old_count = len(store.products)
+                store.load()
+                new_count = len(store.products)
+                if new_count != old_count:
+                    logger.info("FILE-WATCH: products.json changed externally, reloaded (%d -> %d products)",
+                                old_count, new_count)
+        except Exception:
+            pass  # watcher must never crash
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run the Thebenpaul product-layer MVP")
     parser.add_argument("--host", default=os.environ.get("HOST", "0.0.0.0"))
     parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8080")))
+    parser.add_argument("--no-sync", action="store_true", help="Skip startup sync from data-layer")
     args = parser.parse_args(argv)
     server = make_server(args.host, args.port)
+    if not args.no_sync:
+        _startup_sync(server.store)  # type: ignore[attr-defined]
+    watcher = threading.Thread(target=_file_watcher, args=(server.store,), daemon=True)  # type: ignore[attr-defined]
+    watcher.start()
     print(f"Product-layer running on http://127.0.0.1:{args.port}")
     print(f"LAN hint: http://{local_ip_hint()}:{args.port}")
     try:
