@@ -93,6 +93,38 @@ python3 -m app.app --host 127.0.0.1 --port 8080
 curl -X POST -H 'X-Role: editor' http://127.0.0.1:8080/api/sync/data-layer
 ```
 
+### Debug data-layer to product-layer flow
+
+Data-layer confirmation/export writes the product-layer-shaped payload to `product-layer/data/products.json` when `PRODUCT_LAYER_DATA_DIR` is mounted. Product-layer also exposes an explicit pull sync at `/api/sync/data-layer`.
+
+The product-layer store auto-reloads the shared JSON file on reads by default:
+
+```bash
+THEBEN_STORE_AUTO_RELOAD=true
+```
+
+Use the flow debugger to check the bridge:
+
+```bash
+./scripts/debug-data-flow.sh
+```
+
+That checks the data-layer export endpoint, the shared `products.json` file, the product-layer sync contract, and the products visible through the product-layer API.
+
+To also trigger the product-layer pull sync:
+
+```bash
+./scripts/debug-data-flow.sh --sync
+```
+
+Override endpoints when needed:
+
+```bash
+DATA_EXPORT_URL=http://127.0.0.1:8000/api/v1/export/products.json \
+PRODUCT_URL=http://127.0.0.1:8080 \
+./scripts/debug-data-flow.sh --sync
+```
+
 ## Tests
 
 Use the project validation runner so local, Docker, and CI checks stay aligned:

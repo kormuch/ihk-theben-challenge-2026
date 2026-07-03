@@ -333,7 +333,28 @@ class ProductStore:
         self.products: list[dict[str, Any]] = []
         self.sync_state: dict[str, Any] = {}
         self.audit_events: list[dict[str, Any]] = []
+        self._last_mtime_ns: int | None = None
+        self.auto_reload = os.environ.get("THEBEN_STORE_AUTO_RELOAD", "true").strip().lower() not in ("0", "false", "no", "off")
         self.load()
+
+    def _store_mtime_ns(self) -> int | None:
+        try:
+            return self.path.stat().st_mtime_ns
+        except OSError:
+            return None
+
+    def _track_store_mtime(self) -> None:
+        self._last_mtime_ns = self._store_mtime_ns()
+
+    def reload_if_changed(self) -> bool:
+        if not self.auto_reload:
+            return False
+        with self.lock:
+            current = self._store_mtime_ns()
+            if current is None or self._last_mtime_ns is None or current == self._last_mtime_ns:
+                return False
+            self.load()
+            return True
 
     def load(self) -> None:
         with self.lock:
@@ -354,6 +375,7 @@ class ProductStore:
                 self.products = []
                 self.sync_state = default_sync_state("invalid-store")
                 self.audit_events = []
+            self._track_store_mtime()
 
     def save(self) -> None:
         with self.lock:
@@ -367,8 +389,10 @@ class ProductStore:
                     "products": self.products,
                 },
             )
+            self._track_store_mtime()
 
     def list_products(self, query: dict[str, list[str]], user: dict[str, Any]) -> list[dict[str, Any]]:
+        self.reload_if_changed()
         search = query.get("search", [""])[0].strip().lower()
         family = query.get("family", [""])[0].strip().lower()
         status = query.get("status", [""])[0].strip().lower()
@@ -403,6 +427,7 @@ class ProductStore:
         return [p for p in products if matches(p)][:limit]
 
     def get_product(self, product_id: str, user: dict[str, Any]) -> dict[str, Any] | None:
+        self.reload_if_changed()
         with self.lock:
             for product in self.products:
                 if product.get("id") == product_id:
@@ -412,6 +437,7 @@ class ProductStore:
         return None
 
     def get_raw_product(self, product_id: str) -> dict[str, Any] | None:
+        self.reload_if_changed()
         with self.lock:
             for product in self.products:
                 if product.get("id") == product_id:
@@ -421,6 +447,7 @@ class ProductStore:
     def upsert_product(self, incoming: dict[str, Any]) -> dict[str, Any]:
         product = normalize_product(incoming)
         with self.lock:
+            self.reload_if_changed()
             for idx, existing in enumerate(self.products):
                 if existing.get("id") == product["id"]:
                     product["created_at"] = existing.get("created_at", product["created_at"])
@@ -434,6 +461,7 @@ class ProductStore:
 
     def patch_attributes(self, product_id: str, attributes: dict[str, Any]) -> dict[str, Any] | None:
         with self.lock:
+            self.reload_if_changed()
             for product in self.products:
                 if product.get("id") == product_id:
                     product.setdefault("attributes", {}).update(attributes)
@@ -456,6 +484,7 @@ class ProductStore:
             raise ValueError("attributes, metadata, dpp_version, or change_rationale required")
 
         with self.lock:
+            self.reload_if_changed()
             for product in self.products:
                 if product.get("id") != product_id:
                     continue
@@ -491,6 +520,7 @@ class ProductStore:
         return None
 
     def import_products(self, products: list[dict[str, Any]], source: dict[str, Any] | None = None) -> dict[str, Any]:
+        self.reload_if_changed()
         imported = []
         errors = []
         for index, product in enumerate(products):
@@ -535,12 +565,14 @@ class ProductStore:
         if details:
             event["details"] = details
         with self.lock:
+            self.reload_if_changed()
             self.audit_events.append(event)
             self.audit_events = self.audit_events[-200:]
             self.save()
         return event
 
     def audit_for_product(self, product_id: str, limit: int = 20) -> list[dict[str, Any]]:
+        self.reload_if_changed()
         with self.lock:
             events = [event for event in self.audit_events if event.get("product_id") == product_id]
         return events[-limit:]

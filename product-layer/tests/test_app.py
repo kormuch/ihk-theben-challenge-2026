@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -72,6 +73,44 @@ class ProductLayerTests(unittest.TestCase):
             product = store.upsert_product({"sku": "T-2", "name": "Demo", "family": "Time Switch"})
             patched = store.patch_attributes(product["id"], {"gtin": "999"})
             self.assertEqual(patched["attributes"]["gtin"], "999")
+
+    def test_store_auto_reloads_when_shared_file_changes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "products.json"
+            store = ProductStore(path)
+            first_count = len(store.products)
+            replacement = {
+                "schema_version": "1.0.0",
+                "generated_at": "2026-07-03T00:00:00Z",
+                "products": [
+                    {
+                        "id": "external-1",
+                        "sku": "EXT-1",
+                        "name": "External Product",
+                        "family": "External",
+                        "attributes": {
+                            "gtin": "04003468000999",
+                            "batch_lot_number": "LOT-EXT",
+                            "serial_number": "SN-EXT",
+                        },
+                        "metadata": {
+                            "owner": "Data Layer",
+                            "domain": "product",
+                            "classification": "internal",
+                            "certification_status": "needs_review",
+                        },
+                        "certifications": [],
+                    }
+                ],
+            }
+            time.sleep(0.01)
+            path.write_text(json.dumps(replacement), encoding="utf-8")
+
+            products = store.list_products({"limit": ["10"]}, {"role": "viewer"})
+
+        self.assertEqual(first_count, 1000)
+        self.assertEqual(len(products), 1)
+        self.assertEqual(products[0]["sku"], "EXT-1")
 
     def test_dpp_update_versions_metadata_attributes_and_audit(self):
         with tempfile.TemporaryDirectory() as tmp:
