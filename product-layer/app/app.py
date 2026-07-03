@@ -56,6 +56,22 @@ IDENTITY_STRING_ATTRIBUTES = {
 DPP_VIEW_RANK = {"consumer": 0, "b2b": 1, "authority": 2}
 DPP_ACCESS_RANK = {"public": 0, "b2b": 1, "authority": 2}
 DPP_GRANULARITY_LEVELS = ["model", "batch", "item"]
+DPP_UPDATE_METADATA_KEYS = {
+    "change_rationale",
+    "data_matrix_contrast",
+    "data_matrix_durability",
+    "data_matrix_placement",
+    "data_matrix_target_grade",
+    "dpp_granularity",
+    "dpp_status",
+    "dpp_version",
+    "manufacturer_address",
+    "manufacturer_name",
+    "region",
+    "valid_from",
+    "valid_until",
+    "useful_life_commitment",
+}
 
 DPP_FIELD_DEFINITIONS = [
     {
@@ -426,6 +442,54 @@ class ProductStore:
                     return product
         return None
 
+    def update_dpp_record(self, product_id: str, payload: dict[str, Any], user: dict[str, Any]) -> dict[str, Any] | None:
+        attributes = payload.get("attributes") or {}
+        metadata_updates = payload.get("metadata") or {}
+        if not isinstance(attributes, dict):
+            raise ValueError("attributes object required")
+        if not isinstance(metadata_updates, dict):
+            raise ValueError("metadata object required")
+        for key in DPP_UPDATE_METADATA_KEYS:
+            if key in payload:
+                metadata_updates[key] = payload[key]
+        if not attributes and not metadata_updates and "change_rationale" not in payload:
+            raise ValueError("attributes, metadata, dpp_version, or change_rationale required")
+
+        with self.lock:
+            for product in self.products:
+                if product.get("id") != product_id:
+                    continue
+                metadata = product.setdefault("metadata", {})
+                previous_version = str(metadata.get("dpp_version") or metadata.get("contract_version") or "0.1.0")
+                rationale = str(
+                    metadata_updates.get("change_rationale")
+                    or payload.get("change_rationale")
+                    or "DPP metadata update via product-layer API."
+                ).strip()
+                next_version = str(metadata_updates.get("dpp_version") or bump_dpp_version(previous_version)).strip()
+
+                product.setdefault("attributes", {}).update(attributes)
+                metadata.update(metadata_updates)
+                metadata["dpp_version"] = next_version
+                metadata["change_rationale"] = rationale
+                history = metadata.setdefault("dpp_version_history", [])
+                if not isinstance(history, list):
+                    history = []
+                    metadata["dpp_version_history"] = history
+                history.append(
+                    {
+                        "version": next_version,
+                        "previous_version": previous_version,
+                        "changed_at": utc_now(),
+                        "change_rationale": rationale,
+                        "changed_by_role": user.get("role", "viewer"),
+                    }
+                )
+                product["updated_at"] = utc_now()
+                self.save()
+                return json.loads(json.dumps(product))
+        return None
+
     def import_products(self, products: list[dict[str, Any]], source: dict[str, Any] | None = None) -> dict[str, Any]:
         imported = []
         errors = []
@@ -454,6 +518,8 @@ class ProductStore:
         view: str,
         channel: str,
         outcome: str = "success",
+        details: dict[str, Any] | None = None,
+        actor: str | None = None,
     ) -> dict[str, Any]:
         event = {
             "event_id": f"audit-{int(time.time() * 1000)}-{len(self.audit_events) + 1}",
@@ -461,10 +527,13 @@ class ProductStore:
             "action": action,
             "product_id": product_id,
             "role": role,
+            "actor": actor or f"local-{role}",
             "dpp_view": view,
             "channel": channel,
             "outcome": outcome,
         }
+        if details:
+            event["details"] = details
         with self.lock:
             self.audit_events.append(event)
             self.audit_events = self.audit_events[-200:]
@@ -635,7 +704,23 @@ def dpp_view_allowed(user: dict[str, Any], view: str) -> bool:
     return has_permission(user, "product:read_all_regions")
 
 
+def bump_dpp_version(version: str) -> str:
+    parts = str(version or "0.1.0").split(".")
+    if not parts or any(not part.isdigit() for part in parts):
+        return f"{version}.1"
+    while len(parts) < 3:
+        parts.append("0")
+    parts[-1] = str(int(parts[-1]) + 1)
+    return ".".join(parts)
+
+
 def dpp_public_base_url(host: str) -> str:
+    configured = os.environ.get("THEBEN_PUBLIC_BASE_URL", "").strip()
+    runtime_public = str(RUNTIME_CONFIG.get("service", {}).get("public_base_url") or "").strip()
+    if configured:
+        return configured.rstrip("/")
+    if runtime_public:
+        return runtime_public.rstrip("/")
     host = (host or "localhost").strip()
     if host.startswith(("http://", "https://")):
         return host.rstrip("/")
@@ -740,6 +825,15 @@ def dpp_lifecycle(product: dict[str, Any]) -> dict[str, Any]:
     if not status:
         status = "withdrawn" if product_state in ("retired", "withdrawn") else "active"
     version = str(metadata.get("dpp_version") or metadata.get("contract_version") or "0.1.0")
+    version_history = metadata.get("dpp_version_history")
+    if not isinstance(version_history, list) or not version_history:
+        version_history = [
+            {
+                "version": version,
+                "changed_at": product.get("updated_at"),
+                "change_rationale": metadata.get("change_rationale", "Current curated product-layer DPP projection."),
+            }
+        ]
     return {
         "dpp_status": status,
         "product_lifecycle_status": product_state,
@@ -752,13 +846,7 @@ def dpp_lifecycle(product: dict[str, Any]) -> dict[str, Any]:
             "useful_life_commitment",
             "Public DPP URL remains stable for the useful life of the product and beyond for repair and recycling.",
         ),
-        "version_history": [
-            {
-                "version": version,
-                "changed_at": product.get("updated_at"),
-                "change_rationale": metadata.get("change_rationale", "Current curated product-layer DPP projection."),
-            }
-        ],
+        "version_history": version_history,
     }
 
 
@@ -849,6 +937,11 @@ def dpp_audit(product: dict[str, Any], events: list[dict[str, Any]]) -> dict[str
         "events": events,
         "retention": "local product-layer ring buffer, capped at 200 events for the MVP",
     }
+
+
+def json_for_script(payload: Any) -> str:
+    text = payload if isinstance(payload, str) else json.dumps(payload, sort_keys=True)
+    return text.replace("</", "<\\/").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
 
 
 def normalize_product(product: dict[str, Any]) -> dict[str, Any]:
@@ -970,9 +1063,10 @@ def current_user(headers: Any) -> dict[str, Any]:
     role = requested_role
     if role_token and provided_token != role_token:
         role = default_role
+    actor = headers.get("X-User") or headers.get("X-Actor") or headers.get("X-Email") or f"local-{role}"
     purpose = headers.get("X-Purpose") or "analytics"
     region = headers.get("X-Region") or "EU"
-    return {"role": role, "purpose": purpose, "region": region}
+    return {"role": role, "purpose": purpose, "region": region, "actor": actor}
 
 
 def role_permissions(role: str) -> list[str]:
@@ -1385,7 +1479,11 @@ def openapi_spec(host: str) -> dict[str, Any]:
             "/api/catalog/data-products": {"get": {"summary": "List governed product-layer data products and metadata requirements"}},
             "/api/lineage": {"get": {"summary": "Describe lakehouse layer lineage for the product data product"}},
             "/api/access-policy": {"get": {"summary": "Expose access policy and caller-effective permissions"}},
-            "/api/dpp/{id}": {"get": {"summary": "Role-filtered EU Digital Product Passport record"}},
+            "/api/dpp/{id}": {
+                "get": {"summary": "Role-filtered EU Digital Product Passport record"},
+                "patch": {"summary": "Update DPP-relevant product metadata and attributes, then version the DPP record"},
+                "post": {"summary": "Update DPP-relevant product metadata and attributes, then version the DPP record"},
+            },
             "/api/dpp/{id}/versions": {"get": {"summary": "DPP lifecycle and version history"}},
             "/api/dpp/{id}/audit": {"get": {"summary": "DPP audit trail surface"}},
             "/api/dpp/scan": {"get": {"summary": "Resolve a Data Matrix encoded public URL or structured identifier"}},
@@ -1486,6 +1584,7 @@ class Handler(SimpleHTTPRequestHandler):
                 action="dpp_json_read",
                 product_id=product_id,
                 role=user.get("role", "viewer"),
+                actor=user.get("actor"),
                 view=view,
                 channel="api",
             )
@@ -1500,15 +1599,20 @@ class Handler(SimpleHTTPRequestHandler):
                 action="dpp_public_html_read",
                 product_id=product_id,
                 role="anonymous",
+                actor="anonymous",
                 view="consumer",
                 channel="public-html",
             )
             return self.send_bytes(public_dpp_html(product, dpp_public_base_url(self.headers.get("Host", "localhost"))), HTML)
         if path == "/api/products":
-            return self.send_json({"products": self.store.list_products(query, user)})
+            products = self.store.list_products(query, user)
+            self.audit_read("product_list_read", "bulk-products", user, {"count": len(products)})
+            return self.send_json({"products": products})
         if path.startswith("/api/products/"):
             product_id = path.removeprefix("/api/products/")
             product = self.store.get_product(product_id, user)
+            if product:
+                self.audit_read("product_read", product_id, user)
             return self.send_json_or_404(product, "product not found")
         if path == "/api/validation/status":
             products = self.store.list_products(query or {"limit": ["1000"]}, user)
@@ -1519,24 +1623,33 @@ class Handler(SimpleHTTPRequestHandler):
             counts = {"certified": 0, "needs_review": 0}
             for result in results:
                 counts[result["status"]] = counts.get(result["status"], 0) + 1
+            self.audit_read("validation_status_read", "bulk-validation", user, {"count": len(results)})
             return self.send_json({"counts": counts, "results": results})
         if path == "/api/summary":
             products = self.store.list_products({"limit": ["1000"]}, user)
+            self.audit_read("summary_read", "bulk-summary", user, {"count": len(products)})
             return self.send_json(summary(products))
         if path.startswith("/api/passport/"):
             product_id = path.removeprefix("/api/passport/")
             product = self.store.get_product(product_id, user)
+            if product:
+                self.audit_read("passport_json_read", product_id, user)
             return self.send_json_or_404(passport(product) if product else None, "product not found")
         if path == "/api/export/products.csv":
             products = self.store.list_products({"limit": ["1000"]}, user)
+            self.audit_read("products_csv_export", "bulk-products", user, {"count": len(products)})
             return self.send_bytes(products_csv(products), CSV_MIME, "products.csv")
         if path.startswith("/api/export/passport/") and path.endswith(".html"):
             product_id = path.removeprefix("/api/export/passport/").removesuffix(".html")
             product = self.store.get_product(product_id, user)
+            if product:
+                self.audit_read("passport_html_export", product_id, user)
             return self.send_bytes(passport_html(product) if product else not_found_html("product not found"), HTML)
         if path.startswith("/api/export/passport/") and path.endswith(".svg"):
             product_id = path.removeprefix("/api/export/passport/").removesuffix(".svg")
             product = self.store.get_product(product_id, user)
+            if product:
+                self.audit_read("passport_svg_export", product_id, user)
             return self.send_bytes(passport_svg(product) if product else not_found_svg("product not found"), SVG)
         return super().do_GET()
 
@@ -1555,10 +1668,33 @@ class Handler(SimpleHTTPRequestHandler):
                 record["data_matrix"]["structured_identifier"],
                 record["identity"]["globally_unique_instance_id"],
             ):
-                if not row_allowed(product, user):
-                    return self.send_error_json(HTTPStatus.NOT_FOUND, "DPP record not found")
+                self.store.record_audit(
+                    action="dpp_public_scan_resolve",
+                    product_id=str(product.get("id")),
+                    role="anonymous",
+                    actor="anonymous",
+                    view="consumer",
+                    channel="public-scan",
+                )
                 return self.send_json({"record": record})
         return self.send_error_json(HTTPStatus.NOT_FOUND, "DPP record not found")
+
+    def audit_read(
+        self,
+        action: str,
+        product_id: str,
+        user: dict[str, Any],
+        details: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        return self.store.record_audit(
+            action=action,
+            product_id=product_id,
+            role=user.get("role", "viewer"),
+            actor=user.get("actor"),
+            view="read",
+            channel="api",
+            details=details,
+        )
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
@@ -1574,6 +1710,7 @@ class Handler(SimpleHTTPRequestHandler):
                 action="product_upsert",
                 product_id=product["id"],
                 role=user.get("role", "viewer"),
+                actor=user.get("actor"),
                 view="internal",
                 channel="api",
             )
@@ -1592,6 +1729,7 @@ class Handler(SimpleHTTPRequestHandler):
                 action="product_import",
                 product_id="bulk-import",
                 role=user.get("role", "viewer"),
+                actor=user.get("actor"),
                 view="internal",
                 channel="api",
             )
@@ -1608,6 +1746,7 @@ class Handler(SimpleHTTPRequestHandler):
                 action="data_layer_sync",
                 product_id="bulk-sync",
                 role=user.get("role", "viewer"),
+                actor=user.get("actor"),
                 view="internal",
                 channel="api",
             )
@@ -1623,11 +1762,15 @@ class Handler(SimpleHTTPRequestHandler):
                 },
                 HTTPStatus.CREATED,
             )
+        if parsed.path.startswith("/api/dpp/"):
+            return self.update_dpp(parsed.path, user)
         return self.send_error_json(HTTPStatus.NOT_FOUND, "endpoint not found")
 
     def do_PATCH(self) -> None:
         parsed = urlparse(self.path)
         user = current_user(self.headers)
+        if parsed.path.startswith("/api/dpp/"):
+            return self.update_dpp(parsed.path, user)
         if parsed.path.startswith("/api/products/") and parsed.path.endswith("/attributes"):
             if not has_permission(user, "product:write"):
                 return self.send_error_json(HTTPStatus.FORBIDDEN, "missing product:write permission")
@@ -1642,11 +1785,42 @@ class Handler(SimpleHTTPRequestHandler):
                     action="product_attribute_patch",
                     product_id=product_id,
                     role=user.get("role", "viewer"),
+                    actor=user.get("actor"),
                     view="internal",
                     channel="api",
                 )
             return self.send_json_or_404({"product": product} if product else None, "product not found")
         return self.send_error_json(HTTPStatus.NOT_FOUND, "endpoint not found")
+
+    def update_dpp(self, path: str, user: dict[str, Any]) -> None:
+        if not has_permission(user, "product:write"):
+            return self.send_error_json(HTTPStatus.FORBIDDEN, "missing product:write permission")
+        product_id = path.removeprefix("/api/dpp/").rstrip("/")
+        if not product_id or "/" in product_id:
+            return self.send_error_json(HTTPStatus.NOT_FOUND, "endpoint not found")
+        try:
+            payload = self.read_json()
+            product = self.store.update_dpp_record(product_id, payload, user)
+        except ValueError as exc:
+            return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+        if not product:
+            return self.send_json_or_404(None, "DPP record not found")
+        metadata = product.get("metadata", {})
+        event = self.store.record_audit(
+            action="dpp_record_update",
+            product_id=product_id,
+            role=user.get("role", "viewer"),
+            actor=user.get("actor"),
+            view="authority",
+            channel="api",
+            details={
+                "dpp_version": metadata.get("dpp_version"),
+                "change_rationale": metadata.get("change_rationale"),
+            },
+        )
+        view = dpp_view_for_user(user, {})
+        audit_events = self.store.audit_for_product(product_id) if view == "authority" else [event]
+        return self.send_json(dpp_record(product, view, dpp_public_base_url(self.headers.get("Host", "localhost")), audit_events))
 
     def do_OPTIONS(self) -> None:
         self.send_response(HTTPStatus.NO_CONTENT)
@@ -1696,11 +1870,26 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(payload)
 
     def common_headers(self, content_type: str) -> None:
+        path = urlparse(self.path).path
         self.send_header("Content-Type", content_type)
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+        self.send_header(
+            "Content-Security-Policy",
+            "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'",
+        )
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Role, X-Purpose, X-Region")
+        self.send_header("Access-Control-Allow-Headers", "Authorization, Content-Type, X-Role, X-Role-Token, X-Purpose, X-Region")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS")
-        self.send_header("Cache-Control", "no-store")
+        if path.startswith("/api/"):
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Pragma", "no-cache")
+        elif path.startswith("/dpp/") and content_type.startswith("text/html"):
+            self.send_header("Cache-Control", "public, max-age=60, stale-while-revalidate=300")
+        else:
+            self.send_header("Cache-Control", "public, max-age=300")
 
 
 def parse_import_payload(raw: bytes, content_type: str) -> list[dict[str, Any]]:
@@ -1850,7 +2039,7 @@ def dpp_public_html(product: dict[str, Any], host: str) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DPP {html.escape(str(product.get("sku")))}</title>
   <link rel="stylesheet" href="/styles.css">
-  <script type="application/ld+json">{html.escape(json.dumps(structured, sort_keys=True))}</script>
+  <script type="application/ld+json">{json_for_script(structured)}</script>
 </head>
 <body class="dpp-public">
   <header class="topbar">
@@ -1945,7 +2134,7 @@ def public_dpp_html(product: dict[str, Any], public_base_url: str) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DPP {html.escape(str(product.get("sku")))}</title>
   <link rel="stylesheet" href="/styles.css">
-  <script type="application/ld+json">{html.escape(dpp_json_ld(record))}</script>
+  <script type="application/ld+json">{json_for_script(dpp_json_ld(record))}</script>
 </head>
 <body class="print public-dpp">
   <main>

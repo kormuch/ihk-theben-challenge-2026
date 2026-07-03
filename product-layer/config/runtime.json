@@ -3,7 +3,8 @@
     "name": "thebenpaul-product-layer",
     "host": "0.0.0.0",
     "port": 8080,
-    "persistence": "./data/products.json"
+    "persistence": "./data/products.json",
+    "public_base_url": "https://dpp.thebenpaul.local"
   },
   "data_layer_contract": {
     "status": "active_adapter",

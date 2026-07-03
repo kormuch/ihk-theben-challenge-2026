@@ -131,6 +131,8 @@ docker compose --profile test run --rm test
 
 Use `PRODUCT_LAYER_PORT=8120` if the host already has something on `8080`.
 
+Public DPP URLs are generated from `THEBEN_PUBLIC_BASE_URL` when set, otherwise from `config/runtime.json` `service.public_base_url`. Keep this value stable and HTTPS because the Data Matrix payload is printed on products and must not drift per caller host.
+
 ## Integration contracts
 
 The current store is a JSON adapter so the MVP runs locally. The target integration is:

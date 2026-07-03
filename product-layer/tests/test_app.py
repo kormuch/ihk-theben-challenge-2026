@@ -17,6 +17,7 @@ from app.app import (
     data_product_surface,
     data_layer_contract,
     dpp_public_html,
+    dpp_public_base_url,
     dpp_record,
     dpp_versions,
     generate_products,
@@ -72,6 +73,44 @@ class ProductLayerTests(unittest.TestCase):
             patched = store.patch_attributes(product["id"], {"gtin": "999"})
             self.assertEqual(patched["attributes"]["gtin"], "999")
 
+    def test_dpp_update_versions_metadata_attributes_and_audit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            product["metadata"]["dpp_version"] = "1.2.3"
+            store.upsert_product(product)
+
+            updated = store.update_dpp_record(
+                "thb-tim-0001",
+                {
+                    "attributes": {"recycled_content_share_pct": 42},
+                    "metadata": {"manufacturer_name": "Thebenpaul Test GmbH"},
+                    "change_rationale": "Updated recycled content after supplier evidence.",
+                },
+                {"role": "editor", "actor": "test-editor@example.local"},
+            )
+            store.record_audit(
+                action="dpp_record_update",
+                product_id="thb-tim-0001",
+                role="editor",
+                actor="test-editor@example.local",
+                view="authority",
+                channel="api",
+                details={
+                    "dpp_version": updated["metadata"]["dpp_version"],
+                    "change_rationale": updated["metadata"]["change_rationale"],
+                },
+            )
+
+            record = dpp_record(updated, "authority", "dpp.local", store.audit_for_product("thb-tim-0001"))
+        self.assertEqual(record["record_version"], "1.2.4")
+        self.assertEqual(record["lifecycle"]["version_history"][-1]["change_rationale"], "Updated recycled content after supplier evidence.")
+        self.assertEqual(updated["attributes"]["recycled_content_share_pct"], 42)
+        self.assertEqual(updated["metadata"]["manufacturer_name"], "Thebenpaul Test GmbH")
+        self.assertEqual(record["audit"]["events"][-1]["action"], "dpp_record_update")
+        self.assertEqual(record["audit"]["events"][-1]["details"]["dpp_version"], "1.2.4")
+        self.assertEqual(record["audit"]["events"][-1]["actor"], "test-editor@example.local")
+
     def test_svg_export_contains_product_identity(self):
         product = generate_products(1)[0]
         svg = passport_svg(product)
@@ -107,8 +146,16 @@ class ProductLayerTests(unittest.TestCase):
         self.assertNotIn("source_system", consumer_ids)
         self.assertIn("source_system", b2b_ids)
         self.assertIn("quality_status", authority_ids)
-        self.assertEqual(consumer["data_matrix"]["encoded_content"], "http://dpp.local/dpp/thb-tim-0001")
+        self.assertEqual(consumer["data_matrix"]["encoded_content"], "https://dpp.thebenpaul.local/dpp/thb-tim-0001")
         self.assertIn("(01)", consumer["data_matrix"]["structured_identifier"])
+
+    def test_dpp_public_base_url_is_configured_stable_https(self):
+        product = generate_products(1)[0]
+        first = dpp_record(product, "consumer", "caller-a.local")
+        second = dpp_record(product, "consumer", "http://caller-b.local")
+        self.assertEqual(dpp_public_base_url("caller-a.local"), "https://dpp.thebenpaul.local")
+        self.assertEqual(first["public_url"], second["public_url"])
+        self.assertTrue(first["public_url"].startswith("https://"))
 
     def test_public_dpp_html_is_no_login_consumer_view(self):
         product = generate_products(1)[0]
@@ -118,6 +165,14 @@ class ProductLayerTests(unittest.TestCase):
         self.assertIn('application/ld+json', html)
         self.assertIn(product["attributes"]["gtin"], html)
         self.assertNotIn("Authority-only compliance data", html)
+
+    def test_public_dpp_json_ld_is_machine_parseable(self):
+        product = generate_products(1)[0]
+        html = dpp_public_html(product, "dpp.local")
+        script = html.split('<script type="application/ld+json">', 1)[1].split("</script>", 1)[0]
+        payload = json.loads(script)
+        self.assertEqual(payload["@type"], "Product")
+        self.assertEqual(payload["gtin"], product["attributes"]["gtin"])
 
     def test_dpp_versions_expose_lifecycle_metadata(self):
         product = generate_products(1)[0]
@@ -306,6 +361,99 @@ class ProductLayerTests(unittest.TestCase):
             store = ProductStore(Path(tmp) / "products.json")
             with self.assertRaises(ValueError):
                 sync_from_data_layer(store, {"enabled": False, "source_url": "http://127.0.0.1/unused"})
+
+    def test_public_scan_ignores_row_filter_but_dpp_json_stays_role_filtered(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            product["metadata"]["region"] = "DE"
+            store.upsert_product(product)
+            handler = Handler.__new__(Handler)
+            handler.server = type("FakeServer", (), {"store": store})()
+            handler.headers = {"Host": "dpp.local"}
+            sent = {}
+            handler.send_json = lambda payload, status=200: sent.update({"payload": payload, "status": status})
+            handler.send_error_json = lambda status, message: sent.update({"error": message, "status": int(status)})
+
+            Handler.resolve_dpp_scan(
+                handler,
+                {"code": ["https://dpp.thebenpaul.local/dpp/thb-tim-0001"]},
+                {"role": "viewer", "region": "EU"},
+            )
+
+            self.assertEqual(sent["payload"]["record"]["identifiers"]["internal_product_id"], "thb-tim-0001")
+            self.assertFalse(row_allowed(product, {"role": "viewer", "region": "EU"}))
+            self.assertIsNone(store.get_product("thb-tim-0001", {"role": "viewer", "region": "EU"}))
+
+    def test_product_reads_and_exports_are_audited(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            handler = Handler.__new__(Handler)
+            handler.server = type("FakeServer", (), {"store": store})()
+            handler.headers = {"Host": "dpp.local"}
+            handler.path = "/api/products/thb-tim-0001"
+            sent = {}
+            handler.send_json = lambda payload, status=200: sent.update({"payload": payload, "status": status})
+            handler.send_error_json = lambda status, message: sent.update({"error": message, "status": int(status)})
+            handler.send_json_or_404 = lambda payload, message: sent.update({"payload": payload, "message": message})
+
+            Handler.do_GET(handler)
+
+            handler.path = "/api/export/products.csv"
+            handler.send_bytes = lambda payload, content_type, filename=None, status=200: sent.update(
+                {"bytes": payload, "content_type": content_type, "filename": filename, "status": status}
+            )
+
+            Handler.do_GET(handler)
+
+            actions = [event["action"] for event in store.audit_events]
+        self.assertIn("product_read", actions)
+        self.assertIn("products_csv_export", actions)
+
+    def test_dpp_update_endpoint_and_security_cache_headers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            handler = Handler.__new__(Handler)
+            handler.server = type("FakeServer", (), {"store": store})()
+            handler.headers = {"Host": "dpp.local"}
+            handler.read_json = lambda: {
+                "attributes": {"repairability_score": "8/10"},
+                "dpp_version": "2.0.0",
+                "change_rationale": "Released updated repairability score.",
+            }
+            sent = {}
+            handler.send_json = lambda payload, status=200: sent.update({"payload": payload, "status": status})
+            handler.send_error_json = lambda status, message: sent.update({"error": message, "status": int(status)})
+            handler.send_json_or_404 = lambda payload, message: sent.update({"payload": payload, "message": message})
+
+            Handler.update_dpp(
+                handler,
+                "/api/dpp/thb-tim-0001",
+                {"role": "editor", "region": "EU", "actor": "editor@example.local"},
+            )
+
+            updated = sent["payload"]
+            self.assertEqual(updated["record_version"], "2.0.0")
+            self.assertEqual(updated["lifecycle"]["version_history"][-1]["change_rationale"], "Released updated repairability score.")
+            self.assertEqual(updated["audit"]["events"][-1]["action"], "dpp_record_update")
+            self.assertEqual(updated["audit"]["events"][-1]["actor"], "editor@example.local")
+
+            api_headers = {}
+            api_handler = Handler.__new__(Handler)
+            api_handler.path = "/api/dpp/thb-tim-0001"
+            api_handler.send_header = lambda key, value: api_headers.update({key: value})
+            Handler.common_headers(api_handler, "application/json; charset=utf-8")
+
+            html_headers = {}
+            html_handler = Handler.__new__(Handler)
+            html_handler.path = "/dpp/thb-tim-0001"
+            html_handler.send_header = lambda key, value: html_headers.update({key: value})
+            Handler.common_headers(html_handler, "text/html; charset=utf-8")
+
+            self.assertEqual(api_headers["Cache-Control"], "no-store")
+            self.assertEqual(api_headers["X-Content-Type-Options"], "nosniff")
+            self.assertIn("public, max-age=60", html_headers["Cache-Control"])
+            self.assertIn("frame-ancestors 'none'", html_headers["Content-Security-Policy"])
 
 
 @unittest.skipUnless(os.environ.get("TEST_BASE_URL"), "set TEST_BASE_URL to run live HTTP tests")

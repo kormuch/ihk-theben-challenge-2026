@@ -6,6 +6,7 @@
   - `product-layer/01_decisions/ADR-2026-07-02-001-product-layer-stdlib-mvp.md`
   - `product-layer/01_decisions/ADR-2026-07-03-003-governed-data-layer-sync.md`
   - `product-layer/01_decisions/ADR-2026-07-03-004-eu-dpp-mvp-module.md`
+  - `product-layer/01_decisions/ADR-2026-07-03-005-standard-validation-runner.md`
 - Incidents
   - `product-layer/03_incidents/INC-2026-07-02-001-docker-and-mcp-visibility.md`
 - Learnings
@@ -15,6 +16,7 @@
   - `product-layer/05_releases/REL-2026-07-02-001-product-layer-mvp.md`
   - `product-layer/05_releases/REL-2026-07-03-002-product-layer-data-layer-sync.md`
   - `product-layer/05_releases/REL-2026-07-03-003-eu-dpp-mvp-module.md`
+  - `product-layer/05_releases/REL-2026-07-03-004-dpp-goal-bugfixes.md`
 - Quality runs
   - `product-layer/06_quality-runs/QR-2026-07-02-001-product-layer-local-validation.md`
   - `product-layer/06_quality-runs/QR-2026-07-02-002-live-container-endpoint-attempt.md`
@@ -22,8 +24,11 @@
   - `product-layer/06_quality-runs/QR-2026-07-03-002-product-layer-data-layer-sync-validation.md`
   - `product-layer/06_quality-runs/QR-2026-07-03-003-data-matrix-identity-validation.md`
   - `product-layer/06_quality-runs/QR-2026-07-03-004-eu-dpp-loop-validation.md`
+  - `product-layer/06_quality-runs/QR-2026-07-03-005-standard-validation-runner.md`
+  - `product-layer/06_quality-runs/QR-2026-07-03-006-dpp-goal-bugfix-validation.md`
 - Open items
   - `product-layer/07_open-items/OI-2026-07-02-001-runtime-validation-and-mcp.md`
+  - `product-layer/07_open-items/OI-2026-07-03-002-dpp-production-hardening.md`
 
 ## Data layer
 - Overview
