@@ -1,0 +1,14 @@
+{
+	"servers": {
+		"my-mempalace": {
+			"type": "stdio",
+			"command": "uv",
+			"args": [
+				"--directory",
+				"/Users/Shared/code/mempalace",
+				"run",
+				"mempalace-mcp"
+			]
+		}
+	}
+}
