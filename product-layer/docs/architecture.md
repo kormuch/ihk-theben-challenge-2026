@@ -22,6 +22,12 @@ The target table format is Apache Iceberg. The product-layer should eventually r
 4. Product domain owns curated Iceberg data products such as `curated_product.product_master_dpp`.
 5. Product-layer consumes curated views/APIs and exposes stable REST/UI/export interfaces.
 
+The current executable interface uses the data-layer export endpoint:
+
+`/api/v1/export/products.json`
+
+That endpoint maps PAUL data-layer products into the product-layer schema. Product-layer imports it through `POST /api/sync/data-layer`, controlled by `product:import`, and enriches each synced record with upstream export metadata, contract version, lakehouse layer, data product name, and target Iceberg table. The URL is configurable through `THEBEN_DATA_LAYER_EXPORT_URL`; implicit sync is enabled with `THEBEN_DATA_LAYER_SYNC_ENABLED=true`, so the same code can point at `127.0.0.1`, a Docker Compose service name, or a CI endpoint.
+
 ## Domain-owned data product
 
 The initial data product is `product-master-dpp`:
@@ -32,6 +38,20 @@ The initial data product is `product-master-dpp`:
 - Purpose: governed product information and Digital Product Passport preview.
 - Consumers: product management, compliance, service, analytics, operational apps.
 - Contract: see `config/metadata_schema.json`.
+
+Discoverable runtime endpoints:
+
+- `/api/catalog/data-products`: data product definition and mandatory metadata.
+- `/api/data-product`: access-aware data product surface, interfaces, sync state, and caller permissions.
+- `/api/lineage`: raw, standardized, curated, and consumption layer model.
+- `/api/access-policy`: RBAC, ABAC, row-level security, masking, and layer-access policy.
+- `/api/integrations/data-layer`: configured data-layer interface.
+- `/api/sync/data-layer`: governed sync from the standardized data-layer export into the curated product-layer adapter.
+- `/dpp/{product-id}`: public, no-login EU DPP HTML view intended for label scans.
+- `/api/dpp/{product-id}?view=consumer|b2b|authority`: role-filtered DPP record.
+- `/api/dpp/{product-id}/versions`: lifecycle and version history.
+- `/api/dpp/{product-id}/audit`: authority-only audit surface.
+- `/api/dpp/scan?code=...`: Data Matrix URL or structured identifier resolver.
 
 ## Governance and access
 
@@ -55,8 +75,17 @@ Production integration TODOs:
 Mandatory metadata is defined in `config/metadata_schema.json` and checked by `config/quality_rules.json`. The validation endpoint checks:
 
 - Required metadata.
+- Required product identity fields for GS1 DataMatrix-style payloads: GTIN, batch/lot number, and serial number.
 - Required generic and family-specific attributes.
 - Numeric range sanity checks.
+
+The product identity contract is:
+
+- GTIN identifies the trade item. All identical trade items from the same source carry the same GTIN.
+- Batch/lot number identifies a production batch of products sharing the same GTIN.
+- Serial number uniquely identifies each product instance.
+- GTIN plus serial number is globally unique for a product instance.
+- Product-layer derives a Data Matrix payload using GS1 application identifiers `01`, `10`, and `21`.
 
 Production integration TODOs:
 
@@ -78,6 +107,13 @@ Services:
 
 - `product-layer`: Python stdlib REST/UI service on `0.0.0.0:8080`.
 - `ollama`: local LLM endpoint on `0.0.0.0:11434` for LAN access.
+
+AI colleague configuration is kept as code in `config/ai_integration.json`. The default provider is Ollama over LAN at `http://192.168.178.35:11434`, using `gpt-oss:20b`, with human review required for any product data, metadata, or certification-impacting output.
+
+Optional integration:
+
+- `THEBEN_DATA_LAYER_EXPORT_URL`: points product-layer sync at the data-layer export endpoint. The Compose default is `http://host.docker.internal:8000/api/v1/export/products.json` for Docker Desktop on Mac; host-local runs can use `http://127.0.0.1:8000/api/v1/export/products.json`.
+- `THEBEN_DATA_LAYER_SYNC_ENABLED`: set to `true` to allow `POST /api/sync/data-layer` to use the configured URL without an explicit request body.
 
 Operational TODOs before production:
 

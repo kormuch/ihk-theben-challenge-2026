@@ -57,6 +57,38 @@ async function loadSummary() {
   `;
 }
 
+async function loadGovernance() {
+  const [contract, catalog, lineage] = await Promise.all([
+    api("/api/integrations/data-layer"),
+    api("/api/catalog/data-products"),
+    api("/api/lineage"),
+  ]);
+  const dataProduct = catalog.data_products[0];
+  $("governance").innerHTML = `
+    <div class="governance-grid">
+      <div>
+        <h3>Data-layer contract</h3>
+        <table>
+          <tr><th>Source</th><td>${escapeHtml(contract.source_endpoint)}</td></tr>
+          <tr><th>URL</th><td>${escapeHtml(contract.export_url)}</td></tr>
+          <tr><th>Flow</th><td>${escapeHtml(contract.source_layer)} -> ${escapeHtml(contract.target_layer)}</td></tr>
+          <tr><th>Permission</th><td>${escapeHtml(contract.sync_permission)}</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Curated data product</h3>
+        <table>
+          <tr><th>Name</th><td>${escapeHtml(dataProduct.name)}</td></tr>
+          <tr><th>Owner</th><td>${escapeHtml(dataProduct.owner)}</td></tr>
+          <tr><th>Target</th><td>${escapeHtml(dataProduct.interfaces.target_lakehouse.table)}</td></tr>
+          <tr><th>Format</th><td>${escapeHtml(dataProduct.interfaces.target_lakehouse.format)}</td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="muted">${escapeHtml(lineage.layers.map((layer) => layer.name).join(" -> "))}</p>
+  `;
+}
+
 function renderProducts() {
   $("products").innerHTML = state.products.map((product) => {
     const status = product.metadata?.certification_status || "unknown";
@@ -84,11 +116,13 @@ async function selectProduct(id) {
   state.selected = id;
   renderProducts();
   const product = await api(`/api/products/${id}`);
-  renderDetail(product);
+  const passport = await api(`/api/passport/${id}`);
+  renderDetail(product, passport);
 }
 
-function renderDetail(product) {
+function renderDetail(product, passport) {
   const attrs = product.attributes || {};
+  const identity = passport.identity || {};
   $("htmlExport").href = `/api/export/passport/${product.id}.html`;
   $("svgExport").href = `/api/export/passport/${product.id}.svg`;
   $("detail").innerHTML = `
@@ -104,7 +138,17 @@ function renderDetail(product) {
     `).join("")}</table>
     <div class="actions"><button id="saveAttrs">Save attributes</button></div>
     <h3>Digital Product Passport preview</h3>
+    <div class="actions">
+      <a href="/dpp/${encodeURIComponent(product.id)}" target="_blank">Public DPP</a>
+      <a href="/api/dpp/${encodeURIComponent(product.id)}?view=consumer" target="_blank">Consumer JSON</a>
+      <a href="/api/dpp/${encodeURIComponent(product.id)}?view=authority" target="_blank">Authority JSON</a>
+    </div>
     <table>
+      <tr><th>GTIN</th><td>${escapeHtml(identity.gtin || "")}</td></tr>
+      <tr><th>Batch/Lot</th><td>${escapeHtml(identity.batch_lot_number || "")}</td></tr>
+      <tr><th>Serial</th><td>${escapeHtml(identity.serial_number || "")}</td></tr>
+      <tr><th>Instance ID</th><td>${escapeHtml(identity.globally_unique_instance_id || "")}</td></tr>
+      <tr><th>Data Matrix</th><td>${escapeHtml(identity.data_matrix?.payload || "")}</td></tr>
       <tr><th>Owner</th><td>${escapeHtml(product.metadata?.owner || "")}</td></tr>
       <tr><th>Lineage</th><td>${escapeHtml(product.metadata?.lineage || "")}</td></tr>
       <tr><th>Classification</th><td>${escapeHtml(product.metadata?.classification || "")}</td></tr>
@@ -146,6 +190,20 @@ async function importPayload(contentType) {
   }
 }
 
+async function syncDataLayer() {
+  try {
+    const data = await api("/api/sync/data-layer", {
+      method: "POST",
+      contentType: "application/json",
+      body: "{}",
+    });
+    $("importResult").textContent = `Synced ${data.result.imported} from data-layer`;
+    await refreshAll();
+  } catch (error) {
+    $("importResult").textContent = error.message;
+  }
+}
+
 async function runValidation() {
   const data = await api("/api/validation/status?limit=1000");
   $("validation").innerHTML = `
@@ -163,7 +221,7 @@ async function runValidation() {
 }
 
 async function refreshAll() {
-  await Promise.all([loadSummary(), loadProducts()]);
+  await Promise.all([loadSummary(), loadProducts(), loadGovernance()]);
 }
 
 function coerce(value) {
@@ -189,6 +247,8 @@ $("refresh").addEventListener("click", refreshAll);
 $("importJson").addEventListener("click", () => importPayload("application/json"));
 $("importCsv").addEventListener("click", () => importPayload("text/csv"));
 $("validate").addEventListener("click", runValidation);
+$("loadGovernance").addEventListener("click", loadGovernance);
+$("syncDataLayer").addEventListener("click", syncDataLayer);
 
 refreshAll().catch((error) => {
   $("products").innerHTML = `<p>${escapeHtml(error.message)}</p>`;

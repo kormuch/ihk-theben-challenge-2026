@@ -10,12 +10,18 @@
     "certification_status"
   ],
   "required_attributes": {
-    "*": ["gtin", "nominal_voltage", "ip_rating", "co2_kg", "recyclable_share_pct"],
+    "*": ["gtin", "batch_lot_number", "serial_number", "nominal_voltage", "ip_rating", "co2_kg", "recyclable_share_pct"],
     "Time Switch": ["channels", "program_slots"],
     "Motion Detector": ["detection_angle", "range_m"],
     "HVAC Controller": ["control_loops", "protocol"],
     "KNX Actuator": ["knx_channels", "bus_current_ma"],
     "Energy Meter": ["measurement_accuracy", "phases"]
+  },
+  "identity_policy": {
+    "gtin": "Identifies the trade item. All identical trade items from the same source must carry the same GTIN.",
+    "batch_lot_number": "Identifies a production batch of products sharing the same GTIN.",
+    "serial_number": "Uniquely identifies each individual product instance. GTIN plus serial number is globally unique.",
+    "data_matrix": "Use GS1 DataMatrix application identifiers: 01=GTIN, 10=batch/lot, 21=serial."
   },
   "numeric_ranges": [
     {"attribute": "co2_kg", "min": 0, "max": 250},

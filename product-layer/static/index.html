@@ -53,6 +53,17 @@
 
     <section class="summary-grid" id="summary"></section>
 
+    <section class="panel lakehouse-panel">
+      <div class="section-head">
+        <h2>Lakehouse interface</h2>
+        <div class="actions">
+          <button id="loadGovernance">Refresh contract</button>
+          <button id="syncDataLayer">Sync data-layer</button>
+        </div>
+      </div>
+      <div id="governance"></div>
+    </section>
+
     <section class="workspace">
       <div class="panel list-panel">
         <div class="section-head">
@@ -77,9 +88,9 @@
     <section class="panel import-panel">
       <div>
         <h2>Upload / Import</h2>
-        <p>Paste a JSON array or CSV with columns like <code>sku,name,family,attributes.gtin,metadata.classification</code>.</p>
+        <p>Paste a JSON array or CSV with columns like <code>sku,name,family,attributes.gtin,attributes.batch_lot_number,attributes.serial_number,metadata.classification</code>.</p>
       </div>
-      <textarea id="importText" spellcheck="false" placeholder='[{"sku":"THB-DEMO-1","name":"Demo Product","family":"Time Switch","attributes":{"gtin":"4003468999999","nominal_voltage":"230V","ip_rating":"IP20","co2_kg":1.2,"recyclable_share_pct":82}}]'></textarea>
+      <textarea id="importText" spellcheck="false" placeholder='[{"sku":"THB-DEMO-1","name":"Demo Product","family":"Time Switch","attributes":{"gtin":"04003468999999","batch_lot_number":"LOT-2026-001","serial_number":"SN-0000000001","nominal_voltage":"230V","ip_rating":"IP20","co2_kg":1.2,"recyclable_share_pct":82}}]'></textarea>
       <div class="actions">
         <button id="importJson">Import JSON</button>
         <button id="importCsv">Import CSV</button>

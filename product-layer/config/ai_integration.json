@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Config-as-code registry for AI colleagues that can assist product-layer workflows.",
+  "default_provider": "ollama_lan",
+  "providers": {
+    "ollama_lan": {
+      "type": "ollama",
+      "enabled": true,
+      "base_url": "http://192.168.178.35:11434",
+      "generate_endpoint": "/api/generate",
+      "chat_endpoint": "/api/chat",
+      "default_model": "gpt-oss:20b",
+      "timeout_seconds": 120,
+      "network_scope": "lan",
+      "access_note": "Ollama is expected to be reachable from the local LAN. Keep firewall and model access policy under central IT control."
+    }
+  },
+  "ai_colleagues": [
+    {
+      "id": "ollama-product-analyst",
+      "name": "Ollama Product Analyst",
+      "provider": "ollama_lan",
+      "model": "gpt-oss:20b",
+      "role": "Supports product-layer analysis, metadata review, DPP drafting, and governance explanations.",
+      "enabled": true,
+      "allowed_tasks": [
+        "product_attribute_analysis",
+        "metadata_review",
+        "dpp_text_drafting",
+        "quality_issue_explanation",
+        "governance_help"
+      ],
+      "requires_human_review": true
+    }
+  ],
+  "default_request": {
+    "method": "POST",
+    "url": "http://192.168.178.35:11434/api/generate",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "model": "gpt-oss:20b",
+      "prompt": "Elaborate weather gradient for Stuttgart the next days.",
+      "stream": false
+    }
+  },
+  "example_curl": "curl http://192.168.178.35:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Elaborate weather gradient for Stuttgart the next days.\",\"stream\":false}'",
+  "governance": {
+    "owner": "Central IT / Data Platform",
+    "domain": "product",
+    "classification": "internal",
+    "logging": "Log provider, model, task id, timestamp, and reviewer decision; do not log sensitive prompts without approval.",
+    "data_policy": "Do not send personal, confidential, financial, customer, or protected telemetry data to an AI colleague unless the provider is approved for that classification.",
+    "review_policy": "AI outputs are suggestions only and require human review before product data, metadata, or certification state changes."
+  }
+}

@@ -3,3 +3,15 @@ __pycache__/
 *.pyc
 node_modules/
 data-layer/storage/
+.DS_Store
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
+mempalace/.cache/
+mempalace/.mempalace/
+mempalace/.blob_seq_ids_migrated
+mempalace/.collection_type_fixed
+mempalace/chroma.sqlite3
+mempalace/mempalace_embedder.json
+mempalace/????????-????-????-????-????????????/

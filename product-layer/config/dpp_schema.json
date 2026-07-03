@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1.0",
+  "regulatory_context": {
+    "framework": "EU Digital Product Passport under ESPR",
+    "methodology": "JRC three-tier data classification",
+    "data_carrier_standard": "EN 18220:2026",
+    "registry_status": "prepared_for_future_eu_or_national_registry_nodes"
+  },
+  "granularity_levels": ["model", "batch", "item"],
+  "access_levels": ["public", "b2b", "authority"],
+  "public_url_pattern": "/dpp/{product_id}",
+  "field_catalog": [
+    {
+      "id": "product_identity",
+      "label": "Product identity",
+      "tier": "essential",
+      "granularity": "item",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "origin",
+      "label": "Origin",
+      "tier": "essential",
+      "granularity": "model",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "materials",
+      "label": "Materials and composition",
+      "tier": "essential",
+      "granularity": "model",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "repairability",
+      "label": "Repairability and maintenance",
+      "tier": "strongly_recommended",
+      "granularity": "model",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "end_of_life",
+      "label": "End of life and recycling",
+      "tier": "essential",
+      "granularity": "model",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "environmental_performance",
+      "label": "Environmental performance",
+      "tier": "strongly_recommended",
+      "granularity": "model",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "compliance",
+      "label": "Compliance and documentation",
+      "tier": "essential",
+      "granularity": "model",
+      "access": "public",
+      "data_type": "object"
+    },
+    {
+      "id": "service_lifecycle",
+      "label": "Service and lifecycle data",
+      "tier": "voluntary",
+      "granularity": "item",
+      "access": "b2b",
+      "data_type": "object"
+    },
+    {
+      "id": "authority_compliance",
+      "label": "Authority-only compliance data",
+      "tier": "essential",
+      "granularity": "item",
+      "access": "authority",
+      "data_type": "object"
+    }
+  ],
+  "data_matrix": {
+    "symbology": "GS1 DataMatrix",
+    "encoding": "resolvable public DPP URL plus GS1 identity payload",
+    "minimum_quality_grade": "C",
+    "durability": "must remain machine-readable for useful life and repair/recycling period",
+    "placement_options": ["product", "packaging", "documentation"]
+  },
+  "lifecycle_statuses": ["active", "withdrawn", "superseded"],
+  "default_languages": ["en", "de"]
+}

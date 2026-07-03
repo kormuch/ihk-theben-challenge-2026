@@ -6,18 +6,31 @@
     "persistence": "./data/products.json"
   },
   "data_layer_contract": {
-    "status": "todo_external_integration",
+    "status": "active_adapter",
+    "export_url": "http://host.docker.internal:8000/api/v1/export/products.json",
     "expected_sources": [
       "PostgreSQL normalized product tables",
       "document object storage references",
       "future Apache Iceberg curated tables via Trino"
     ],
-    "mvp_adapter": "JSON file store with import endpoint"
+    "mvp_adapter": "JSON file store with import endpoint and data-layer export sync",
+    "source_endpoint": "/api/v1/export/products.json",
+    "target_data_product": "curated_product.product_master_dpp",
+    "sync_permission": "product:import"
+  },
+  "data_layer_sync": {
+    "enabled": true,
+    "mode": "pull",
+    "source_url": "http://host.docker.internal:8000/api/v1/export/products.json",
+    "timeout_seconds": 10,
+    "allowed_hosts": ["127.0.0.1", "localhost", "host.docker.internal", "backend"],
+    "contract": "product-layer-products-json-v1"
   },
   "ollama": {
-    "base_url": "http://ollama:11434",
+    "base_url": "http://192.168.178.35:11434",
     "lan_bind": "0.0.0.0:11434",
-    "models": ["llama3.2", "mistral"],
-    "note": "Model pull is intentionally not done by the product-layer tests because network installs are out of scope."
+    "models": ["gpt-oss:20b"],
+    "ai_integration_config": "./config/ai_integration.json",
+    "note": "AI colleague defaults are configured in ai_integration.json. Model pull is intentionally not done by product-layer tests because network installs are out of scope."
   }
 }

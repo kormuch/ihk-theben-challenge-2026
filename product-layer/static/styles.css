@@ -152,6 +152,16 @@ button:hover {
   gap: 16px;
 }
 
+.lakehouse-panel {
+  margin-bottom: 16px;
+}
+
+.governance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .section-head {
   display: flex;
   align-items: center;
@@ -216,6 +226,7 @@ h2 {
 }
 
 .detail table,
+.lakehouse-panel table,
 .print table {
   width: 100%;
   border-collapse: collapse;
@@ -223,6 +234,8 @@ h2 {
 
 .detail th,
 .detail td,
+.lakehouse-panel th,
+.lakehouse-panel td,
 .print th,
 .print td {
   border-bottom: 1px solid var(--line);
@@ -232,6 +245,7 @@ h2 {
 }
 
 .detail th,
+.lakehouse-panel th,
 .print th {
   color: var(--muted);
   width: 38%;
@@ -263,10 +277,47 @@ h2 {
 }
 
 .docs main,
+.dpp-page,
 .print main {
   max-width: 980px;
   margin: 0 auto;
   padding: 32px;
+}
+
+.dpp-page {
+  display: grid;
+  gap: 16px;
+}
+
+.dpp-public .topbar {
+  align-items: flex-start;
+}
+
+.dpp-section h2,
+.dpp-identity h2 {
+  margin-bottom: 8px;
+}
+
+.dpp-section table,
+.dpp-identity table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dpp-section th,
+.dpp-section td,
+.dpp-identity th,
+.dpp-identity td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 4px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.dpp-section th,
+.dpp-identity th {
+  color: var(--muted);
+  width: 38%;
 }
 
 pre {
@@ -284,6 +335,7 @@ pre {
   }
 
   .controls,
+  .governance-grid,
   .summary-grid {
     grid-template-columns: 1fr;
   }

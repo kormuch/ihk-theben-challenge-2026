@@ -30,6 +30,26 @@
     "current_mvp": "mock-generator/import -> product-layer-json-store -> REST/UI/export",
     "target": "data-layer normalized store -> Iceberg standardized table -> Iceberg curated product data product -> REST/UI/export"
   },
+  "identity_contract": {
+    "gtin": {
+      "description": "Global Trade Item Number that identifies the trade item.",
+      "rule": "All identical trade items from the same source carry the same GTIN.",
+      "gs1_application_identifier": "01"
+    },
+    "batch_lot_number": {
+      "description": "Production batch or lot for products sharing the same GTIN.",
+      "gs1_application_identifier": "10"
+    },
+    "serial_number": {
+      "description": "Unique identifier for each individual product instance.",
+      "rule": "GTIN plus serial number is globally unique for a product instance.",
+      "gs1_application_identifier": "21"
+    },
+    "data_matrix": {
+      "symbology": "GS1 DataMatrix",
+      "payload_pattern": "(01){gtin_14}(10){batch_lot_number}(21){serial_number}"
+    }
+  },
   "lifecycle": {
     "states": ["draft", "certified", "deprecated", "retired"],
     "deprecation_notice_days": 90,
