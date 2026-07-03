@@ -108,6 +108,18 @@ Services:
 - `product-layer`: Python stdlib REST/UI service on `0.0.0.0:8080`.
 - `ollama`: local LLM endpoint on `0.0.0.0:11434` for LAN access.
 
+## Standard validation path
+
+The project standard is to use `scripts/validate.sh` rather than hand-assembling test commands for each loop:
+
+```bash
+scripts/validate.sh all
+```
+
+`all` runs sandbox-friendly unit/parser/model checks, rebuilds the product-layer image, validates the host-mapped endpoint with `TEST_BASE_URL`, and runs the Docker Compose `test` profile against the service name `product-layer:8080`.
+
+Use `scripts/validate.sh unit` when Docker socket access is intentionally unavailable, and use `scripts/validate.sh docker` for release, validation-agent, and Mempalace documentation loops. If Docker Desktop is running but the shell cannot reach the Docker API socket, the script fails with a clear Docker-context diagnostic instead of producing a misleading product-layer test failure.
+
 AI colleague configuration is kept as code in `config/ai_integration.json`. The default provider is Ollama over LAN at `http://192.168.178.35:11434`, using `gpt-oss:20b`, with human review required for any product data, metadata, or certification-impacting output.
 
 Optional integration:

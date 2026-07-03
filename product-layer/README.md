@@ -95,23 +95,38 @@ curl -X POST -H 'X-Role: editor' http://127.0.0.1:8080/api/sync/data-layer
 
 ## Tests
 
-Local unit and parser/model tests are sandbox-friendly and skip live HTTP checks unless `TEST_BASE_URL` is set:
+Use the project validation runner so local, Docker, and CI checks stay aligned:
+
+```bash
+scripts/validate.sh all
+```
+
+Modes:
+
+- `scripts/validate.sh unit`: sandbox-friendly unit/parser/model checks. Live HTTP tests are skipped.
+- `scripts/validate.sh live`: run the suite against `TEST_BASE_URL`, defaulting to `http://127.0.0.1:8080`.
+- `scripts/validate.sh docker`: rebuild product-layer, run host-to-container HTTP tests, then run the Compose `test` profile against `http://product-layer:8080`.
+- `scripts/validate.sh all`: run `unit`, then `docker`. Use this before release notes or Mempalace loop documentation.
+
+If Docker Desktop is running but the command says Docker is unreachable, run it from a terminal/session with Docker socket access. The script prints the active Docker context/socket to make that failure explicit instead of silently skipping container validation.
+
+Raw local unit command:
 
 ```bash
 python3 -B -m unittest discover -s tests -v
 ```
 
-Run the same suite against a local service:
+Raw live endpoint command:
 
 ```bash
 python3 -m app.app --host 127.0.0.1 --port 8120
 TEST_BASE_URL=http://127.0.0.1:8120 python3 -B -m unittest discover -s tests -v
 ```
 
-Run the same suite in Docker/CI against the Compose service name:
+Raw Docker/CI command:
 
 ```bash
-docker compose --profile test up --build --abort-on-container-exit --exit-code-from test test
+docker compose --profile test run --rm test
 ```
 
 Use `PRODUCT_LAYER_PORT=8120` if the host already has something on `8080`.
