@@ -180,4 +180,24 @@ def export_products_json(db: Session = Depends(get_db)):
     else:
         logger.warning("EXPORT: no shared product-layer dir found (set PRODUCT_LAYER_DATA_DIR or ensure product-layer/data/ exists)")
 
+    # Mirror to Iceberg (non-blocking)
+    try:
+        from app.lakehouse.iceberg_writer import write_product_to_iceberg
+        iceberg_count = 0
+        for product in products:
+            pl = _to_product_layer(product)
+            if write_product_to_iceberg(
+                article_number=pl["sku"],
+                product_name=pl["name"],
+                family=pl["family"],
+                attributes=pl["attributes"],
+                certifications=pl["certifications"],
+            ):
+                iceberg_count += 1
+        if iceberg_count:
+            logger.info("ICEBERG SYNC: %d/%d products mirrored", iceberg_count, len(products))
+            payload["_iceberg_synced"] = iceberg_count
+    except Exception as exc:
+        logger.warning("ICEBERG SYNC SKIP: %s", exc)
+
     return JSONResponse(content=payload)

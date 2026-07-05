@@ -264,8 +264,36 @@ def confirm_extraction(
     except Exception:
         pass  # export is best-effort
 
+    # Mirror confirmed products to Iceberg (non-blocking)
+    from app.lakehouse.iceberg_writer import write_product_to_iceberg, write_document_lineage
+    iceberg_ok = 0
+    for p in body.products:
+        product_obj = db.query(Product).filter_by(article_number=p.article_number).first()
+        if product_obj:
+            family_name = product_obj.family.name if product_obj.family else "Unassigned"
+            certs = [c for c in p.attributes.get("certifications", "").split(",") if c.strip()] if isinstance(p.attributes.get("certifications"), str) else p.attributes.get("certifications", ["CE"])
+            if write_product_to_iceberg(
+                article_number=p.article_number,
+                product_name=p.name,
+                family=family_name,
+                attributes=p.attributes,
+                certifications=certs if isinstance(certs, list) else ["CE"],
+            ):
+                iceberg_ok += 1
+            # Write document lineage
+            file_path = STORAGE / body.stored_as
+            if file_path.exists():
+                write_document_lineage(
+                    document_id=body.stored_as,
+                    product_article_number=p.article_number,
+                    original_filename=Path(body.stored_as).stem,
+                    doc_type=body.doc_type,
+                    source_uri=f"data-layer://documents/{p.article_number}/{body.stored_as}",
+                )
+
     return {
         "created": created,
         "updated": updated,
         "errors": errors,
+        "iceberg_synced": iceberg_ok,
     }

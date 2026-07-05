@@ -14,6 +14,10 @@ PAUL ingests heterogeneous product data files (datasheets, lab reports, certific
 Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Database
  (any format)   (document type)    (product data     (edit, confirm)    (create/update
                   + confidence)     + citations)                         products)
+                                                                            |
+                                                              Iceberg (Parquet on MinIO)
+                                                                            |
+                                                              OpenMetadata (lineage, catalog)
 ```
 
 ### Two-Stage AI Pipeline
@@ -26,8 +30,9 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 - **Confidence gate**: >= 85% auto-extracts, < 85% lets user pick/type document type and retry
 - **Existing product diff**: Shows attribute-level changes (new, changed, kept) when a product already exists
 - **Cross-file dedup**: Flags same article number found in multiple files during bulk upload
-- **LLM fallback**: Gemini 2.0 Flash primary, Groq (Llama 3.3 70B) fallback with retry + backoff
+- **LLM provider chain**: Ollama LAN (default), DeepSeek, Gemini, Groq — config-driven fallback
 - **Bulk upload**: Multiple files at once, serialized processing with rate-limit awareness
+- **Lakehouse sync**: Confirmed products are automatically mirrored to Apache Iceberg tables
 
 ## Quick Start
 
@@ -35,28 +40,34 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 ```
 start-paul.bat
 ```
-Starts both data-layer and product-layer, waits for health checks, opens browser, streams logs.
+Starts all services (data-layer, product-layer, lakehouse infrastructure, OpenMetadata), waits for health checks, opens browser, streams logs.
 
 | Service | URL | Description |
 |---------|-----|-------------|
 | PAUL UI | http://localhost:3000 | AI Ingest, Products, Families |
 | PAUL API | http://localhost:8000/docs | FastAPI Swagger docs |
 | Product Layer | http://localhost:8080 | Governance, DPP preview, exports |
-| Product Layer API | http://localhost:8080/docs | OpenAPI docs |
+| Trino UI | http://localhost:8082 | SQL query engine for Iceberg |
+| MinIO Console | http://localhost:9001 | Object storage browser (admin/password) |
+| OpenMetadata | http://localhost:8585 | Data catalog & lineage (admin/admin) |
+| Lakehouse Health | http://localhost:8000/api/v1/lakehouse/health | Trino/Iceberg status |
+| Lakehouse Products | http://localhost:8000/api/v1/lakehouse/products | Query Iceberg tables |
 
 **Manual:**
 ```bash
-cd data-layer && docker compose up -d --build
+cd data-layer && docker compose --profile openmetadata up -d --build
 cd ../product-layer && docker compose up -d --build product-layer
+```
+
+**Without OpenMetadata (lighter):**
+```bash
+cd data-layer && docker compose up -d --build
 ```
 
 **Requirements:**
 - Docker + Docker Compose
-- `.env` file in `data-layer/` with API keys:
-  ```
-  GEMINI_API_KEY=your_key
-  GROQ_API_KEY=your_key
-  ```
+- ~4 GB RAM for full stack (or ~2 GB without OpenMetadata)
+- `.env` file in `data-layer/` with LLM API keys (optional, defaults to Ollama LAN)
 
 ## Architecture
 
@@ -69,40 +80,40 @@ data-layer/
         families.py           # Product family CRUD
         products.py           # Product CRUD
         ingest.py             # Direct file upload to existing products
+        export.py             # Export to product-layer + Iceberg sync
       intelligence/
-        llm.py                # LLM call layer (Gemini/Groq, retry, lock, fallback)
+        llm.py                # LLM provider chain (Ollama/DeepSeek/Gemini/Groq)
         classifier.py         # Stage 1: document type classification
         extractors.py         # Stage 2: per-type product data extraction
         text_extract.py       # File-to-text (PDF, CSV, JSON, XML, XLSX, TXT)
+      lakehouse/
+        iceberg_writer.py     # Write products + lineage to Iceberg via Trino
       models/
         product.py            # Product, ProductFamily, ProductDocument
-      seed/
-        families.py           # 3 product families (Timer, Motion Sensor, Room Thermostat)
-        seed.py               # Auto-seeds families on startup
-      core/
-        config.py             # Settings
-        database.py           # PostgreSQL connection
+      seed/                   # Auto-seeds families on startup
+      core/                   # Settings, database connection
   frontend/                   # React + Vite + Tailwind CSS
-    src/
-      pages/
-        UploadPage.tsx        # AI Ingest — drag & drop, bulk upload, review, confirm
-        ProductsPage.tsx      # Product list with search, filter, create, delete
-        ProductDetailPage.tsx # Product detail, attribute editor, document upload
-        FamiliesPage.tsx      # Product family management
-      components/
-        Sidebar.tsx           # Navigation
-      lib/
-        api.ts                # API client
+  config/                     # LLM agent config (llm_agents.json)
+  trino/catalog/              # Trino Iceberg connector config
+  init/                       # Iceberg table creation SQL
+  docker-compose.yml          # Full stack (DB, MinIO, Iceberg, Trino, OpenMetadata)
   test-docs/                  # Test documents for demo
-    LUXA_200-360_Datasheet.csv
-    LUXA_200-360_Lab_Report.txt
-    LUXA_200-360_CE_Declaration.txt
-    Multi_Product_Catalog.json
-    hard/                     # Edge-case test documents
-  docker-compose.yml          # PostgreSQL 16 + FastAPI + React
+
+product-layer/                # Christian's governance layer (DPP, validation, exports)
 architecture.html             # Visual architecture diagram (open in browser)
-start-paul.bat                # One-click start
+start-paul.bat                # One-click start (all services)
 ```
+
+## Lakehouse Stack
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| Object Storage | MinIO | S3-compatible, stores Parquet files |
+| Table Format | Apache Iceberg | Versioned tables, schema evolution, time travel |
+| Query Engine | Trino | SQL access to Iceberg tables |
+| Data Catalog | OpenMetadata | Lineage, ownership, quality, classification |
+
+Products confirmed through the AI pipeline are automatically mirrored to Iceberg `product_master` table. Document provenance is tracked in `document_lineage`. Both tables are queryable via Trino SQL.
 
 ## Tech Stack
 
@@ -111,7 +122,9 @@ start-paul.bat                # One-click start
 | Backend | Python, FastAPI, SQLAlchemy, uvicorn |
 | Frontend | React, TypeScript, Vite, Tailwind CSS |
 | Database | PostgreSQL 16 |
-| AI / LLM | Gemini 2.0 Flash (primary), Groq Llama 3.3 70B (fallback) |
+| AI / LLM | Ollama LAN (default), DeepSeek, Gemini, Groq (config-driven) |
+| Lakehouse | Apache Iceberg, Trino, MinIO |
+| Data Catalog | OpenMetadata |
 | Infrastructure | Docker Compose |
 | Text extraction | pdfplumber, openpyxl |
 
@@ -127,6 +140,9 @@ start-paul.bat                # One-click start
 | GET/POST | `/api/v1/products/` | List / create products |
 | GET/PATCH/DELETE | `/api/v1/products/{id}` | Product detail / update / delete |
 | POST | `/api/v1/ingest/upload` | Direct file upload to existing product |
+| GET | `/api/v1/export/products.json` | Export to product-layer format |
+| GET | `/api/v1/lakehouse/health` | Trino/Iceberg status |
+| GET | `/api/v1/lakehouse/products` | Query Iceberg product_master |
 
 ## Document Types (AI Classification)
 
