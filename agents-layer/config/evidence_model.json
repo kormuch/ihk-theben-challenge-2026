@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1.0",
+  "purpose": "Evidence contract for advisory compliance and expert findings.",
+  "required_traceability_fields": [
+    "product_id",
+    "product_family",
+    "target_market",
+    "date_placing_on_market",
+    "source_layer",
+    "source_system",
+    "evidence_reference",
+    "rule_reference",
+    "agent_version",
+    "assessment_timestamp",
+    "confidence",
+    "human_review_state"
+  ],
+  "evidence_types": {
+    "product_master_record": "Product master data from product-layer.",
+    "lineage_record": "Lineage or provenance record from data-layer or product-layer.",
+    "environmental_declaration": "EPD, footprint, materials, circularity, or recycling evidence.",
+    "emc_test_report": "EMC, electrical conformity, or pre-compliance test report.",
+    "sbom": "Software bill of materials.",
+    "secure_update_process": "Secure update and vulnerability handling process evidence.",
+    "radio_test_report": "Wireless module, radio, Bluetooth, Wi-Fi, or NFC qualification evidence.",
+    "privacy_assessment": "Privacy, telemetry, data minimization, retention, deletion, or access logging evidence.",
+    "cad_reference": "CAD, housing, assembly, durability, or mechanical evidence.",
+    "service_instruction": "Service, maintenance, repair, or installation instruction evidence.",
+    "spare_parts_list": "Spare parts list or availability evidence.",
+    "repair_instruction": "Repair process evidence.",
+    "sales_claim_evidence": "Evidence supporting market, sales, or regional product claims."
+  },
+  "confidence_model": {
+    "allowed_values": ["unknown", "low", "medium", "high", "verified"],
+    "default": "unknown",
+    "human_review_required": true
+  },
+  "source_layers": ["product-layer", "data-layer", "config", "mempalace"],
+  "mutation_policy": {
+    "product_master_data": "read-only",
+    "raw_evidence": "read-only",
+    "advisory_findings": "write",
+    "formal_certification_decisions": "human-only"
+  }
+}
+

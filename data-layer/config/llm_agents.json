@@ -32,7 +32,7 @@
       "label": "Ollama LAN default analyst",
       "type": "ollama_generate",
       "enabled": true,
-      "base_url": "http://192.168.178.35:11434",
+      "base_url": "http://192.168.178.60:11434",
       "endpoint": "/api/generate",
       "model": "gpt-oss:20b",
       "timeout_seconds": 120,
@@ -52,7 +52,7 @@
       "label": "Environment-local certification expert",
       "type": "ollama_generate",
       "enabled": false,
-      "base_url": "http://192.168.178.35:11434",
+      "base_url": "http://192.168.178.60:11434",
       "endpoint": "/api/generate",
       "model": "gpt-oss:20b",
       "timeout_seconds": 120,
@@ -114,7 +114,7 @@
     "ollama_lan": {
       "description": "Default LAN Ollama generate call for local document analysis.",
       "method": "POST",
-      "url": "http://192.168.178.35:11434/api/generate",
+      "url": "http://192.168.178.60:11434/api/generate",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -127,12 +127,12 @@
           "num_predict": 4096
         }
       },
-      "example_curl": "curl http://192.168.178.35:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\",\"stream\":false,\"options\":{\"temperature\":0.1,\"num_predict\":4096}}'"
+      "example_curl": "curl http://192.168.178.60:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\",\"stream\":false,\"options\":{\"temperature\":0.1,\"num_predict\":4096}}'"
     },
     "ollama_certification_expert": {
       "description": "Environment-local Ollama expert call for certification evidence review. Enable the provider before using this chain.",
       "method": "POST",
-      "url": "http://192.168.178.35:11434/api/generate",
+      "url": "http://192.168.178.60:11434/api/generate",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -145,7 +145,7 @@
           "num_predict": 4096
         }
       },
-      "example_curl": "curl http://192.168.178.35:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Review this product evidence for CE, RoHS, REACH, VDE, and UN 38.3 relevance. Return structured JSON with findings, missing_evidence, and human_review_required.\",\"stream\":false,\"options\":{\"temperature\":0.05,\"num_predict\":4096}}'"
+      "example_curl": "curl http://192.168.178.60:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Review this product evidence for CE, RoHS, REACH, VDE, and UN 38.3 relevance. Return structured JSON with findings, missing_evidence, and human_review_required.\",\"stream\":false,\"options\":{\"temperature\":0.05,\"num_predict\":4096}}'"
     },
     "deepseek": {
       "description": "DeepSeek OpenAI-compatible chat completion fallback.",

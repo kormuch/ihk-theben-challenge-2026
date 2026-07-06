@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "roles": {
+    "viewer": {
+      "description": "Can read non-restricted advisory outputs.",
+      "permissions": ["assessment:read"]
+    },
+    "reviewer": {
+      "description": "Can run advisory assessments for engineering or compliance review.",
+      "permissions": ["assessment:read", "assessment:run"]
+    },
+    "steward": {
+      "description": "Can run assessments and see restricted findings for governed review.",
+      "permissions": ["assessment:read", "assessment:run", "assessment:read_restricted", "config:read"]
+    },
+    "admin": {
+      "description": "Central IT or platform administrator.",
+      "permissions": ["*"]
+    }
+  },
+  "abac_attributes": ["role", "purpose", "region", "classification", "evidence_sensitivity"],
+  "restricted_categories": [
+    "vulnerability_details",
+    "supplier_declarations",
+    "unreleased_firmware",
+    "restricted_lab_evidence",
+    "authority_only_findings",
+    "commercial_customer_specific_data",
+    "draft_standard_interpretation"
+  ],
+  "logging_policy": {
+    "read": true,
+    "write": true,
+    "export": true,
+    "standards_interpretation": true,
+    "recommendation": true
+  }
+}
+

@@ -1231,6 +1231,321 @@ def data_layer_contract() -> dict[str, Any]:
     }
 
 
+def agents_layer_config() -> dict[str, Any]:
+    configured = dict(RUNTIME_CONFIG.get("agents_layer") or {})
+    timeout_raw = os.environ.get("THEBEN_AGENTS_LAYER_TIMEOUT") or configured.get("timeout_seconds", 5)
+    try:
+        timeout_seconds = float(timeout_raw)
+    except (TypeError, ValueError):
+        timeout_seconds = 5.0
+    allowed_hosts = os.environ.get("THEBEN_AGENTS_LAYER_ALLOWED_HOSTS")
+    if allowed_hosts:
+        hosts = [host.strip().lower() for host in allowed_hosts.split(",") if host.strip()]
+    else:
+        hosts = list(configured.get("allowed_hosts") or ["127.0.0.1", "localhost", "host.docker.internal", "agents-layer"])
+    return {
+        "enabled": bool_from_env(os.environ.get("THEBEN_AGENTS_LAYER_ENABLED"), bool(configured.get("enabled", True))),
+        "base_url": (
+            os.environ.get("THEBEN_AGENTS_LAYER_URL")
+            or configured.get("base_url")
+            or "http://host.docker.internal:8090"
+        ).rstrip("/"),
+        "local_base_url": str(configured.get("local_base_url") or "http://127.0.0.1:8090").rstrip("/"),
+        "timeout_seconds": max(0.5, min(timeout_seconds, 60.0)),
+        "allowed_hosts": hosts,
+        "catalog_fallback_file": configured.get("catalog_fallback_file", ""),
+        "contract": configured.get("contract", "product-layer-agent-assessment-v1"),
+        "mode": configured.get("mode", "advisory"),
+        "write_policy": configured.get(
+            "write_policy",
+            "advisory output only; product and evidence records require human review",
+        ),
+    }
+
+
+def join_url(base_url: str, path: str) -> str:
+    return f"{base_url.rstrip('/')}/{path.lstrip('/')}"
+
+
+def validate_agents_layer_url(url: str, allowed_hosts: list[str]) -> None:
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError("agents-layer URL must use http or https")
+    host = (parsed.hostname or "").lower()
+    normalized_allowed = {item.lower() for item in allowed_hosts}
+    if normalized_allowed and host not in normalized_allowed:
+        raise ValueError(f"agents-layer host is not allowed: {host}")
+
+
+def fetch_json_url(
+    url: str,
+    timeout: float,
+    method: str = "GET",
+    payload: dict[str, Any] | None = None,
+    headers: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    request_headers = {"Accept": JSON, **(headers or {})}
+    data = None
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        request_headers["Content-Type"] = JSON
+    request = Request(url, data=data, headers=request_headers, method=method)
+    logger.info("FETCH: %s %s (timeout=%.1fs)", method, url, timeout)
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            raw = response.read(20_000_000)
+    except HTTPError as exc:
+        try:
+            detail = exc.read(10_000).decode("utf-8")
+        except OSError:
+            detail = ""
+        logger.error("FETCH FAILED: HTTP %d from %s", exc.code, url)
+        message = f"HTTP {exc.code}"
+        if detail:
+            try:
+                parsed = json.loads(detail)
+                message = parsed.get("error") or message
+            except json.JSONDecodeError:
+                message = detail[:240]
+        raise ValueError(message) from exc
+    except URLError as exc:
+        logger.error("FETCH FAILED: %s unreachable: %s", url, exc.reason)
+        raise ValueError(f"agents-layer is unavailable: {exc.reason}") from exc
+    try:
+        parsed_payload = json.loads(raw.decode("utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"agents-layer returned invalid JSON: {exc}") from exc
+    if not isinstance(parsed_payload, dict):
+        raise ValueError("agents-layer response must be a JSON object")
+    return parsed_payload
+
+
+def local_agents_catalog_fallback(config: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    fallback_file = str(config.get("catalog_fallback_file") or "").strip()
+    if not fallback_file:
+        return {"compliance-agents-layer": [], "expert-agents-layer": []}
+    path = (ROOT / fallback_file).resolve()
+    payload = load_json(path, {})
+    return {
+        "compliance-agents-layer": list(payload.get("compliance_agents") or []),
+        "expert-agents-layer": list(payload.get("expert_agents") or []),
+    }
+
+
+def agents_layer_contract(host: str = "localhost") -> dict[str, Any]:
+    config = agents_layer_config()
+    local_product_base = f"http://{host}".rstrip("/")
+    agents_base = config["local_base_url"]
+    sample_product_id = "thb-tim-0001"
+    sample_assessment = {
+        "product_id": sample_product_id,
+        "agent_ids": ["expert-dpp-readiness"],
+        "target_market": "EU",
+        "date_placing_on_market": utc_now()[:10],
+    }
+    return {
+        "status": "active_adapter" if config["enabled"] else "disabled",
+        "enabled": config["enabled"],
+        "contract": config["contract"],
+        "mode": config["mode"],
+        "base_url": config["base_url"],
+        "local_base_url": config["local_base_url"],
+        "timeout_seconds": config["timeout_seconds"],
+        "source_layer": "curated",
+        "target_layer": "advisory_agents",
+        "source_data_product": METADATA_CONFIG.get("data_product", {}).get("target_table", "curated_product.product_master_dpp"),
+        "architecture": "product-layer sends governed product context and data-layer evidence references to agents-layer; agents return advisory findings only.",
+        "write_policy": config["write_policy"],
+        "human_review_required": True,
+        "interfaces": {
+            "product_layer_proxy": {
+                "integration_contract": "/api/integrations/agents-layer",
+                "agent_catalog": "/api/agents-layer/agents",
+                "selected_product_assessment": "/api/agents-layer/assessments",
+            },
+            "agents_layer_runtime": {
+                "agent_catalog": "/api/agents",
+                "compliance_agents": "/api/compliance-agents",
+                "expert_agents": "/api/expert-agents",
+                "assessments": "/api/assessments",
+                "standards_validity": "/api/standards-validity",
+            },
+        },
+        "rest_api_calls": [
+            {
+                "name": "List agents through product-layer",
+                "method": "GET",
+                "url": "/api/agents-layer/agents",
+                "curl": f"curl -H 'X-Role: viewer' {local_product_base}/api/agents-layer/agents",
+            },
+            {
+                "name": "Run advisory assessment for one product through product-layer",
+                "method": "POST",
+                "url": "/api/agents-layer/assessments",
+                "curl": (
+                    "curl -X POST -H 'X-Role: steward' -H 'Content-Type: application/json' "
+                    f"-d '{json.dumps(sample_assessment, separators=(',', ':'))}' "
+                    f"{local_product_base}/api/agents-layer/assessments"
+                ),
+            },
+            {
+                "name": "List agents directly from agents-layer",
+                "method": "GET",
+                "url": "/api/agents",
+                "curl": f"curl {agents_base}/api/agents",
+            },
+            {
+                "name": "Run advisory assessment directly against agents-layer",
+                "method": "POST",
+                "url": "/api/assessments",
+                "curl": (
+                    "curl -X POST -H 'X-Role: reviewer' -H 'Content-Type: application/json' "
+                    "-d '{\"target_market\":\"EU\",\"product\":{\"id\":\"THB-SMOKE-001\","
+                    "\"family\":\"KNX Actuator\",\"attributes\":{\"gtin\":\"04003468000001\","
+                    "\"batch_lot_number\":\"LOT-001\",\"serial_number\":\"SN-001\"},"
+                    "\"metadata\":{\"owner\":\"Product Data Domain\",\"domain\":\"product\","
+                    "\"source_system\":\"product-layer\",\"lineage\":\"data-layer -> product-layer\","
+                    "\"classification\":\"internal\",\"certification_status\":\"draft\"}},"
+                    "\"evidence\":[{\"type\":\"product_master_record\",\"reference\":\"product-layer/THB-SMOKE-001\"},"
+                    "{\"type\":\"lineage_record\",\"reference\":\"lineage/THB-SMOKE-001\"}]}' "
+                    f"{agents_base}/api/assessments"
+                ),
+            },
+        ],
+    }
+
+
+def agents_layer_catalog() -> dict[str, Any]:
+    config = agents_layer_config()
+    fallback_layers = local_agents_catalog_fallback(config)
+    if not config["enabled"]:
+        return {
+            "status": "disabled",
+            "layers": fallback_layers,
+            "skill_files": [],
+            "source": {"mode": "fallback_catalog"},
+            "error": "agents-layer integration is disabled",
+        }
+    url = join_url(config["base_url"], "/api/agents")
+    try:
+        validate_agents_layer_url(url, config["allowed_hosts"])
+        payload = fetch_json_url(url, config["timeout_seconds"])
+        layers = payload.get("layers") if isinstance(payload.get("layers"), dict) else fallback_layers
+        return {
+            "status": "live",
+            "layers": layers,
+            "skill_files": payload.get("skill_files", []),
+            "source": {"mode": "agents-layer-runtime", "url": url},
+        }
+    except ValueError as exc:
+        return {
+            "status": "configured_only",
+            "layers": fallback_layers,
+            "skill_files": [],
+            "source": {"mode": "fallback_catalog", "url": url},
+            "error": str(exc),
+        }
+
+
+def document_to_evidence_type(document: dict[str, Any]) -> str:
+    raw = f"{document.get('type', '')} {document.get('name', '')}".lower()
+    if "emc" in raw or "electrical" in raw:
+        return "emc_test_report"
+    if "environment" in raw or "epd" in raw or "footprint" in raw:
+        return "environmental_declaration"
+    if "sbom" in raw:
+        return "sbom"
+    if "repair" in raw or "service" in raw:
+        return "repair_instruction"
+    if "cad" in raw:
+        return "cad_reference"
+    if "radio" in raw or "wireless" in raw:
+        return "radio_test_report"
+    return "product_document"
+
+
+def build_agents_layer_assessment_payload(product: dict[str, Any], body: dict[str, Any] | None = None) -> dict[str, Any]:
+    body = body or {}
+    metadata = product.get("metadata") or {}
+    attrs = product.get("attributes") or {}
+    product_id = str(product.get("id") or product.get("sku") or body.get("product_id") or "unknown-product")
+    evidence = [
+        {
+            "type": "product_master_record",
+            "reference": f"product-layer/products/{product_id}",
+            "source_layer": "product-layer",
+            "confidence": "verified",
+        }
+    ]
+    if metadata.get("lineage"):
+        evidence.append(
+            {
+                "type": "lineage_record",
+                "reference": str(metadata.get("lineage")),
+                "source_layer": "product-layer",
+                "confidence": "high",
+            }
+        )
+    for document in product.get("documents") or []:
+        if isinstance(document, dict):
+            evidence.append(
+                {
+                    "type": document_to_evidence_type(document),
+                    "reference": document.get("source_uri") or document.get("name") or f"product-layer/documents/{product_id}",
+                    "source_layer": "data-layer",
+                    "confidence": "referenced",
+                }
+            )
+    evidence.extend(item for item in body.get("evidence", []) if isinstance(item, dict))
+    result = {
+        "target_market": body.get("target_market") or metadata.get("region") or "EU",
+        "date_placing_on_market": body.get("date_placing_on_market") or metadata.get("valid_from") or utc_now()[:10],
+        "product": {
+            "id": product_id,
+            "sku": product.get("sku"),
+            "name": product.get("name"),
+            "family": product.get("family"),
+            "lifecycle_state": product.get("lifecycle_status") or product.get("lifecycle_state") or "unknown",
+            "attributes": attrs,
+            "metadata": metadata,
+        },
+        "evidence": evidence,
+    }
+    agent_ids = body.get("agent_ids") or body.get("requested_agent_ids")
+    if isinstance(agent_ids, list):
+        result["agent_ids"] = [str(agent_id) for agent_id in agent_ids if str(agent_id).strip()]
+    return result
+
+
+def run_agents_layer_assessment(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
+    config = agents_layer_config()
+    if not config["enabled"]:
+        raise ValueError("agents-layer integration is disabled")
+    product_id = str(body.get("product_id") or body.get("id") or "").strip()
+    product = store.get_product(product_id, user) if product_id else None
+    if not product and isinstance(body.get("product"), dict):
+        product = body["product"]
+    if not product:
+        raise ValueError("product_id or product object required")
+    url = join_url(config["base_url"], "/api/assessments")
+    validate_agents_layer_url(url, config["allowed_hosts"])
+    payload = build_agents_layer_assessment_payload(product, body)
+    response = fetch_json_url(
+        url,
+        config["timeout_seconds"],
+        method="POST",
+        payload=payload,
+        headers={
+            "X-Role": str(user.get("role") or "viewer"),
+            "X-Region": str(user.get("region") or "EU"),
+            "X-Purpose": str(user.get("purpose") or "analytics"),
+        },
+    )
+    response.setdefault("integration", {})["source"] = "product-layer-agents-layer-proxy"
+    response["integration"]["contract"] = config["contract"]
+    return response
+
+
 def catalog_data_products() -> dict[str, Any]:
     product = METADATA_CONFIG.get("data_product", {})
     return {
@@ -1534,6 +1849,9 @@ def openapi_spec(host: str) -> dict[str, Any]:
                 "post": {"summary": "Synchronize product-layer from the PAUL data-layer export contract"},
             },
             "/api/integrations/data-layer": {"get": {"summary": "Describe the configured data-layer interface contract"}},
+            "/api/integrations/agents-layer": {"get": {"summary": "Describe the configured agents-layer advisory interface contract"}},
+            "/api/agents-layer/agents": {"get": {"summary": "List callable compliance and expert agents"}},
+            "/api/agents-layer/assessments": {"post": {"summary": "Run an advisory agents-layer assessment for a selected product"}},
             "/api/data-product": {"get": {"summary": "Describe the governed product data product, interfaces, and caller access"}},
             "/api/catalog/data-products": {"get": {"summary": "List governed product-layer data products and metadata requirements"}},
             "/api/lineage": {"get": {"summary": "Describe lakehouse layer lineage for the product data product"}},
@@ -1615,6 +1933,10 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(access_policy_surface(user))
         if path == "/api/integrations/data-layer":
             return self.send_json(data_layer_contract())
+        if path == "/api/integrations/agents-layer":
+            return self.send_json(agents_layer_contract(self.headers.get("Host", "localhost")))
+        if path == "/api/agents-layer/agents":
+            return self.send_json({**agents_layer_catalog(), "integration": agents_layer_contract(self.headers.get("Host", "localhost"))})
         if path == "/api/sync/data-layer":
             surface = data_product_surface(self.store, user)
             return self.send_json({"sync": surface["sync"], "effective_access": surface["effective_access"]})
@@ -1821,6 +2143,29 @@ class Handler(SimpleHTTPRequestHandler):
                 },
                 HTTPStatus.CREATED,
             )
+        if parsed.path == "/api/agents-layer/assessments":
+            try:
+                payload = self.read_json()
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+            try:
+                result = run_agents_layer_assessment(self.store, payload, user)
+            except ValueError as exc:
+                status = HTTPStatus.FORBIDDEN if "cannot run assessments" in str(exc) else HTTPStatus.BAD_GATEWAY
+                return self.send_error_json(status, f"agents-layer assessment failed: {exc}")
+            self.store.record_audit(
+                action="agents_layer_assessment",
+                product_id=result.get("product_context", {}).get("product_id", "unknown-product"),
+                role=user.get("role", "viewer"),
+                actor=user.get("actor"),
+                view="advisory",
+                channel="api",
+                details={
+                    "assessment_id": result.get("assessment_id"),
+                    "readiness": result.get("readiness", {}),
+                },
+            )
+            return self.send_json(result, HTTPStatus.CREATED)
         if parsed.path.startswith("/api/dpp/"):
             return self.update_dpp(parsed.path, user)
         return self.send_error_json(HTTPStatus.NOT_FOUND, "endpoint not found")

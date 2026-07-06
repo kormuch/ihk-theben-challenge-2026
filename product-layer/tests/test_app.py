@@ -12,6 +12,8 @@ from app.app import (
     Handler,
     INDEX_PATH,
     ProductStore,
+    agents_layer_contract,
+    build_agents_layer_assessment_payload,
     apply_access_controls,
     catalog_data_products,
     current_user,
@@ -274,6 +276,29 @@ class ProductLayerTests(unittest.TestCase):
         self.assertEqual(contract["target_layer"], "curated")
         self.assertEqual(contract["sync_permission"], "product:import")
         self.assertEqual(contract["export_url"], "http://127.0.0.1:8000/api/v1/export/products.json")
+
+    def test_agents_layer_contract_exposes_lakehouse_proxy_calls(self):
+        contract = agents_layer_contract("127.0.0.1:8080")
+        self.assertEqual(contract["source_layer"], "curated")
+        self.assertEqual(contract["target_layer"], "advisory_agents")
+        self.assertTrue(contract["human_review_required"])
+        self.assertEqual(contract["interfaces"]["product_layer_proxy"]["agent_catalog"], "/api/agents-layer/agents")
+        calls = {call["name"]: call["curl"] for call in contract["rest_api_calls"]}
+        self.assertIn("/api/agents-layer/assessments", calls["Run advisory assessment for one product through product-layer"])
+        self.assertIn("agent_ids", calls["Run advisory assessment for one product through product-layer"])
+
+    def test_agents_layer_assessment_payload_carries_product_and_evidence_context(self):
+        product = generate_products(1)[0]
+        payload = build_agents_layer_assessment_payload(
+            product,
+            {"agent_ids": ["expert-dpp-readiness"], "target_market": "EU"},
+        )
+        self.assertEqual(payload["product"]["id"], product["id"])
+        self.assertEqual(payload["product"]["attributes"]["gtin"], product["attributes"]["gtin"])
+        self.assertEqual(payload["agent_ids"], ["expert-dpp-readiness"])
+        evidence_types = {item["type"] for item in payload["evidence"]}
+        self.assertIn("product_master_record", evidence_types)
+        self.assertIn("lineage_record", evidence_types)
 
     def test_prepare_data_layer_products_adds_lakehouse_lineage(self):
         payload = {

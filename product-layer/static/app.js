@@ -1,6 +1,7 @@
 const state = {
   products: [],
   selected: null,
+  agents: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -87,6 +88,69 @@ async function loadGovernance() {
     </div>
     <p class="muted">${escapeHtml(lineage.layers.map((layer) => layer.name).join(" -> "))}</p>
   `;
+}
+
+async function loadAgents() {
+  try {
+    const data = await api("/api/agents-layer/agents");
+    state.agents = data;
+    renderAgents(data);
+  } catch (error) {
+    $("agentsLayerStatus").textContent = error.message;
+    $("agentsCatalog").innerHTML = "";
+    $("agentApiExamples").innerHTML = "";
+  }
+}
+
+function renderAgents(data) {
+  const integration = data.integration || {};
+  const layers = data.layers || {};
+  const source = data.source || {};
+  const statusClass = data.status === "live" ? "ok" : data.status === "disabled" ? "bad" : "warn";
+  $("agentsLayerStatus").innerHTML = `
+    <span class="badge ${statusClass}">${escapeHtml(data.status || "unknown")}</span>
+    <span>${escapeHtml(source.url || integration.base_url || "")}</span>
+    <span>${escapeHtml(integration.source_layer || "curated")} -> ${escapeHtml(integration.target_layer || "advisory_agents")}</span>
+  `;
+  $("agentsCatalog").innerHTML = Object.entries(layers).map(([layerName, agents]) => `
+    <div class="agent-layer">
+      <h3>${escapeHtml(layerLabel(layerName))}</h3>
+      <div class="agents-grid">
+        ${(agents || []).map((agent) => `
+          <article class="agent-card">
+            <div>
+              <strong>${escapeHtml(agent.name || agent.id)}</strong>
+              <p class="muted">${escapeHtml(agent.id)} | v${escapeHtml(agent.version || "0.1.0")}</p>
+            </div>
+            <p>${(agent.scope || []).map((item) => `<span class="badge">${escapeHtml(item)}</span>`).join(" ")}</p>
+            <button class="agent-call" data-agent-id="${escapeHtml(agent.id)}">Assess</button>
+          </article>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
+  $("agentApiExamples").innerHTML = `
+    <div class="api-grid">
+      ${(integration.rest_api_calls || []).map((call) => `
+        <div class="api-call">
+          <strong>${escapeHtml(call.name)}</strong>
+          <p class="muted">${escapeHtml(call.method)} ${escapeHtml(call.url)}</p>
+          <pre>${escapeHtml(call.curl)}</pre>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  document.querySelectorAll("[data-agent-id]").forEach((button) => {
+    button.addEventListener("click", () => runAgentAssessment(button.dataset.agentId));
+  });
+}
+
+function layerLabel(layerName) {
+  const labels = {
+    "compliance-agents-layer": "Compliance agents layer",
+    "expert-agents-layer": "Expert agents layer",
+  };
+  return labels[layerName] || layerName;
 }
 
 function renderProducts() {
@@ -220,6 +284,49 @@ async function runValidation() {
   `;
 }
 
+async function runAgentAssessment(agentId) {
+  if (!state.selected) {
+    $("agentAssessmentResult").textContent = "Select a product first.";
+    return;
+  }
+  const body = { product_id: state.selected };
+  if (agentId) body.agent_ids = [agentId];
+  try {
+    const data = await api("/api/agents-layer/assessments", {
+      method: "POST",
+      contentType: "application/json",
+      body: JSON.stringify(body),
+    });
+    renderAgentAssessment(data, agentId);
+  } catch (error) {
+    $("agentAssessmentResult").innerHTML = `<p class="badge bad">${escapeHtml(error.message)}</p>`;
+  }
+}
+
+function renderAgentAssessment(data, agentId) {
+  const readiness = data.readiness || {};
+  const findings = data.findings || [];
+  const statusClass = readiness.status === "ready_for_human_review" ? "ok" : readiness.status === "blocked" ? "bad" : "warn";
+  $("agentAssessmentResult").innerHTML = `
+    <h3>Assessment result${agentId ? `: ${escapeHtml(agentId)}` : ""}</h3>
+    <div class="assessment-summary">
+      <span class="badge ${statusClass}">${escapeHtml(readiness.status || "unknown")}</span>
+      <span>Score ${escapeHtml(String(readiness.score ?? ""))}</span>
+      <span>${escapeHtml(String(readiness.failed_checks ?? 0))} failed checks</span>
+      <span>${escapeHtml(data.assessment_id || "")}</span>
+    </div>
+    <table>
+      ${findings.map((finding) => `
+        <tr>
+          <th>${escapeHtml(finding.agent_name || finding.agent_id)}</th>
+          <td><span class="badge ${finding.status === "passed" ? "ok" : "warn"}">${escapeHtml(finding.status)}</span></td>
+          <td>${escapeHtml(finding.criterion || "")}<br><span class="muted">${escapeHtml(finding.recommended_action || "")}</span></td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
+
 async function refreshAll() {
   await Promise.all([loadSummary(), loadProducts(), loadGovernance()]);
 }
@@ -231,7 +338,7 @@ function coerce(value) {
 }
 
 function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, (char) => ({
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
@@ -249,7 +356,9 @@ $("importCsv").addEventListener("click", () => importPayload("text/csv"));
 $("validate").addEventListener("click", runValidation);
 $("loadGovernance").addEventListener("click", loadGovernance);
 $("syncDataLayer").addEventListener("click", syncDataLayer);
+$("loadAgents").addEventListener("click", loadAgents);
+$("runAgentAssessment").addEventListener("click", () => runAgentAssessment());
 
-refreshAll().catch((error) => {
+Promise.all([refreshAll(), loadAgents()]).catch((error) => {
   $("products").innerHTML = `<p>${escapeHtml(error.message)}</p>`;
 });

@@ -6,7 +6,7 @@
     "ollama_lan": {
       "type": "ollama",
       "enabled": true,
-      "base_url": "http://192.168.178.35:11434",
+      "base_url": "http://192.168.178.60:11434",
       "generate_endpoint": "/api/generate",
       "chat_endpoint": "/api/chat",
       "default_model": "gpt-oss:20b",
@@ -35,7 +35,7 @@
   ],
   "default_request": {
     "method": "POST",
-    "url": "http://192.168.178.35:11434/api/generate",
+    "url": "http://192.168.178.60:11434/api/generate",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -45,7 +45,7 @@
       "stream": false
     }
   },
-  "example_curl": "curl http://192.168.178.35:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Elaborate weather gradient for Stuttgart the next days.\",\"stream\":false}'",
+  "example_curl": "curl http://192.168.178.60:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Elaborate weather gradient for Stuttgart the next days.\",\"stream\":false}'",
   "governance": {
     "owner": "Central IT / Data Platform",
     "domain": "product",

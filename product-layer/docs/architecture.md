@@ -122,7 +122,7 @@ Use `scripts/validate.sh unit` when Docker socket access is intentionally unavai
 
 Public DPP URLs are canonicalized through `THEBEN_PUBLIC_BASE_URL` or `config/runtime.json` `service.public_base_url`. The request `Host` header is only a local fallback. Deployed DPP labels must use a stable HTTPS value because Data Matrix payloads are printed on products and must remain resolvable across the useful life.
 
-AI colleague configuration is kept as code in `config/ai_integration.json`. The default provider is Ollama over LAN at `http://192.168.178.35:11434`, using `gpt-oss:20b`, with human review required for any product data, metadata, or certification-impacting output.
+AI colleague configuration is kept as code in `config/ai_integration.json`. The default provider is Ollama over LAN at `http://192.168.178.60:11434`, using `gpt-oss:20b`, with human review required for any product data, metadata, or certification-impacting output.
 
 Optional integration:
 

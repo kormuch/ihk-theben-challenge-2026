@@ -29,7 +29,7 @@ DEFAULT_CONFIG = {
             "label": "Ollama LAN default analyst",
             "type": "ollama_generate",
             "enabled": True,
-            "base_url": "http://192.168.178.35:11434",
+            "base_url": "http://192.168.178.60:11434",
             "endpoint": "/api/generate",
             "model": "gpt-oss:20b",
             "api_key_env": "OLLAMA_API_KEY",

@@ -1,0 +1,226 @@
+{
+  "schema_version": "0.1.0",
+  "severity_model": ["low", "medium", "high", "critical"],
+  "compliance_agents": [
+    {
+      "id": "compliance-sustainability",
+      "name": "Sustainability & Environment Compliance Agent",
+      "layer": "compliance-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["ESPR", "DPP", "materials", "circularity", "energy"]
+    },
+    {
+      "id": "compliance-emc-electrical",
+      "name": "EMC & Electrical Conformity Compliance Agent",
+      "layer": "compliance-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["EMC", "CE", "electrical safety", "building automation"]
+    },
+    {
+      "id": "compliance-cybersecurity",
+      "name": "Cybersecurity Certification Compliance Agent",
+      "layer": "compliance-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["CRA", "SBOM", "secure updates", "vulnerability handling"]
+    },
+    {
+      "id": "compliance-wireless",
+      "name": "Wireless Standards Compliance Agent",
+      "layer": "compliance-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["Wi-Fi", "Bluetooth", "NFC", "radio market access"]
+    },
+    {
+      "id": "compliance-privacy",
+      "name": "Data Protection & Privacy Compliance Agent",
+      "layer": "compliance-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["GDPR", "telemetry", "retention", "access logging"]
+    }
+  ],
+  "expert_agents": [
+    {
+      "id": "expert-dpp-readiness",
+      "name": "DPP Readiness Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["DPP completeness", "Data Matrix", "consumer view", "authority view"]
+    },
+    {
+      "id": "expert-sustainability-circularity",
+      "name": "Sustainability & Circularity Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["repairability", "recycling", "footprint evidence"]
+    },
+    {
+      "id": "expert-emc-design",
+      "name": "EMC & Electrical Design Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["layout risk", "shielding", "transient robustness"]
+    },
+    {
+      "id": "expert-cybersecurity-quality",
+      "name": "Cybersecurity & Software Quality Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["firmware lifecycle", "SBOM quality", "vulnerability management"]
+    },
+    {
+      "id": "expert-governance",
+      "name": "Product Data Governance Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["mandatory metadata", "lineage", "classification", "data product quality"]
+    },
+    {
+      "id": "expert-cad-mechanical",
+      "name": "CAD and Mechanical Design Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["housing", "assembly", "serviceability", "durability"]
+    },
+    {
+      "id": "expert-pricing-sales-market",
+      "name": "Pricing, Sales, and Market Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["market claims", "sales documentation", "commercial sensitivity"]
+    },
+    {
+      "id": "expert-aftermarket-service",
+      "name": "Aftermarket Service Expert",
+      "layer": "expert-agents-layer",
+      "version": "0.1.0",
+      "enabled": true,
+      "scope": ["spare parts", "repair instructions", "field issue evidence"]
+    }
+  ],
+  "rules": [
+    {
+      "id": "RULE-DPP-IDENTITY-001",
+      "version": "0.1.0",
+      "agent_id": "expert-dpp-readiness",
+      "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+      "severity": "high",
+      "required_product_fields": ["attributes.gtin", "attributes.batch_lot_number", "attributes.serial_number"],
+      "required_evidence_types": ["product_master_record"],
+      "standard_refs": ["GS1 DataMatrix AI 01/10/21", "goal_dpp.md"],
+      "recommended_action": "Complete identity fields before DPP publication."
+    },
+    {
+      "id": "RULE-GOV-METADATA-001",
+      "version": "0.1.0",
+      "agent_id": "expert-governance",
+      "criterion": "Mandatory data product metadata must be visible for curated product records.",
+      "severity": "high",
+      "required_product_fields": ["metadata.owner", "metadata.domain", "metadata.source_system", "metadata.lineage", "metadata.classification", "metadata.certification_status"],
+      "required_evidence_types": ["lineage_record"],
+      "standard_refs": ["goal.md mandatory metadata"],
+      "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata."
+    },
+    {
+      "id": "RULE-SUST-EVIDENCE-001",
+      "version": "0.1.0",
+      "agent_id": "compliance-sustainability",
+      "criterion": "Environmental readiness requires material or footprint evidence.",
+      "severity": "medium",
+      "required_product_fields": ["attributes.recyclable_share_pct", "attributes.co2_kg"],
+      "required_evidence_types": ["environmental_declaration"],
+      "standard_refs": ["ESPR", "DPP sustainability fields"],
+      "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake."
+    },
+    {
+      "id": "RULE-EMC-EVIDENCE-001",
+      "version": "0.1.0",
+      "agent_id": "compliance-emc-electrical",
+      "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+      "severity": "high",
+      "required_product_fields": ["attributes.nominal_voltage"],
+      "required_evidence_types": ["emc_test_report"],
+      "standard_refs": ["EMC Directive 2014/30/EU", "LVD 2014/35/EU"],
+      "recommended_action": "Map EMC and electrical evidence to the applicable product family and market."
+    },
+    {
+      "id": "RULE-CYBER-SBOM-001",
+      "version": "0.1.0",
+      "agent_id": "compliance-cybersecurity",
+      "criterion": "Connected products require SBOM and secure update evidence.",
+      "severity": "high",
+      "required_product_fields": ["attributes.connectivity"],
+      "required_evidence_types": ["sbom", "secure_update_process"],
+      "standard_refs": ["Cyber Resilience Act readiness"],
+      "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+      "assumptions": ["Only applies when the product is connected or software-controlled."]
+    },
+    {
+      "id": "RULE-WIRELESS-001",
+      "version": "0.1.0",
+      "agent_id": "compliance-wireless",
+      "criterion": "Wireless products require radio module and qualification evidence.",
+      "severity": "medium",
+      "required_product_fields": ["attributes.wireless_protocol"],
+      "required_evidence_types": ["radio_test_report"],
+      "standard_refs": ["RED 2014/53/EU", "Bluetooth qualification", "Wi-Fi certification"],
+      "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present."
+    },
+    {
+      "id": "RULE-PRIVACY-001",
+      "version": "0.1.0",
+      "agent_id": "compliance-privacy",
+      "criterion": "Telemetry or customer data processing requires privacy evidence.",
+      "severity": "high",
+      "required_product_fields": ["attributes.telemetry"],
+      "required_evidence_types": ["privacy_assessment"],
+      "standard_refs": ["GDPR", "data minimization"],
+      "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence."
+    },
+    {
+      "id": "RULE-MECH-001",
+      "version": "0.1.0",
+      "agent_id": "expert-cad-mechanical",
+      "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+      "severity": "medium",
+      "required_product_fields": ["attributes.ip_rating"],
+      "required_evidence_types": ["cad_reference", "service_instruction"],
+      "standard_refs": ["mechanical design review"],
+      "recommended_action": "Link CAD or assembly evidence and service instructions."
+    },
+    {
+      "id": "RULE-SERVICE-001",
+      "version": "0.1.0",
+      "agent_id": "expert-aftermarket-service",
+      "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+      "severity": "medium",
+      "required_product_fields": ["lifecycle_state"],
+      "required_evidence_types": ["spare_parts_list", "repair_instruction"],
+      "standard_refs": ["service lifecycle support"],
+      "recommended_action": "Request spare parts list and repair instructions for lifecycle support."
+    },
+    {
+      "id": "RULE-MARKET-001",
+      "version": "0.1.0",
+      "agent_id": "expert-pricing-sales-market",
+      "criterion": "Market claims should have evidence and commercial classification.",
+      "severity": "low",
+      "required_product_fields": ["metadata.classification"],
+      "required_evidence_types": ["sales_claim_evidence"],
+      "standard_refs": ["product market review"],
+      "recommended_action": "Attach market claim evidence and confirm commercial sensitivity."
+    }
+  ]
+}
+

@@ -1,0 +1,67 @@
+{
+  "schema_version": "0.1.0",
+  "service": {
+    "name": "thebenpaul-agents-layer",
+    "host": "0.0.0.0",
+    "port": 8090,
+    "persistence": "./data/assessments.json"
+  },
+  "product_layer": {
+    "base_url": "http://host.docker.internal:8080",
+    "read_contracts": [
+      "/api/products",
+      "/api/data-product",
+      "/api/dpp/{product_id}",
+      "/api/lineage",
+      "/api/access-policy"
+    ],
+    "write_policy": "advisory feedback only; no direct product master or DPP mutation"
+  },
+  "data_layer": {
+    "base_url": "http://host.docker.internal:8000",
+    "read_contracts": [
+      "/api/v1/export/products.json",
+      "document evidence references",
+      "standards and directives evidence"
+    ],
+    "write_policy": "missing evidence findings only; no raw evidence mutation"
+  },
+  "llm": {
+    "default_provider": "ollama_lan",
+    "base_url": "http://192.168.178.60:11434",
+    "model": "gpt-oss:20b",
+    "mode": "advisory_assist_only",
+    "human_review_required": true
+  },
+  "mempalace": {
+    "documentation_required_after_validation": true,
+    "recommended_rooms": [
+      "expert-agent-layer/01_decisions",
+      "expert-agent-layer/06_quality-runs",
+      "expert-agent-layer/05_releases",
+      "compliance-agents-layer/01_decisions",
+      "compliance-agents-layer/06_quality-runs",
+      "compliance-agents-layer/05_releases"
+    ]
+  },
+  "enabled_agents": {
+    "compliance": [
+      "compliance-sustainability",
+      "compliance-emc-electrical",
+      "compliance-cybersecurity",
+      "compliance-wireless",
+      "compliance-privacy"
+    ],
+    "expert": [
+      "expert-dpp-readiness",
+      "expert-sustainability-circularity",
+      "expert-emc-design",
+      "expert-cybersecurity-quality",
+      "expert-governance",
+      "expert-cad-mechanical",
+      "expert-pricing-sales-market",
+      "expert-aftermarket-service"
+    ]
+  }
+}
+

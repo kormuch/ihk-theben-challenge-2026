@@ -1,0 +1,29 @@
+services:
+  agents-layer:
+    build:
+      context: .
+      args:
+        PYTHON_BASE_IMAGE: ${PYTHON_BASE_IMAGE:-thebenpaul/product-layer:local}
+    image: thebenpaul/agents-layer:local
+    ports:
+      - "${AGENTS_LAYER_PORT:-8090}:8090"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8090
+      THEBEN_DEFAULT_ROLE: reviewer
+      THEBEN_AGENTS_DATA_DIR: /agents/data
+    volumes:
+      - ./config:/agents/config:ro
+      - ./data:/agents/data:rw
+    restart: unless-stopped
+
+  test:
+    build:
+      context: .
+      args:
+        PYTHON_BASE_IMAGE: ${PYTHON_BASE_IMAGE:-thebenpaul/product-layer:local}
+    profiles: ["test"]
+    command: ["/agents/scripts/validate.sh"]
+    volumes:
+      - ./config:/agents/config:ro
+      - ./data:/agents/data:rw
