@@ -26,7 +26,7 @@ services:
       STORAGE_PATH: /storage/originals
       PRODUCT_LAYER_DATA_DIR: /product-layer-data
       DATA_LAYER_LLM_CONFIG: /config/llm_agents.json
-      DATA_LAYER_LLM_CHAIN: local_ollama_lan
+      DATA_LAYER_LLM_CHAIN: enterprise_cloud_fallback
     volumes:
       - ./backend:/app
       - ./config:/config:ro
