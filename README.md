@@ -1,14 +1,52 @@
 # PAUL — Product Attribute Unified Layer
 
-**Event:** Kollege Codex — IHK Innovationstage Zollernalb | Wed, July 8, 2026
-**Company:** Theben AG, Haigerloch
+**Event:** Kollege Codex — IHK Innovationstage Zollernalb | Mi, 08. Juli 2026, 13:00 Uhr
+**Ort:** Theben AG, Haigerloch
 **Team:** Korbinian Much + Christian Solva
 
-## What is PAUL?
+---
+
+## Problem
+
+Produktinformationen bei Theben sind über zahlreiche Systeme und Formate verteilt:
+- ERP, PLM, externe Portale, Datenbanken
+- CSV, XLSX, JSON, XML, PDF, REST APIs
+- Dokumente von Produktmanagern, Laboren (Prüfberichte), Tickets, Marketing
+
+**Kern-Pain-Point:** Kein Single Source of Truth → kein verlässlicher Digitaler Produktpass möglich.
+
+Zusätzliche Anforderungsbereiche:
+- Analytics & Reporting (Compliance, KPIs)
+- Cybersecurity (CRA, SBOM)
+- Umwelt & Nachhaltigkeit (CO₂, Materialien, Recycling)
+- Normen & Zertifizierungen (IEC/EN, CE, UL)
+- Regulatorik (CRA, RED, RoHS, REACH, ESPR, Data Act)
+- Lebenszyklus (Einführung, Service Life, End-of-Life)
+
+---
+
+## Challenge
+
+Skalierbare, erweiterbare Plattform die:
+
+- Produktdaten aus heterogenen Quellen einsammelt
+- Daten normalisiert und harmonisiert (gemeinsames Datenmodell)
+- Vielzahl von Produktattributen trackt
+- Mehrere Produktfamilien mit unterschiedlichen Eigenschaften unterstützt
+- Flexibles Datenmodell hat das mit neuen Regularien mitwächst
+- Querying, Reporting, Analytics ermöglicht
+- Als Fundament für Digitalen Produktpass dient
+- Interaktives Web-UI bietet (suchen, filtern, bearbeiten, validieren, visualisieren)
+
+**Schlagworte:** Abstraction — Generic — Informative — Interactive
+
+---
+
+## Lösung: PAUL
 
 PAUL ingests heterogeneous product data files (datasheets, lab reports, certificates, catalogs, etc.), uses AI to classify and extract structured product information, and lets users review and confirm before persisting. It serves as the data foundation for Digital Product Passports.
 
-## How It Works
+### How It Works
 
 ```
 Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Database
@@ -28,6 +66,8 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 - **Cross-file dedup**: Flags same article number found in multiple files during bulk upload
 - **LLM fallback**: Gemini 2.0 Flash primary, Groq (Llama 3.3 70B) fallback with retry + backoff
 - **Bulk upload**: Multiple files at once, serialized processing with rate-limit awareness
+
+---
 
 ## Quick Start
 
@@ -57,6 +97,8 @@ cd ../product-layer && docker compose up -d --build product-layer
   GEMINI_API_KEY=your_key
   GROQ_API_KEY=your_key
   ```
+
+---
 
 ## Architecture
 
@@ -94,15 +136,13 @@ data-layer/
       lib/
         api.ts                # API client
   test-docs/                  # Test documents for demo
-    LUXA_200-360_Datasheet.csv
-    LUXA_200-360_Lab_Report.txt
-    LUXA_200-360_CE_Declaration.txt
-    Multi_Product_Catalog.json
-    hard/                     # Edge-case test documents
   docker-compose.yml          # PostgreSQL 16 + FastAPI + React
+product-layer/                # Governance, DPP preview, exports
 architecture.html             # Visual architecture diagram (open in browser)
 start-paul.bat                # One-click start
 ```
+
+---
 
 ## Tech Stack
 
@@ -114,6 +154,8 @@ start-paul.bat                # One-click start
 | AI / LLM | Gemini 2.0 Flash (primary), Groq Llama 3.3 70B (fallback) |
 | Infrastructure | Docker Compose |
 | Text extraction | pdfplumber, openpyxl |
+
+---
 
 ## API Endpoints
 
@@ -128,13 +170,27 @@ start-paul.bat                # One-click start
 | GET/PATCH/DELETE | `/api/v1/products/{id}` | Product detail / update / delete |
 | POST | `/api/v1/ingest/upload` | Direct file upload to existing product |
 
+---
+
 ## Document Types (AI Classification)
 
 Datasheet, Lab Report, Certificate, Software Documentation, Bill of Materials, Marketing Material, Compliance Declaration, Safety Data Sheet, Product Specification, Test Report
 
+---
+
+## Constraints
+
+- Docker Compose (containerisierte Lösung)
+- Persistenter Storage (Daten überleben Container-Restart)
+- Keine zwingend externen Cloud-Services (lokal/Docker bevorzugt)
+- Open-Source Tech-Stack
+- Konfiguration über Config-Files und/oder Umgebungsvariablen
+
+---
+
 ## Test Documents
 
-The `test-docs/` folder contains realistic Theben-style test files. The `test-docs/hard/` folder contains edge cases:
+The `data-layer/test-docs/` folder contains realistic Theben-style test files including edge cases:
 
 | File | Challenge |
 |------|-----------|
