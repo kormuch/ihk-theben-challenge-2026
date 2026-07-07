@@ -1,14 +1,52 @@
 # PAUL — Product Attribute Unified Layer
 
-**Event:** Kollege Codex — IHK Innovationstage Zollernalb | Wed, July 8, 2026
-**Company:** Theben AG, Haigerloch
+**Event:** Kollege Codex — IHK Innovationstage Zollernalb | Mi, 08. Juli 2026, 13:00 Uhr
+**Ort:** Theben AG, Haigerloch
 **Team:** Korbinian Much + Christian Solva
 
-## What is PAUL?
+---
+
+## Problem
+
+Produktinformationen bei Theben sind über zahlreiche Systeme und Formate verteilt:
+- ERP, PLM, externe Portale, Datenbanken
+- CSV, XLSX, JSON, XML, PDF, Bilder (PNG, JPG, …), REST APIs
+- Dokumente von Produktmanagern, Laboren (Prüfberichte), Tickets, Marketing
+
+**Kern-Pain-Point:** Kein Single Source of Truth → kein verlässlicher Digitaler Produktpass möglich.
+
+Zusätzliche Anforderungsbereiche:
+- Analytics & Reporting (Compliance, KPIs)
+- Cybersecurity (CRA, SBOM)
+- Umwelt & Nachhaltigkeit (CO₂, Materialien, Recycling)
+- Normen & Zertifizierungen (IEC/EN, CE, UL)
+- Regulatorik (CRA, RED, RoHS, REACH, ESPR, Data Act)
+- Lebenszyklus (Einführung, Service Life, End-of-Life)
+
+---
+
+## Challenge
+
+Skalierbare, erweiterbare Plattform die:
+
+- Produktdaten aus heterogenen Quellen einsammelt
+- Daten normalisiert und harmonisiert (gemeinsames Datenmodell)
+- Vielzahl von Produktattributen trackt
+- Mehrere Produktfamilien mit unterschiedlichen Eigenschaften unterstützt
+- Flexibles Datenmodell hat das mit neuen Regularien mitwächst
+- Querying, Reporting, Analytics ermöglicht
+- Als Fundament für Digitalen Produktpass dient
+- Interaktives Web-UI bietet (suchen, filtern, bearbeiten, validieren, visualisieren)
+
+**Schlagworte:** Abstraction — Generic — Informative — Interactive
+
+---
+
+## Lösung: PAUL
 
 PAUL ingests heterogeneous product data files (datasheets, lab reports, certificates, catalogs, etc.), uses AI to classify and extract structured product information, and lets users review and confirm before persisting. It serves as the data foundation for Digital Product Passports.
 
-## How It Works
+### How It Works
 
 ```
 Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Database
@@ -29,10 +67,14 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 
 - **Confidence gate**: >= 85% auto-extracts, < 85% lets user pick/type document type and retry
 - **Existing product diff**: Shows attribute-level changes (new, changed, kept) when a product already exists
-- **Cross-file dedup**: Flags same article number found in multiple files during bulk upload
+- **Multi-source detection**: Flags same article number found in multiple files during bulk upload, data is merged on confirm
 - **LLM provider chain**: Ollama LAN (default), DeepSeek, Gemini, Groq — config-driven fallback
+- **OCR support**: Images (PNG, JPG, TIFF, BMP, WEBP) and scanned PDFs via Tesseract OCR (deu+eng)
 - **Bulk upload**: Multiple files at once, serialized processing with rate-limit awareness
+- **Article number validation**: Import blocked until article number is provided for every product
+- **AI transparency**: Full prompt visibility via `GET /api/v1/analyze/prompts` and transparency endpoints
 - **Lakehouse sync**: Confirmed products are automatically mirrored to Apache Iceberg tables
+- **Product-Layer sync**: Auto-export on confirm with retry + exponential backoff
 
 ## Quick Start
 
@@ -69,6 +111,8 @@ cd data-layer && docker compose up -d --build
 - ~4 GB RAM for full stack (or ~2 GB without OpenMetadata)
 - `.env` file in `data-layer/` with LLM API keys (optional, defaults to Ollama LAN)
 
+---
+
 ## Architecture
 
 ```
@@ -85,20 +129,23 @@ data-layer/
         llm.py                # LLM provider chain (Ollama/DeepSeek/Gemini/Groq)
         classifier.py         # Stage 1: document type classification
         extractors.py         # Stage 2: per-type product data extraction
-        text_extract.py       # File-to-text (PDF, CSV, JSON, XML, XLSX, TXT)
+        text_extract.py       # File-to-text (PDF, CSV, JSON, XML, XLSX, TXT, images via OCR)
       lakehouse/
         iceberg_writer.py     # Write products + lineage to Iceberg via Trino
       models/
         product.py            # Product, ProductFamily, ProductDocument
-      seed/                   # Auto-seeds families on startup
-      core/                   # Settings, database connection
+      seed/
+        families.py           # 5 product families (Timer, Motion Sensor, Room Thermostat, KNX Actuator, Energy Meter)
+        seed.py               # Auto-seeds families on startup
+      core/
+        config.py             # Settings
+        database.py           # PostgreSQL connection
   frontend/                   # React + Vite + Tailwind CSS
   config/                     # LLM agent config (llm_agents.json)
   trino/catalog/              # Trino Iceberg connector config
   init/                       # Iceberg table creation SQL
   docker-compose.yml          # Full stack (DB, MinIO, Iceberg, Trino, OpenMetadata)
   test-docs/                  # Test documents for demo
-
 product-layer/                # Christian's governance layer (DPP, validation, exports)
 architecture.html             # Visual architecture diagram (open in browser)
 start-paul.bat                # One-click start (all services)
@@ -126,7 +173,10 @@ Products confirmed through the AI pipeline are automatically mirrored to Iceberg
 | Lakehouse | Apache Iceberg, Trino, MinIO |
 | Data Catalog | OpenMetadata |
 | Infrastructure | Docker Compose |
-| Text extraction | pdfplumber, openpyxl |
+| Text extraction | pdfplumber, openpyxl, pytesseract + Pillow (OCR) |
+| OCR Engine | Tesseract (deu + eng) |
+
+---
 
 ## API Endpoints
 
@@ -141,16 +191,46 @@ Products confirmed through the AI pipeline are automatically mirrored to Iceberg
 | GET/PATCH/DELETE | `/api/v1/products/{id}` | Product detail / update / delete |
 | POST | `/api/v1/ingest/upload` | Direct file upload to existing product |
 | GET | `/api/v1/export/products.json` | Export to product-layer format |
+| GET | `/api/v1/ingest/documents/{id}/download` | Download original uploaded file |
+| GET | `/api/v1/analyze/prompts` | AI pipeline transparency (prompts, model, config) |
 | GET | `/api/v1/lakehouse/health` | Trino/Iceberg status |
 | GET | `/api/v1/lakehouse/products` | Query Iceberg product_master |
+
+---
+
+## Supported File Formats
+
+| Format | Method | Notes |
+|--------|--------|-------|
+| PDF | pdfplumber | Text + Tabellen; OCR-Fallback für Scans |
+| PNG, JPG, TIFF, BMP, WEBP | pytesseract OCR | Deutsch + Englisch |
+| CSV, TSV | csv module | Pipe-separated output |
+| XLSX, XLS | openpyxl | Alle Sheets, normalisierte Header |
+| JSON | json module | Pretty-print, Fallback auf raw text |
+| XML | ElementTree | Raw UTF-8 |
+| TXT, MD, LOG | Direct read | UTF-8 mit error replace |
+
+---
 
 ## Document Types (AI Classification)
 
 Datasheet, Lab Report, Certificate, Software Documentation, Bill of Materials, Marketing Material, Compliance Declaration, Safety Data Sheet, Product Specification, Test Report
 
+---
+
+## Constraints
+
+- Docker Compose (containerisierte Lösung)
+- Persistenter Storage (Daten überleben Container-Restart)
+- Keine zwingend externen Cloud-Services (lokal/Docker bevorzugt)
+- Open-Source Tech-Stack
+- Konfiguration über Config-Files und/oder Umgebungsvariablen
+
+---
+
 ## Test Documents
 
-The `test-docs/` folder contains realistic Theben-style test files. The `test-docs/hard/` folder contains edge cases:
+The `data-layer/test-docs/hard/` folder contains realistic Theben-style test files including edge cases:
 
 | File | Challenge |
 |------|-----------|

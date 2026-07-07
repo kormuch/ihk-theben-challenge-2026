@@ -97,6 +97,30 @@ Started via `--profile openmetadata`. Requires ~2 GB additional RAM.
 
 ---
 
+## OCR / Image support
+
+The backend uses Tesseract OCR (via pytesseract + Pillow) for:
+- **Image files** (PNG, JPG, TIFF, BMP, WEBP) — direct OCR text extraction
+- **Scanned PDFs** — automatic OCR fallback when pdfplumber finds no text
+
+Languages installed: German (`deu`) + English (`eng`).
+
+The Dockerfile installs `tesseract-ocr`, `tesseract-ocr-deu`, and `tesseract-ocr-eng`. For local development outside Docker, install Tesseract separately:
+- Windows: `winget install UB-Mannheim.TesseractOCR`
+- macOS: `brew install tesseract tesseract-lang`
+- Linux: `apt install tesseract-ocr tesseract-ocr-deu tesseract-ocr-eng`
+
+## Product-Layer export
+
+The endpoint `GET /api/v1/export/products.json` exports all products in product-layer format (schema version `0.1.0`). It is automatically called when products are confirmed via `/api/v1/analyze/confirm` and writes to the shared volume at `PRODUCT_LAYER_DATA_DIR` (default: `/product-layer-data`).
+
+Family mapping (data-layer -> product-layer):
+- Timer -> Time Switch
+- Motion Sensor -> Motion Detector
+- Room Thermostat -> HVAC Controller
+- KNX Actuator -> KNX Actuator
+- Energy Meter -> Energy Meter
+
 ## LLM Agent Configuration
 
 Document analysis uses config-as-code from:

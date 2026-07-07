@@ -9,7 +9,15 @@ echo   Lakehouse Edition (Iceberg + Trino + OpenMetadata)
 echo  ====================================
 echo.
 
+REM ── Kill everything first ──
+echo Stopping all previous containers...
+cd /d "%~dp0product-layer"
+docker compose down --remove-orphans >nul 2>&1
+cd /d "%~dp0data-layer"
+docker compose down --remove-orphans >nul 2>&1
+
 REM ── Data Layer (PostgreSQL + FastAPI + React + Lakehouse) ──
+echo.
 echo [1/2] Starting data-layer (incl. MinIO, Iceberg, Trino, OpenMetadata)...
 cd /d "%~dp0data-layer"
 docker compose --profile openmetadata up -d --build
@@ -19,14 +27,14 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo Waiting for data-layer backend...
+echo Waiting for backend...
 :wait_data
-curl -s http://localhost:8000/health | find "ok" >nul 2>&1
+curl -s http://localhost:8000/health >nul 2>&1
 if errorlevel 1 (
     timeout /t 2 /nobreak >nul
     goto wait_data
 )
-echo   data-layer OK (http://localhost:3000)
+echo   backend OK
 
 echo Waiting for Trino...
 :wait_trino
@@ -50,20 +58,26 @@ REM ── Product Layer (Christian's governance layer) ──
 echo.
 echo [2/2] Starting product-layer...
 cd /d "%~dp0product-layer"
-docker compose up -d --build product-layer
+docker compose up -d --build
 if errorlevel 1 (
-    echo WARNING: product-layer failed to start. Continuing without it.
+    echo WARNING: product-layer failed. Continuing without it.
     goto open
 )
 
 echo Waiting for product-layer...
+set /a tries=0
 :wait_product
-curl -s http://localhost:8080/health | find "ok" >nul 2>&1
+curl -s http://localhost:8080/health >nul 2>&1
 if errorlevel 1 (
+    set /a tries+=1
+    if %tries% GEQ 30 (
+        echo WARNING: product-layer timeout. Continuing without it.
+        goto open
+    )
     timeout /t 2 /nobreak >nul
     goto wait_product
 )
-echo   product-layer OK (http://localhost:8080)
+echo   product-layer OK
 
 :open
 echo.
@@ -81,11 +95,12 @@ echo   Lakehouse Health:  http://localhost:8000/api/v1/lakehouse/health
 echo   Iceberg Products:  http://localhost:8000/api/v1/lakehouse/products
 echo.
 
-start "" http://localhost:3000
+start http://localhost:3000
+start http://localhost:8080
 
 title PAUL — Live Logs
 echo ==================== LIVE LOGS ====================
-echo (Press Ctrl+C to stop viewing logs)
+echo (Press Ctrl+C to stop)
 echo.
 cd /d "%~dp0data-layer"
 docker compose --profile openmetadata logs -f

@@ -235,6 +235,32 @@ async def _call_with_retry(prompt: str, provider_id: str, provider: dict[str, An
     raise RuntimeError("Unreachable")
 
 
+def get_active_config() -> dict[str, Any]:
+    """Return a safe summary of the active LLM configuration (no secrets)."""
+    config = load_llm_config()
+    chain = provider_chain(config)
+    chain_name = os.getenv("DATA_LAYER_LLM_CHAIN") or str(config.get("default_chain") or "analysis_default")
+    providers_summary = []
+    for pid, prov in chain:
+        providers_summary.append({
+            "id": pid,
+            "label": provider_label(pid, prov),
+            "type": prov.get("type"),
+            "model": prov.get("model"),
+            "temperature": prov.get("temperature"),
+            "max_tokens": prov.get("max_tokens"),
+            "timeout_seconds": prov.get("timeout_seconds"),
+            "api_key_required": prov.get("api_key_required", False),
+            "api_key_configured": bool(get_api_key(prov)),
+        })
+    return {
+        "chain": chain_name,
+        "providers": providers_summary,
+        "cooldown_seconds": COOLDOWN_SECONDS,
+        "max_retries": MAX_RETRIES,
+    }
+
+
 async def call_llm(prompt: str) -> str:
     """Call configured LLM providers in priority order with auto-fallback."""
     async with _llm_lock:

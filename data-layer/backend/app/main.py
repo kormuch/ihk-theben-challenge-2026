@@ -16,7 +16,7 @@ from app.core.database import Base, engine
 
 # Import models so Alembic/SQLAlchemy picks them up
 import app.models  # noqa
-from app.api import families, products, ingest, analyze, export, prompts
+from app.api import analyze, export, families, ingest, products, prompts, transparency
 
 
 @asynccontextmanager
@@ -79,3 +79,4 @@ app.include_router(ingest.router, prefix=settings.API_PREFIX)
 app.include_router(analyze.router, prefix=settings.API_PREFIX)
 app.include_router(export.router, prefix=settings.API_PREFIX)
 app.include_router(prompts.router, prefix=settings.API_PREFIX)
+app.include_router(transparency.router, prefix=settings.API_PREFIX)
