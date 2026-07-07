@@ -1248,17 +1248,27 @@ def lineage_model() -> dict[str, Any]:
     }
 
 
-def fetch_data_layer_export(url: str, timeout: float = 10.0) -> dict[str, Any]:
+def fetch_data_layer_export(url: str, timeout: float = 10.0, retries: int = 3) -> dict[str, Any]:
     if not url:
         raise ValueError("data-layer export URL is not configured")
-    request = Request(url, headers={"Accept": JSON})
-    try:
-        with urlopen(request, timeout=timeout) as response:
-            raw = response.read(20_000_000)
-    except HTTPError as exc:
-        raise ValueError(f"data-layer export returned HTTP {exc.code}") from exc
-    except URLError as exc:
-        raise ValueError(f"data-layer export is unavailable: {exc.reason}") from exc
+    last_exc: Exception | None = None
+    for attempt in range(retries):
+        request = Request(url, headers={"Accept": JSON})
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                raw = response.read(20_000_000)
+            break
+        except HTTPError as exc:
+            if exc.code < 500:
+                raise ValueError(f"data-layer export returned HTTP {exc.code}") from exc
+            last_exc = exc
+        except URLError as exc:
+            last_exc = exc
+        if attempt < retries - 1:
+            time.sleep(2 ** attempt)
+    else:
+        reason = str(getattr(last_exc, "reason", last_exc))
+        raise ValueError(f"data-layer export is unavailable after {retries} attempts: {reason}") from last_exc
     try:
         payload = json.loads(raw.decode("utf-8"))
     except json.JSONDecodeError as exc:

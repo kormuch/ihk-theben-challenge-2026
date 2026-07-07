@@ -14,10 +14,13 @@ Mapping:
   (generated)              → metadata, quality, lifecycle_status
 """
 import json
+import logging
 import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -28,11 +31,13 @@ from app.models.product import Product, ProductDocument
 
 router = APIRouter(prefix="/export", tags=["export"])
 
-# Map our family names to his family names
+# Map our family names to product-layer family names
 FAMILY_MAP = {
     "Timer": "Time Switch",
     "Motion Sensor": "Motion Detector",
     "Room Thermostat": "HVAC Controller",
+    "KNX Actuator": "KNX Actuator",
+    "Energy Meter": "Energy Meter",
 }
 
 # Attributes that should be pulled out into the top-level certifications array
@@ -103,7 +108,7 @@ def _to_product_layer(product: Product) -> dict:
             documents.append({
                 "name": doc.original_filename or doc.filename,
                 "type": (doc.doc_category or "datasheet").lower(),
-                "source_uri": f"data-layer://documents/{product.article_number}/{doc.filename}",
+                "source_uri": f"/api/v1/ingest/documents/{doc.id}/download",
             })
 
     created = product.created_at.isoformat() if product.created_at else _utc_now()
@@ -127,7 +132,7 @@ def _to_product_layer(product: Product) -> dict:
             "refresh_frequency": "on export",
             "sla": "local MVP, no production SLA",
             "classification": "internal",
-            "certification_status": "certified" if len(certifications) > 1 else "needs_review",
+            "certification_status": "certified" if certifications else "needs_review",
             "region": "EU",
         },
         "quality": {"last_validation": None, "status": "unknown", "issues": []},
@@ -147,7 +152,7 @@ def export_products_json(db: Session = Depends(get_db)):
     exported = [_to_product_layer(p) for p in products]
 
     payload = {
-        "schema_version": "1.0.0",
+        "schema_version": "0.1.0",
         "generated_at": _utc_now(),
         "products": exported,
     }
@@ -172,6 +177,6 @@ def export_products_json(db: Session = Depends(get_db)):
                 f.write("\n")
             payload["_written_to"] = str(shared_path)
         except Exception:
-            pass  # shared write is best-effort
+            logger.warning("Failed to write export to shared dir %s", shared_dir, exc_info=True)
 
     return JSONResponse(content=payload)
