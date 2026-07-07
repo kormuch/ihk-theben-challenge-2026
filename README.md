@@ -10,7 +10,7 @@
 
 Produktinformationen bei Theben sind über zahlreiche Systeme und Formate verteilt:
 - ERP, PLM, externe Portale, Datenbanken
-- CSV, XLSX, JSON, XML, PDF, REST APIs
+- CSV, XLSX, JSON, XML, PDF, Bilder (PNG, JPG, …), REST APIs
 - Dokumente von Produktmanagern, Laboren (Prüfberichte), Tickets, Marketing
 
 **Kern-Pain-Point:** Kein Single Source of Truth → kein verlässlicher Digitaler Produktpass möglich.
@@ -65,7 +65,9 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 - **Existing product diff**: Shows attribute-level changes (new, changed, kept) when a product already exists
 - **Cross-file dedup**: Flags same article number found in multiple files during bulk upload
 - **LLM fallback**: Gemini 2.0 Flash primary, Groq (Llama 3.3 70B) fallback with retry + backoff
+- **OCR support**: Images (PNG, JPG, TIFF, BMP, WEBP) and scanned PDFs via Tesseract OCR (deu+eng)
 - **Bulk upload**: Multiple files at once, serialized processing with rate-limit awareness
+- **Product-Layer sync**: Auto-export on confirm with retry + exponential backoff
 
 ---
 
@@ -115,11 +117,11 @@ data-layer/
         llm.py                # LLM call layer (Gemini/Groq, retry, lock, fallback)
         classifier.py         # Stage 1: document type classification
         extractors.py         # Stage 2: per-type product data extraction
-        text_extract.py       # File-to-text (PDF, CSV, JSON, XML, XLSX, TXT)
+        text_extract.py       # File-to-text (PDF, CSV, JSON, XML, XLSX, TXT, images via OCR)
       models/
         product.py            # Product, ProductFamily, ProductDocument
       seed/
-        families.py           # 3 product families (Timer, Motion Sensor, Room Thermostat)
+        families.py           # 5 product families (Timer, Motion Sensor, Room Thermostat, KNX Actuator, Energy Meter)
         seed.py               # Auto-seeds families on startup
       core/
         config.py             # Settings
@@ -153,7 +155,8 @@ start-paul.bat                # One-click start
 | Database | PostgreSQL 16 |
 | AI / LLM | Gemini 2.0 Flash (primary), Groq Llama 3.3 70B (fallback) |
 | Infrastructure | Docker Compose |
-| Text extraction | pdfplumber, openpyxl |
+| Text extraction | pdfplumber, openpyxl, pytesseract + Pillow (OCR) |
+| OCR Engine | Tesseract (deu + eng) |
 
 ---
 
@@ -169,6 +172,22 @@ start-paul.bat                # One-click start
 | GET/POST | `/api/v1/products/` | List / create products |
 | GET/PATCH/DELETE | `/api/v1/products/{id}` | Product detail / update / delete |
 | POST | `/api/v1/ingest/upload` | Direct file upload to existing product |
+| GET | `/api/v1/ingest/documents/{id}/download` | Download original uploaded file |
+| GET | `/api/v1/export/products.json` | Export all products in product-layer format |
+
+---
+
+## Supported File Formats
+
+| Format | Method | Notes |
+|--------|--------|-------|
+| PDF | pdfplumber | Text + Tabellen; OCR-Fallback für Scans |
+| PNG, JPG, TIFF, BMP, WEBP | pytesseract OCR | Deutsch + Englisch |
+| CSV, TSV | csv module | Pipe-separated output |
+| XLSX, XLS | openpyxl | Alle Sheets, normalisierte Header |
+| JSON | json module | Pretty-print, Fallback auf raw text |
+| XML | ElementTree | Raw UTF-8 |
+| TXT, MD, LOG | Direct read | UTF-8 mit error replace |
 
 ---
 

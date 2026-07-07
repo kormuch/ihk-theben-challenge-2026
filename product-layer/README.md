@@ -139,7 +139,9 @@ The current store is a JSON adapter so the MVP runs locally. The target integrat
 
 `data-layer normalized store -> Apache Iceberg standardized table -> Apache Iceberg curated product data product -> product-layer REST/UI/export`
 
-The current executable bridge uses the data-layer endpoint `/api/v1/export/products.json`, which already emits product-layer-shaped data. Configure it with `THEBEN_DATA_LAYER_EXPORT_URL`; Docker Compose defaults the URL to `http://host.docker.internal:8000/api/v1/export/products.json` for Docker Desktop on Mac, while local host runs can point at `127.0.0.1`. The sync records upstream schema version, export timestamp, domain module, lakehouse layer, and import errors in `sync_state`.
+The current executable bridge uses the data-layer endpoint `/api/v1/export/products.json` (schema version `0.1.0`), which already emits product-layer-shaped data. Configure it with `THEBEN_DATA_LAYER_EXPORT_URL`; Docker Compose defaults the URL to `http://host.docker.internal:8000/api/v1/export/products.json` for Docker Desktop on Mac/Windows, while local host runs can point at `127.0.0.1`. The sync records upstream schema version, export timestamp, domain module, lakehouse layer, and import errors in `sync_state`.
+
+The fetch includes retry with exponential backoff (up to 3 attempts) for transient failures (network errors, HTTP 5xx). Client errors (4xx) fail immediately.
 
 Governance endpoints:
 
