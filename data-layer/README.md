@@ -137,10 +137,22 @@ By default, the data layer uses the same LAN Ollama pattern as the product layer
 DATA_LAYER_LLM_CHAIN=local_ollama_lan
 ```
 
+`local_ollama_lan` uses the configured LAN Ollama URL:
+
+```text
+http://192.168.178.60:11434
+```
+
+Override the active Ollama route without editing JSON:
+
+```bash
+DATA_LAYER_OLLAMA_BASE_URL=http://192.168.178.60:11434
+```
+
 Available chains:
 
-- `local_ollama_lan`: Ollama LAN only (default)
-- `analysis_default`: alias for Ollama LAN only
+- `local_ollama_lan`: Ollama LAN host (default)
+- `analysis_default`: alias for local Ollama analysis
 - `local_only`: backwards-compatible alias
 - `enterprise_deepseek_existing`: DeepSeek only
 - `enterprise_cloud_fallback`: Ollama LAN first, then cloud fallbacks
@@ -155,6 +167,25 @@ DEEPSEEK_API_KEY=
 GEMINI_API_KEY=
 GROQ_API_KEY=
 ```
+
+Container-side connectivity check:
+
+```bash
+docker compose exec backend python - <<'PY'
+import urllib.request
+url = "http://192.168.178.60:11434/api/tags"
+try:
+    with urllib.request.urlopen(url, timeout=8) as response:
+        print(url, response.status)
+except Exception as exc:
+    print(url, type(exc).__name__, exc)
+PY
+```
+
+Failure interpretation:
+
+- `192.168.178.60` fails with `ConnectError`: the Docker backend container cannot route to the LAN Ollama host. Check Docker Desktop networking, VPN/firewall rules, or the Ollama host firewall.
+- If product-layer Docker is running, it must not publish a local Ollama service on host port `11434`. The product-layer Compose file keeps its local Ollama service behind the `local-ollama` profile and publishes it on `11435` by default.
 
 ## Architecture
 

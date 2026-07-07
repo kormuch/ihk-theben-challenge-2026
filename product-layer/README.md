@@ -145,7 +145,8 @@ docker compose up --build
 This starts:
 
 - `product-layer` on `0.0.0.0:${PRODUCT_LAYER_PORT:-8080}`.
-- `ollama` on `0.0.0.0:11434` for optional local/LAN AI colleague access.
+
+It does not start a local Ollama service by default. Product-layer uses the configured LAN Ollama endpoint at `http://192.168.178.60:11434` so it does not compete with data-layer on host port `11434`.
 
 Use a different product-layer port:
 
@@ -153,10 +154,11 @@ Use a different product-layer port:
 PRODUCT_LAYER_PORT=8120 docker compose up --build
 ```
 
-Ollama model downloads are intentionally manual because tests should not install external models:
+If you intentionally need an isolated product-layer Ollama container, start the opt-in profile. It publishes to host port `11435` by default to avoid shadowing the LAN Ollama service on `11434`:
 
 ```bash
-docker compose exec ollama ollama pull gpt-oss:20b
+docker compose --profile local-ollama up -d ollama
+docker compose --profile local-ollama exec ollama ollama pull gpt-oss:20b
 ```
 
 ## AI Colleagues

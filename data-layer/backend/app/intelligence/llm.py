@@ -135,12 +135,66 @@ def provider_trust_env(provider: dict[str, Any]) -> bool:
 
 
 def provider_url(provider: dict[str, Any]) -> str:
+    if provider.get("_resolved_url"):
+        return str(provider["_resolved_url"])
     provider_type = provider.get("type")
     if provider_type == "ollama_generate":
         base_url = str(provider.get("base_url") or "").rstrip("/")
         endpoint = str(provider.get("endpoint") or "/api/generate")
         return f"{base_url}{endpoint if endpoint.startswith('/') else '/' + endpoint}"
     return str(provider.get("url") or "")
+
+
+def _append_endpoint(base_url: str, endpoint: str) -> str:
+    clean_base = str(base_url or "").rstrip("/")
+    if not clean_base:
+        return ""
+    clean_endpoint = endpoint if endpoint.startswith("/") else f"/{endpoint}"
+    return f"{clean_base}{clean_endpoint}"
+
+
+def provider_urls(provider: dict[str, Any]) -> list[str]:
+    """Return request URL candidates for one provider in failover order."""
+    if provider.get("type") != "ollama_generate":
+        url = provider_url(provider)
+        return [url] if url else []
+
+    endpoint = str(provider.get("endpoint") or "/api/generate")
+    base_urls: list[str] = []
+    override = os.getenv("DATA_LAYER_OLLAMA_BASE_URL") or os.getenv("OLLAMA_BASE_URL")
+    if override:
+        base_urls.append(override)
+
+    configured_base_urls = provider.get("base_urls")
+    if isinstance(configured_base_urls, list):
+        base_urls.extend(str(item) for item in configured_base_urls if str(item).strip())
+
+    fallback_base_urls = provider.get("fallback_base_urls")
+    if isinstance(fallback_base_urls, list):
+        base_urls.extend(str(item) for item in fallback_base_urls if str(item).strip())
+
+    if provider.get("base_url"):
+        base_urls.append(str(provider["base_url"]))
+
+    urls: list[str] = []
+    seen: set[str] = set()
+    for base_url in base_urls:
+        url = _append_endpoint(base_url, endpoint)
+        if url and url not in seen:
+            seen.add(url)
+            urls.append(url)
+    return urls
+
+
+def exception_summary(exc: Exception) -> str:
+    if isinstance(exc, httpx.HTTPStatusError):
+        response = exc.response
+        body = response.text.strip().replace("\n", " ")[:400]
+        suffix = f": {body}" if body else ""
+        return f"HTTP {response.status_code}{suffix}"
+    if isinstance(exc, httpx.RequestError):
+        return f"{exc.__class__.__name__}: {exc}"
+    return str(exc)
 
 
 async def _call_openai_chat(prompt: str, provider: dict[str, Any], api_key: str) -> str:
@@ -219,19 +273,36 @@ async def _call_provider(prompt: str, provider: dict[str, Any], api_key: str) ->
 
 async def _call_with_retry(prompt: str, provider_id: str, provider: dict[str, Any], api_key: str) -> str:
     name = provider_label(provider_id, provider)
-    url = provider_url(provider) or "unconfigured URL"
+    urls = provider_urls(provider)
+    if not urls:
+        raise ValueError(f"{name} has no configured request URL")
+    last_exc: Exception | None = None
+    saw_retryable = False
     for attempt in range(MAX_RETRIES):
-        try:
-            return await _call_provider(prompt, provider, api_key)
-        except (httpx.HTTPStatusError, httpx.RequestError) as exc:
-            retryable = isinstance(exc, httpx.RequestError) or exc.response.status_code in RETRY_CODES
-            if retryable and attempt < MAX_RETRIES - 1:
-                delay = COOLDOWN_SECONDS * (2**attempt)
-                reason = getattr(getattr(exc, "response", None), "status_code", exc.__class__.__name__)
-                log.warning("%s at %s %s - retry %s/%s in %.0fs", name, url, reason, attempt + 1, MAX_RETRIES, delay)
-                await asyncio.sleep(delay)
-            else:
-                raise
+        for index, url in enumerate(urls, start=1):
+            resolved_provider = {**provider, "_resolved_url": url}
+            try:
+                return await _call_provider(prompt, resolved_provider, api_key)
+            except (httpx.HTTPStatusError, httpx.RequestError) as exc:
+                retryable = isinstance(exc, httpx.RequestError) or exc.response.status_code in RETRY_CODES
+                last_exc = exc
+                saw_retryable = saw_retryable or retryable
+                log.warning(
+                    "%s at %s %s - failed candidate %s/%s on attempt %s/%s",
+                    name,
+                    url,
+                    exception_summary(exc),
+                    index,
+                    len(urls),
+                    attempt + 1,
+                    MAX_RETRIES,
+                )
+        if saw_retryable and attempt < MAX_RETRIES - 1:
+            delay = COOLDOWN_SECONDS * (2**attempt)
+            log.warning("%s exhausted %d candidate URL(s) - retry %s/%s in %.0fs", name, len(urls), attempt + 1, MAX_RETRIES, delay)
+            await asyncio.sleep(delay)
+        elif last_exc:
+            raise last_exc
     raise RuntimeError("Unreachable")
 
 
@@ -246,6 +317,7 @@ def get_active_config() -> dict[str, Any]:
             "id": pid,
             "label": provider_label(pid, prov),
             "type": prov.get("type"),
+            "urls": provider_urls(prov),
             "model": prov.get("model"),
             "temperature": prov.get("temperature"),
             "max_tokens": prov.get("max_tokens"),
@@ -291,7 +363,8 @@ async def call_llm(prompt: str) -> str:
                 if retryable:
                     _backoff_until[provider_id] = time.time() + 60
                     log.warning("%s exhausted retries - skipping for 60s", name)
-                last_error = f"{name} at {provider_url(provider) or 'unconfigured URL'}: {exc}"
+                urls = ", ".join(provider_urls(provider)) or "unconfigured URL"
+                last_error = f"{name} at {urls}: {exception_summary(exc)}"
             except ValueError as exc:
                 last_error = f"{name}: {exc}"
 

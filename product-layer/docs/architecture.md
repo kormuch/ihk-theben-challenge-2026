@@ -106,7 +106,7 @@ docker compose up --build
 Services:
 
 - `product-layer`: Python stdlib REST/UI service on `0.0.0.0:8080`.
-- `ollama`: local LLM endpoint on `0.0.0.0:11434` for LAN access.
+- `ollama`: optional profile-only local LLM endpoint, published as `${PRODUCT_LAYER_OLLAMA_PORT:-11435}:11434` to avoid conflicting with the shared LAN Ollama service on `192.168.178.60:11434`.
 
 ## Standard validation path
 

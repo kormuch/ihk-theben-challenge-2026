@@ -112,12 +112,15 @@ services:
       DATABASE_URL: postgresql://paul:paul@db:5432/paul
       STORAGE_PATH: /storage/originals
       PRODUCT_LAYER_DATA_DIR: /product-layer-data
-      DATA_LAYER_LLM_CONFIG: /config/llm_agents.json
-      DATA_LAYER_LLM_CHAIN: local_ollama_lan
+      DATA_LAYER_LLM_CONFIG: ${DATA_LAYER_LLM_CONFIG:-/config/llm_agents.json}
+      DATA_LAYER_LLM_CHAIN: ${DATA_LAYER_LLM_CHAIN:-local_ollama_lan}
+      DATA_LAYER_OLLAMA_BASE_URL: ${DATA_LAYER_OLLAMA_BASE_URL:-http://192.168.178.60:11434}
       TRINO_HOST: trino
       TRINO_PORT: "8080"
       TRINO_CATALOG: iceberg
       TRINO_SCHEMA: products
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./backend:/app
       - ./config:/config:ro

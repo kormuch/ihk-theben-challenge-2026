@@ -56,6 +56,29 @@ class LLMConfigTests(unittest.TestCase):
             "http://192.168.178.60:11434/api/generate",
         )
 
+    def test_provider_urls_include_configured_fallbacks(self):
+        provider = ollama_provider(
+            base_urls=["http://192.168.178.60:11434"],
+            fallback_base_urls=["http://host.docker.internal:11434", "http://192.168.178.60:11434"],
+        )
+
+        self.assertEqual(
+            llm.provider_urls(provider),
+            [
+                "http://192.168.178.60:11434/api/generate",
+                "http://host.docker.internal:11434/api/generate",
+            ],
+        )
+
+    def test_provider_urls_prepend_environment_override(self):
+        provider = ollama_provider(base_urls=["http://192.168.178.60:11434"])
+
+        with patch.dict("os.environ", {"DATA_LAYER_OLLAMA_BASE_URL": "http://host.docker.internal:11434"}):
+            urls = llm.provider_urls(provider)
+
+        self.assertEqual(urls[0], "http://host.docker.internal:11434/api/generate")
+        self.assertIn("http://192.168.178.60:11434/api/generate", urls)
+
 
 class LLMRuntimeTests(unittest.IsolatedAsyncioTestCase):
     async def test_ollama_http_client_ignores_proxy_environment(self):
@@ -74,6 +97,65 @@ class LLMRuntimeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, "ok")
         async_client.assert_called_once_with(timeout=120.0, trust_env=False)
         client.post.assert_awaited_once()
+
+    async def test_ollama_retry_tries_docker_host_fallback_url(self):
+        provider = ollama_provider(
+            base_urls=["http://192.168.178.60:11434"],
+            fallback_base_urls=["http://host.docker.internal:11434"],
+        )
+        request = httpx.Request("POST", "http://192.168.178.60:11434/api/generate")
+
+        with (
+            patch.object(
+                llm,
+                "_call_provider",
+                new=AsyncMock(side_effect=[httpx.ConnectError("LAN route failed", request=request), "ok"]),
+            ) as call_provider,
+            patch.object(llm, "MAX_RETRIES", 1),
+        ):
+            result = await llm._call_with_retry("classify", "ollama_lan", provider, "")
+
+        self.assertEqual(result, "ok")
+        called_urls = [call.args[1]["_resolved_url"] for call in call_provider.await_args_list]
+        self.assertEqual(
+            called_urls,
+            [
+                "http://192.168.178.60:11434/api/generate",
+                "http://host.docker.internal:11434/api/generate",
+            ],
+        )
+
+    async def test_ollama_fallback_404_keeps_error_body_visible(self):
+        provider = ollama_provider(
+            base_urls=["http://192.168.178.60:11434"],
+            fallback_base_urls=["http://host.docker.internal:11434"],
+        )
+        lan_request = httpx.Request("POST", "http://192.168.178.60:11434/api/generate")
+        fallback_request = httpx.Request("POST", "http://host.docker.internal:11434/api/generate")
+        fallback_response = httpx.Response(
+            404,
+            request=fallback_request,
+            content=b'{"error":"model gpt-oss:20b not found"}',
+        )
+        fallback_error = httpx.HTTPStatusError("not found", request=fallback_request, response=fallback_response)
+
+        with (
+            patch.object(
+                llm,
+                "_call_provider",
+                new=AsyncMock(
+                    side_effect=[
+                        httpx.ConnectError("LAN route failed", request=lan_request),
+                        fallback_error,
+                    ]
+                ),
+            ),
+            patch.object(llm, "MAX_RETRIES", 1),
+        ):
+            with self.assertRaises(httpx.HTTPStatusError) as raised:
+                await llm._call_with_retry("classify", "ollama_lan", provider, "")
+
+        self.assertIn("model gpt-oss:20b not found", llm.exception_summary(raised.exception))
 
     async def test_optional_ollama_key_is_not_reported_as_required_on_connect_error(self):
         config = {

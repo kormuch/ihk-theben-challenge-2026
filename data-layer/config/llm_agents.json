@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1.0",
   "purpose": "Config-as-code registry for data-layer LLM agents used during document analysis, classification, and extraction.",
-  "default_chain": "enterprise_cloud_fallback",
+  "default_chain": "local_ollama_lan",
   "chains": {
     "analysis_default": [
       "ollama_lan"
@@ -10,6 +10,9 @@
       "ollama_lan"
     ],
     "local_ollama_localhost": [
+      "ollama_localhost"
+    ],
+    "ollama_localhost": [
       "ollama_localhost"
     ],
     "enterprise_deepseek_existing": [
@@ -36,6 +39,10 @@
       "type": "ollama_generate",
       "enabled": true,
       "base_url": "http://192.168.178.60:11434",
+      "base_urls": [
+        "http://192.168.178.60:11434"
+      ],
+      "fallback_base_urls": [],
       "endpoint": "/api/generate",
       "model": "gpt-oss:20b",
       "trust_env": false,
@@ -50,7 +57,7 @@
         "metadata review",
         "DPP drafting"
       ],
-      "data_policy": "Only send data allowed for the local LAN Ollama environment. Human review remains required before changing product data or certification state."
+      "data_policy": "Only send data allowed for the local LAN Ollama environment. Human review remains required before changing product data or certification state. The product-layer Docker stack must not publish a competing host service on port 11434 because the canonical Ollama endpoint is the LAN host."
     },
     "ollama_localhost": {
       "label": "Ollama localhost analyst",
@@ -153,7 +160,7 @@
           "num_predict": 4096
         }
       },
-      "example_curl": "curl http://192.168.178.60:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\",\"stream\":false,\"options\":{\"temperature\":0.1,\"num_predict\":4096}}'"
+      "example_curl": "curl http://localhost:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\",\"stream\":false,\"options\":{\"temperature\":0.1,\"num_predict\":4096}}'"
     },
     "ollama_localhost": {
       "description": "Alternative localhost Ollama generate call for host-local data-layer runs.",
@@ -271,7 +278,8 @@
       "description": "Default data-layer setup. Keeps document analysis on the LAN and mirrors the product-layer Ollama integration.",
       "environment": {
         "DATA_LAYER_LLM_CONFIG": "/config/llm_agents.json",
-        "DATA_LAYER_LLM_CHAIN": "local_ollama_lan"
+        "DATA_LAYER_LLM_CHAIN": "local_ollama_lan",
+        "DATA_LAYER_OLLAMA_BASE_URL": "http://192.168.178.60:11434"
       },
       "provider_changes": {
         "ollama_lan.enabled": true
