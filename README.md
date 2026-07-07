@@ -176,6 +176,7 @@ start-paul.bat                # One-click start
 | POST | `/api/v1/ingest/upload` | Direct file upload to existing product |
 | GET | `/api/v1/ingest/documents/{id}/download` | Download original uploaded file |
 | GET | `/api/v1/export/products.json` | Export all products in product-layer format |
+| GET | `/api/v1/analyze/prompts` | AI pipeline transparency (prompts, model, config) |
 
 ---
 
@@ -211,7 +212,7 @@ Datasheet, Lab Report, Certificate, Software Documentation, Bill of Materials, M
 
 ## Test Documents
 
-The `data-layer/test-docs/` folder contains realistic Theben-style test files including edge cases:
+The `data-layer/test-docs/hard/` folder contains realistic Theben-style test files including edge cases:
 
 | File | Challenge |
 |------|-----------|
