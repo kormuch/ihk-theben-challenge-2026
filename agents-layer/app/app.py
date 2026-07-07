@@ -298,18 +298,206 @@ def html_dashboard(config: dict[str, Any]) -> str:
     expert_count = len(agents["expert-agents-layer"])
     return f"""<!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>Thebenpaul Agents Layer</title></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thebenpaul Agents Layer</title>
+  <style>
+    :root {{
+      --ink: #0f1117;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --soft: #f8fafc;
+      --panel: #ffffff;
+      --brand: #22c55e;
+      --brand-hover: #16a34a;
+      --ok: #16a34a;
+      --warn: #d97706;
+      --shadow: 0 10px 28px rgba(15, 17, 23, 0.07);
+    }}
+
+    * {{
+      box-sizing: border-box;
+    }}
+
+    body {{
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--ink);
+      background: #fff;
+    }}
+
+    .topbar {{
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: center;
+      padding: 18px 28px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }}
+
+    h1 {{
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 800;
+    }}
+
+    p {{
+      margin: 0;
+      color: var(--muted);
+    }}
+
+    nav {{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }}
+
+    a {{
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 10px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--soft);
+      transition: border-color 140ms ease, color 140ms ease;
+    }}
+
+    a:hover {{
+      border-color: rgba(34, 197, 94, 0.45);
+      color: var(--ok);
+    }}
+
+    main {{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }}
+
+    .grid {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }}
+
+    .metric,
+    .panel {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }}
+
+    .metric {{
+      border-left: 3px solid var(--brand);
+      padding: 14px;
+    }}
+
+    .metric strong {{
+      display: block;
+      font-size: 24px;
+      font-weight: 800;
+    }}
+
+    .metric span {{
+      color: var(--muted);
+    }}
+
+    .panel {{
+      padding: 16px;
+    }}
+
+    h2 {{
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 800;
+    }}
+
+    .status-list {{
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }}
+
+    .status-list li {{
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 8px 0;
+    }}
+
+    .status-list li:last-child {{
+      border-bottom: 0;
+    }}
+
+    .badge {{
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: rgba(22, 163, 74, 0.12);
+      color: var(--ok);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }}
+
+    code {{
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--soft);
+      padding: 2px 5px;
+      font-size: 12px;
+    }}
+
+    @media (max-width: 800px) {{
+      .topbar,
+      .grid {{
+        display: block;
+      }}
+
+      nav,
+      .metric {{
+        margin-top: 12px;
+      }}
+    }}
+  </style>
+</head>
 <body>
-  <h1>Thebenpaul Agents Layer</h1>
-  <p>Lightweight advisory runtime for compliance and expert agents.</p>
-  <ul>
-    <li>Compliance agents: {compliance_count}</li>
-    <li>Expert agents: {expert_count}</li>
-    <li>Advisory only: humans validate and sign off.</li>
-  </ul>
-  <p><a href="/api/agents">Agents JSON</a></p>
-  <p><a href="/api/standards-validity">Standards validity JSON</a></p>
-  <p><a href="/api/open-items">Open items JSON</a></p>
+  <header class="topbar">
+    <div>
+      <h1>Thebenpaul Agents Layer</h1>
+      <p>Lightweight advisory runtime for compliance and expert agents.</p>
+    </div>
+    <nav>
+      <a href="/api/agents">Agents JSON</a>
+      <a href="/api/standards-validity">Standards validity JSON</a>
+      <a href="/api/open-items">Open items JSON</a>
+    </nav>
+  </header>
+  <main>
+    <section class="grid">
+      <div class="metric"><strong>{compliance_count}</strong><span>Compliance agents</span></div>
+      <div class="metric"><strong>{expert_count}</strong><span>Expert agents</span></div>
+      <div class="metric"><strong>{compliance_count + expert_count}</strong><span>Total advisory agents</span></div>
+    </section>
+    <section class="panel">
+      <h2>Runtime guardrails</h2>
+      <ul class="status-list">
+        <li><span>Assessment mode</span><span class="badge">Advisory only</span></li>
+        <li><span>Human validation</span><span class="badge">Required</span></li>
+        <li><span>Source layers</span><span><code>product-layer</code> <code>data-layer</code></span></li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>"""
 
