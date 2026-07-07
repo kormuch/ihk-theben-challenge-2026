@@ -6,6 +6,7 @@ from app.ingestion.xlsx_ingestor import XlsxIngestor
 from app.ingestion.json_ingestor import JsonIngestor
 from app.ingestion.xml_ingestor import XmlIngestor
 from app.ingestion.pdf_ingestor import PdfIngestor
+from app.ingestion.image_ingestor import ImageIngestor
 
 INGESTORS: list[BaseIngestor] = [
     CsvIngestor(),
@@ -13,6 +14,7 @@ INGESTORS: list[BaseIngestor] = [
     JsonIngestor(),
     XmlIngestor(),
     PdfIngestor(),
+    ImageIngestor(),
 ]
 
 
