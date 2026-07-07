@@ -40,14 +40,6 @@
           <option value="draft">Draft</option>
         </select>
       </label>
-      <label>Role
-        <select id="role">
-          <option value="viewer">Viewer</option>
-          <option value="editor">Editor</option>
-          <option value="steward">Steward</option>
-          <option value="admin">Admin</option>
-        </select>
-      </label>
       <button id="refresh">Refresh</button>
     </section>
 
@@ -121,6 +113,20 @@
       <div id="agentAssessmentResult"></div>
     </section>
   </main>
+
+  <div id="agentModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="agentModalTitle">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h2 id="agentModalTitle">Agent assessment</h2>
+        <button id="closeAgentModal" class="secondary-button" aria-label="Close assessment">Close</button>
+      </div>
+      <div id="agentModalBody" class="modal-body"></div>
+      <div class="modal-actions">
+        <button id="speakAgentAssessment">Speak summary</button>
+        <button id="stopAgentSpeech" class="secondary-button">Stop voice</button>
+      </div>
+    </div>
+  </div>
 
   <script src="/app.js"></script>
 </body>

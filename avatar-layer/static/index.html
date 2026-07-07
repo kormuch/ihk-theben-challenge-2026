@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thebenpaul Avatar Layer</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell" data-mode="dpp">
+    <section class="avatar-stage" aria-label="Avatar assessment panel">
+      <div class="topbar">
+        <div>
+          <p class="eyebrow">Thebenpaul</p>
+          <h1>Assess Avatar</h1>
+        </div>
+        <div class="status-pill" id="statusPill">standby</div>
+      </div>
+
+      <div class="avatar-grid">
+        <div class="avatar-panel" id="avatarPanel" aria-live="polite">
+          <div class="scan-lines"></div>
+          <div class="halo halo-one"></div>
+          <div class="halo halo-two"></div>
+          <div class="core">
+            <div class="core-glass"></div>
+            <div class="waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="state-label" id="stateLabel">idle</div>
+        </div>
+
+        <aside class="summary-panel">
+          <div class="metric-row">
+            <div>
+              <span class="metric-label">Status</span>
+              <strong id="assessmentStatus">not run</strong>
+            </div>
+            <div>
+              <span class="metric-label">Severity</span>
+              <strong id="severity">none</strong>
+            </div>
+            <div>
+              <span class="metric-label">Confidence</span>
+              <strong id="confidence">0%</strong>
+            </div>
+          </div>
+          <div class="summary-text" id="displaySummary">Assessment output will appear here.</div>
+          <div class="actions" aria-label="Avatar controls">
+            <button id="runSample" type="button">Run Sample</button>
+            <button id="replaySpeech" type="button">Replay</button>
+            <button id="stopSpeech" type="button">Stop</button>
+          </div>
+          <div class="toggles">
+            <label><input id="muteToggle" type="checkbox"> Mute</label>
+            <label><input id="motionToggle" type="checkbox"> Reduced motion</label>
+            <label><input id="textOnlyToggle" type="checkbox"> Text only</label>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="review-grid" aria-label="Assessment transcript and evidence">
+      <article class="transcript">
+        <header>
+          <h2>Transcript</h2>
+          <span id="sessionMeta">no session</span>
+        </header>
+        <ol id="transcriptEntries"></ol>
+      </article>
+
+      <article class="traceability">
+        <header>
+          <h2>Traceability</h2>
+          <span id="hiddenRefs">0 hidden</span>
+        </header>
+        <dl>
+          <div><dt>Product</dt><dd id="productId">none</dd></div>
+          <div><dt>Agents</dt><dd id="agentVersions">none</dd></div>
+          <div><dt>Missing</dt><dd id="missingEvidence">none</dd></div>
+        </dl>
+        <ul id="evidenceRefs"></ul>
+      </article>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

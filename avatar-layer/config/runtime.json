@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "service": {
+    "name": "thebenpaul-avatar-layer",
+    "host": "0.0.0.0",
+    "port": 8095,
+    "mode": "thin-assessment-interaction-layer",
+    "advisory_only": true
+  },
+  "integrations": {
+    "product_layer": {
+      "base_url": "http://host.docker.internal:8080",
+      "entry_contract": "product-layer Assess action passes product_id, viewer role, assessment mode, and optional assessment payload",
+      "write_policy": "no product master or DPP mutation"
+    },
+    "agents_layer": {
+      "base_url": "http://host.docker.internal:8090",
+      "assessment_contracts": [
+        "/api/assessments",
+        "precomputed assessment payload from product-layer"
+      ],
+      "write_policy": "no agent finding mutation"
+    },
+    "data_layer": {
+      "access_policy": "no direct raw evidence queries; evidence references arrive from product-layer or agents-layer"
+    }
+  },
+  "speech": {
+    "provider": "browser_web_speech_api",
+    "default_language": "en-US",
+    "default_rate": 0.95,
+    "default_pitch": 0.95,
+    "mute_by_default_for_restricted_content": true,
+    "max_spoken_chars": 520,
+    "transcript_required": true
+  },
+  "ui": {
+    "static_shell": true,
+    "webgl_optional": true,
+    "reduced_motion_supported": true,
+    "text_only_supported": true
+  }
+}

@@ -1,8 +1,10 @@
 import json
+import os
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from app.app import assess_product, config_payload, enabled_agent_ids, standards_records
+from app.app import assess_product, config_payload, enabled_agent_ids, role_from_headers, standards_records
 
 
 class AgentsLayerConfigTests(unittest.TestCase):
@@ -54,6 +56,21 @@ class AgentsLayerConfigTests(unittest.TestCase):
 
 
 class AgentsLayerAssessmentTests(unittest.TestCase):
+    def test_role_headers_are_ignored_by_default_without_token_or_trust(self):
+        with patch.dict(os.environ, {"THEBEN_DEFAULT_ROLE": "viewer"}, clear=False):
+            os.environ.pop("THEBEN_AGENTS_ROLE_TOKEN", None)
+            os.environ.pop("THEBEN_ROLE_TOKEN", None)
+            os.environ.pop("THEBEN_AGENTS_TRUST_ROLE_HEADERS", None)
+            role = role_from_headers({"X-Role": "admin"})
+        self.assertEqual(role, "viewer")
+
+    def test_role_headers_can_be_token_gated_for_product_layer_proxy(self):
+        with patch.dict(os.environ, {"THEBEN_DEFAULT_ROLE": "viewer", "THEBEN_AGENTS_ROLE_TOKEN": "secret"}, clear=False):
+            spoofed = role_from_headers({"X-Role": "reviewer"})
+            authorized = role_from_headers({"X-Role": "reviewer", "X-Role-Token": "secret"})
+        self.assertEqual(spoofed, "viewer")
+        self.assertEqual(authorized, "reviewer")
+
     def test_assessment_is_advisory_traceable_and_non_mutating(self):
         payload = {
             "target_market": "EU",
@@ -123,6 +140,45 @@ class AgentsLayerAssessmentTests(unittest.TestCase):
         self.assertEqual(result["product_context"]["requested_agent_ids"], ["expert-dpp-readiness"])
         self.assertGreater(len(result["findings"]), 0)
         self.assertEqual({finding["agent_id"] for finding in result["findings"]}, {"expert-dpp-readiness"})
+
+    def test_selected_product_fields_change_dpp_readiness_result(self):
+        complete = {
+            "agent_ids": ["expert-dpp-readiness"],
+            "product": {
+                "id": "THB-DPP-COMPLETE",
+                "family": "Time Switch",
+                "lifecycle_state": "active",
+                "attributes": {
+                    "gtin": "04003468000001",
+                    "batch_lot_number": "LOT-001",
+                    "serial_number": "SN-001",
+                },
+                "metadata": {},
+            },
+            "evidence": [{"type": "product_master_record", "reference": "product-layer/THB-DPP-COMPLETE"}],
+        }
+        incomplete = {
+            "agent_ids": ["expert-dpp-readiness"],
+            "product": {
+                "id": "THB-DPP-INCOMPLETE",
+                "family": "Time Switch",
+                "lifecycle_state": "active",
+                "attributes": {},
+                "metadata": {},
+            },
+            "evidence": [{"type": "product_master_record", "reference": "product-layer/THB-DPP-INCOMPLETE"}],
+        }
+
+        complete_result = assess_product(complete, role="reviewer")
+        incomplete_result = assess_product(incomplete, role="reviewer")
+
+        self.assertEqual(complete_result["findings"][0]["status"], "passed")
+        self.assertEqual(incomplete_result["findings"][0]["status"], "needs_review")
+        self.assertEqual(incomplete_result["findings"][0]["missing_product_fields"], [
+            "attributes.gtin",
+            "attributes.batch_lot_number",
+            "attributes.serial_number",
+        ])
 
 
 if __name__ == "__main__":

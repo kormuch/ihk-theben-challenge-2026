@@ -1113,9 +1113,12 @@ def current_user(headers: Any) -> dict[str, Any]:
     auth_header = (headers.get("Authorization") or "").strip()
     if auth_header.lower().startswith("bearer "):
         provided_token = auth_header[7:].strip()
-    role = requested_role
-    if role_token and provided_token != role_token:
-        role = default_role
+    trust_role_headers = bool_from_env(os.environ.get("THEBEN_TRUST_ROLE_HEADERS"), False)
+    role = default_role
+    if role_token:
+        role = requested_role if provided_token == role_token else default_role
+    elif trust_role_headers:
+        role = requested_role
     actor = headers.get("X-User") or headers.get("X-Actor") or headers.get("X-Email") or f"local-{role}"
     purpose = headers.get("X-Purpose") or "analytics"
     region = headers.get("X-Region") or "EU"
@@ -1256,9 +1259,44 @@ def agents_layer_config() -> dict[str, Any]:
         "catalog_fallback_file": configured.get("catalog_fallback_file", ""),
         "contract": configured.get("contract", "product-layer-agent-assessment-v1"),
         "mode": configured.get("mode", "advisory"),
+        "service_role": configured.get("service_role", "reviewer"),
+        "role_token_env": configured.get("role_token_env", "THEBEN_AGENTS_LAYER_ROLE_TOKEN"),
         "write_policy": configured.get(
             "write_policy",
             "advisory output only; product and evidence records require human review",
+        ),
+    }
+
+
+def avatar_layer_config() -> dict[str, Any]:
+    configured = dict(RUNTIME_CONFIG.get("avatar_layer") or {})
+    timeout_raw = os.environ.get("THEBEN_AVATAR_LAYER_TIMEOUT") or configured.get("timeout_seconds", 5)
+    try:
+        timeout_seconds = float(timeout_raw)
+    except (TypeError, ValueError):
+        timeout_seconds = 5.0
+    allowed_hosts = os.environ.get("THEBEN_AVATAR_LAYER_ALLOWED_HOSTS")
+    if allowed_hosts:
+        hosts = [host.strip().lower() for host in allowed_hosts.split(",") if host.strip()]
+    else:
+        hosts = list(configured.get("allowed_hosts") or ["127.0.0.1", "localhost", "host.docker.internal", "avatar-layer"])
+    return {
+        "enabled": bool_from_env(os.environ.get("THEBEN_AVATAR_LAYER_ENABLED"), bool(configured.get("enabled", True))),
+        "base_url": (
+            os.environ.get("THEBEN_AVATAR_LAYER_URL")
+            or configured.get("base_url")
+            or "http://host.docker.internal:8095"
+        ).rstrip("/"),
+        "local_base_url": str(configured.get("local_base_url") or "http://127.0.0.1:8095").rstrip("/"),
+        "timeout_seconds": max(0.5, min(timeout_seconds, 60.0)),
+        "allowed_hosts": hosts,
+        "contract": configured.get("contract", "product-layer-avatar-assessment-v1"),
+        "mode": configured.get("mode", "thin_interaction_layer"),
+        "service_role": configured.get("service_role", "viewer"),
+        "role_token_env": configured.get("role_token_env", "THEBEN_AVATAR_LAYER_ROLE_TOKEN"),
+        "write_policy": configured.get(
+            "write_policy",
+            "presentation and spoken advisory output only; no governed data mutation",
         ),
     }
 
@@ -1267,14 +1305,18 @@ def join_url(base_url: str, path: str) -> str:
     return f"{base_url.rstrip('/')}/{path.lstrip('/')}"
 
 
-def validate_agents_layer_url(url: str, allowed_hosts: list[str]) -> None:
+def validate_integration_url(url: str, allowed_hosts: list[str], service_name: str) -> None:
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https"):
-        raise ValueError("agents-layer URL must use http or https")
+        raise ValueError(f"{service_name} URL must use http or https")
     host = (parsed.hostname or "").lower()
     normalized_allowed = {item.lower() for item in allowed_hosts}
     if normalized_allowed and host not in normalized_allowed:
-        raise ValueError(f"agents-layer host is not allowed: {host}")
+        raise ValueError(f"{service_name} host is not allowed: {host}")
+
+
+def validate_agents_layer_url(url: str, allowed_hosts: list[str]) -> None:
+    validate_integration_url(url, allowed_hosts, "agents-layer")
 
 
 def fetch_json_url(
@@ -1283,6 +1325,7 @@ def fetch_json_url(
     method: str = "GET",
     payload: dict[str, Any] | None = None,
     headers: dict[str, str] | None = None,
+    service_name: str = "integration",
 ) -> dict[str, Any]:
     request_headers = {"Accept": JSON, **(headers or {})}
     data = None
@@ -1310,13 +1353,13 @@ def fetch_json_url(
         raise ValueError(message) from exc
     except URLError as exc:
         logger.error("FETCH FAILED: %s unreachable: %s", url, exc.reason)
-        raise ValueError(f"agents-layer is unavailable: {exc.reason}") from exc
+        raise ValueError(f"{service_name} is unavailable: {exc.reason}") from exc
     try:
         parsed_payload = json.loads(raw.decode("utf-8"))
     except json.JSONDecodeError as exc:
-        raise ValueError(f"agents-layer returned invalid JSON: {exc}") from exc
+        raise ValueError(f"{service_name} returned invalid JSON: {exc}") from exc
     if not isinstance(parsed_payload, dict):
-        raise ValueError("agents-layer response must be a JSON object")
+        raise ValueError(f"{service_name} response must be a JSON object")
     return parsed_payload
 
 
@@ -1350,6 +1393,7 @@ def agents_layer_contract(host: str = "localhost") -> dict[str, Any]:
         "mode": config["mode"],
         "base_url": config["base_url"],
         "local_base_url": config["local_base_url"],
+        "avatar_layer": avatar_layer_contract(host),
         "timeout_seconds": config["timeout_seconds"],
         "source_layer": "curated",
         "target_layer": "advisory_agents",
@@ -1376,14 +1420,14 @@ def agents_layer_contract(host: str = "localhost") -> dict[str, Any]:
                 "name": "List agents through product-layer",
                 "method": "GET",
                 "url": "/api/agents-layer/agents",
-                "curl": f"curl -H 'X-Role: viewer' {local_product_base}/api/agents-layer/agents",
+                "curl": f"curl {local_product_base}/api/agents-layer/agents",
             },
             {
                 "name": "Run advisory assessment for one product through product-layer",
                 "method": "POST",
                 "url": "/api/agents-layer/assessments",
                 "curl": (
-                    "curl -X POST -H 'X-Role: steward' -H 'Content-Type: application/json' "
+                    "curl -X POST -H 'Content-Type: application/json' "
                     f"-d '{json.dumps(sample_assessment, separators=(',', ':'))}' "
                     f"{local_product_base}/api/agents-layer/assessments"
                 ),
@@ -1399,7 +1443,7 @@ def agents_layer_contract(host: str = "localhost") -> dict[str, Any]:
                 "method": "POST",
                 "url": "/api/assessments",
                 "curl": (
-                    "curl -X POST -H 'X-Role: reviewer' -H 'Content-Type: application/json' "
+                    "curl -X POST -H 'X-Role: ${THEBEN_TRUSTED_ROLE}' -H 'X-Role-Token: ${THEBEN_AGENTS_LAYER_ROLE_TOKEN}' -H 'Content-Type: application/json' "
                     "-d '{\"target_market\":\"EU\",\"product\":{\"id\":\"THB-SMOKE-001\","
                     "\"family\":\"KNX Actuator\",\"attributes\":{\"gtin\":\"04003468000001\","
                     "\"batch_lot_number\":\"LOT-001\",\"serial_number\":\"SN-001\"},"
@@ -1409,6 +1453,70 @@ def agents_layer_contract(host: str = "localhost") -> dict[str, Any]:
                     "\"evidence\":[{\"type\":\"product_master_record\",\"reference\":\"product-layer/THB-SMOKE-001\"},"
                     "{\"type\":\"lineage_record\",\"reference\":\"lineage/THB-SMOKE-001\"}]}' "
                     f"{agents_base}/api/assessments"
+                ),
+            },
+        ],
+    }
+
+
+def avatar_layer_contract(host: str = "localhost") -> dict[str, Any]:
+    config = avatar_layer_config()
+    local_product_base = f"http://{host}".rstrip("/")
+    avatar_base = config["local_base_url"]
+    sample_payload = {
+        "product_id": "thb-tim-0001",
+        "agent_ids": ["expert-dpp-readiness"],
+        "assessment_mode": "dpp",
+        "assessment": {
+            "readiness": {"status": "review_required", "score": 68},
+            "findings": [{"agent_id": "expert-dpp-readiness", "status": "needs_review"}],
+        },
+    }
+    return {
+        "status": "active_adapter" if config["enabled"] else "disabled",
+        "enabled": config["enabled"],
+        "contract": config["contract"],
+        "mode": config["mode"],
+        "base_url": config["base_url"],
+        "local_base_url": config["local_base_url"],
+        "timeout_seconds": config["timeout_seconds"],
+        "source_layer": "product_ui_runtime",
+        "target_layer": "avatar_interaction_layer",
+        "architecture": "product-layer proxies assessment context to avatar-layer so users can hear and review advisory output without leaving the product UI.",
+        "write_policy": config["write_policy"],
+        "human_review_required": True,
+        "interfaces": {
+            "product_layer_proxy": {
+                "integration_contract": "/api/integrations/avatar-layer",
+                "selected_product_avatar_assessment": "/api/avatar-layer/assessments",
+            },
+            "avatar_layer_runtime": {
+                "health": "/health",
+                "config": "/api/config",
+                "profiles": "/api/profiles",
+                "assessment_modes": "/api/assessment-modes",
+                "assess": "/api/avatar/assess",
+            },
+        },
+        "rest_api_calls": [
+            {
+                "name": "Run avatar assessment through product-layer",
+                "method": "POST",
+                "url": "/api/avatar-layer/assessments",
+                "curl": (
+                    "curl -X POST -H 'Content-Type: application/json' "
+                    f"-d '{json.dumps(sample_payload, separators=(',', ':'))}' "
+                    f"{local_product_base}/api/avatar-layer/assessments"
+                ),
+            },
+            {
+                "name": "Run avatar assessment directly against avatar-layer",
+                "method": "POST",
+                "url": "/api/avatar/assess",
+                "curl": (
+                    "curl -X POST -H 'Content-Type: application/json' "
+                    f"-d '{json.dumps(sample_payload, separators=(',', ':'))}' "
+                    f"{avatar_base}/api/avatar/assess"
                 ),
             },
         ],
@@ -1517,6 +1625,55 @@ def build_agents_layer_assessment_payload(product: dict[str, Any], body: dict[st
     return result
 
 
+def assessment_mode_for_agent_ids(agent_ids: list[str]) -> str:
+    joined = " ".join(agent_ids).lower()
+    if "cyber" in joined or "security" in joined:
+        return "cybersecurity"
+    if "dpp" in joined or "passport" in joined:
+        return "dpp"
+    if "compliance" in joined:
+        return "compliance"
+    return "general"
+
+
+def build_avatar_layer_assessment_payload(
+    product: dict[str, Any],
+    body: dict[str, Any] | None = None,
+    user: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    body = body or {}
+    user = user or {}
+    product_id = str(product.get("id") or product.get("sku") or body.get("product_id") or "unknown-product")
+    agent_ids = body.get("agent_ids") or body.get("requested_agent_ids") or []
+    if not isinstance(agent_ids, list):
+        agent_ids = []
+    normalized_agent_ids = [str(agent_id) for agent_id in agent_ids if str(agent_id).strip()]
+    assessment_mode = str(body.get("assessment_mode") or assessment_mode_for_agent_ids(normalized_agent_ids))
+    result = {
+        "role": str(user.get("role") or body.get("role") or "viewer"),
+        "region": str(user.get("region") or body.get("region") or "EU"),
+        "purpose": str(user.get("purpose") or body.get("purpose") or "analytics"),
+        "product_id": product_id,
+        "agent_ids": normalized_agent_ids,
+        "assessment_mode": assessment_mode,
+        "assessment": body.get("assessment") if isinstance(body.get("assessment"), dict) else {},
+        "product_context": {
+            "id": product_id,
+            "sku": product.get("sku"),
+            "name": product.get("name"),
+            "family": product.get("family"),
+            "lifecycle_state": product.get("lifecycle_status") or product.get("lifecycle_state") or "unknown",
+            "classification": (product.get("metadata") or {}).get("classification"),
+            "lakehouse_layer": "curated",
+        },
+        "source_contract": "product-layer-avatar-assessment-v1",
+    }
+    for key in ("muted", "reduced_motion", "text_only"):
+        if key in body:
+            result[key] = bool(body.get(key))
+    return result
+
+
 def run_agents_layer_assessment(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
     config = agents_layer_config()
     if not config["enabled"]:
@@ -1530,20 +1687,95 @@ def run_agents_layer_assessment(store: "ProductStore", body: dict[str, Any], use
     url = join_url(config["base_url"], "/api/assessments")
     validate_agents_layer_url(url, config["allowed_hosts"])
     payload = build_agents_layer_assessment_payload(product, body)
+    payload["request_context"] = {
+        "caller_role": str(user.get("role") or "viewer"),
+        "caller_region": str(user.get("region") or "EU"),
+        "caller_purpose": str(user.get("purpose") or "analytics"),
+        "proxy_authorization_model": "product-layer service role with delegated caller context",
+    }
+    headers = {
+        "X-Role": str(config.get("service_role") or "reviewer"),
+        "X-Delegated-Role": str(user.get("role") or "viewer"),
+        "X-Region": str(user.get("region") or "EU"),
+        "X-Purpose": str(user.get("purpose") or "analytics"),
+    }
+    token = os.environ.get(str(config.get("role_token_env") or "THEBEN_AGENTS_LAYER_ROLE_TOKEN"), "").strip()
+    if token:
+        headers["X-Role-Token"] = token
     response = fetch_json_url(
         url,
         config["timeout_seconds"],
         method="POST",
         payload=payload,
-        headers={
-            "X-Role": str(user.get("role") or "viewer"),
-            "X-Region": str(user.get("region") or "EU"),
-            "X-Purpose": str(user.get("purpose") or "analytics"),
-        },
+        headers=headers,
+        service_name="agents-layer",
     )
     response.setdefault("integration", {})["source"] = "product-layer-agents-layer-proxy"
     response["integration"]["contract"] = config["contract"]
     return response
+
+
+def run_avatar_layer_assessment(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
+    config = avatar_layer_config()
+    if not config["enabled"]:
+        raise ValueError("avatar-layer integration is disabled")
+    product_id = str(body.get("product_id") or body.get("id") or "").strip()
+    product = store.get_product(product_id, user) if product_id else None
+    if not product and isinstance(body.get("product"), dict):
+        product = body["product"]
+    if not product:
+        raise ValueError("product_id or product object required")
+    url = join_url(config["base_url"], "/api/avatar/assess")
+    validate_integration_url(url, config["allowed_hosts"], "avatar-layer")
+    payload = build_avatar_layer_assessment_payload(product, body, user)
+    payload["request_context"] = {
+        "caller_role": str(user.get("role") or "viewer"),
+        "caller_region": str(user.get("region") or "EU"),
+        "caller_purpose": str(user.get("purpose") or "analytics"),
+        "proxy_authorization_model": "product-layer service role with delegated caller context",
+    }
+    headers = {
+        "X-Role": str(config.get("service_role") or "viewer"),
+        "X-Delegated-Role": str(user.get("role") or "viewer"),
+        "X-Region": str(user.get("region") or "EU"),
+        "X-Purpose": str(user.get("purpose") or "analytics"),
+    }
+    token = os.environ.get(str(config.get("role_token_env") or "THEBEN_AVATAR_LAYER_ROLE_TOKEN"), "").strip()
+    if token:
+        headers["X-Role-Token"] = token
+    response = fetch_json_url(
+        url,
+        config["timeout_seconds"],
+        method="POST",
+        payload=payload,
+        headers=headers,
+        service_name="avatar-layer",
+    )
+    response.setdefault("integration", {})["source"] = "product-layer-avatar-layer-proxy"
+    response["integration"]["contract"] = config["contract"]
+    response["integration"]["write_policy"] = config["write_policy"]
+    return response
+
+
+def record_avatar_user_action(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
+    action = str(body.get("action") or "").strip()
+    allowed = {"speak", "replay", "stop", "mute", "unmute", "text_only", "reduced_motion", "close"}
+    if action not in allowed:
+        raise ValueError("unsupported avatar action")
+    product_id = str(body.get("product_id") or "unknown-product")
+    return store.record_audit(
+        action=f"avatar_ui_{action}",
+        product_id=product_id,
+        role=user.get("role", "viewer"),
+        actor=user.get("actor"),
+        view="advisory",
+        channel="browser-ui",
+        details={
+            "session_id": body.get("session_id"),
+            "transcript_id": body.get("transcript_id"),
+            "assessment_mode": body.get("assessment_mode"),
+        },
+    )
 
 
 def catalog_data_products() -> dict[str, Any]:
@@ -1850,8 +2082,11 @@ def openapi_spec(host: str) -> dict[str, Any]:
             },
             "/api/integrations/data-layer": {"get": {"summary": "Describe the configured data-layer interface contract"}},
             "/api/integrations/agents-layer": {"get": {"summary": "Describe the configured agents-layer advisory interface contract"}},
+            "/api/integrations/avatar-layer": {"get": {"summary": "Describe the configured avatar-layer speech and presentation interface contract"}},
             "/api/agents-layer/agents": {"get": {"summary": "List callable compliance and expert agents"}},
             "/api/agents-layer/assessments": {"post": {"summary": "Run an advisory agents-layer assessment for a selected product"}},
+            "/api/avatar-layer/assessments": {"post": {"summary": "Render an advisory assessment through the avatar-layer"}},
+            "/api/avatar-layer/events": {"post": {"summary": "Record avatar UI speech and session actions for audit"}},
             "/api/data-product": {"get": {"summary": "Describe the governed product data product, interfaces, and caller access"}},
             "/api/catalog/data-products": {"get": {"summary": "List governed product-layer data products and metadata requirements"}},
             "/api/lineage": {"get": {"summary": "Describe lakehouse layer lineage for the product data product"}},
@@ -1876,15 +2111,15 @@ def openapi_spec(host: str) -> dict[str, Any]:
         },
         "components": {
             "securitySchemes": {
-                "LocalRoleHeaders": {
+                "TrustedRoleHeaders": {
                     "type": "apiKey",
                     "in": "header",
                     "name": "X-Role",
-                    "description": "Local MVP role selector: viewer, editor, steward, admin.",
+                    "description": "Trusted runtime role header. Ignored by default unless THEBEN_ROLE_TOKEN or THEBEN_TRUST_ROLE_HEADERS is configured.",
                 }
             }
         },
-        "security": [{"LocalRoleHeaders": []}],
+        "security": [{"TrustedRoleHeaders": []}],
     }
 
 
@@ -1935,6 +2170,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(data_layer_contract())
         if path == "/api/integrations/agents-layer":
             return self.send_json(agents_layer_contract(self.headers.get("Host", "localhost")))
+        if path == "/api/integrations/avatar-layer":
+            return self.send_json(avatar_layer_contract(self.headers.get("Host", "localhost")))
         if path == "/api/agents-layer/agents":
             return self.send_json({**agents_layer_catalog(), "integration": agents_layer_contract(self.headers.get("Host", "localhost"))})
         if path == "/api/sync/data-layer":
@@ -2166,6 +2403,47 @@ class Handler(SimpleHTTPRequestHandler):
                 },
             )
             return self.send_json(result, HTTPStatus.CREATED)
+        if parsed.path == "/api/avatar-layer/assessments":
+            try:
+                payload = self.read_json()
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+            try:
+                result = run_avatar_layer_assessment(self.store, payload, user)
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_GATEWAY, f"avatar-layer assessment failed: {exc}")
+            self.store.record_audit(
+                action="avatar_layer_assessment",
+                product_id=result.get("product_id") or payload.get("product_id") or "unknown-product",
+                role=user.get("role", "viewer"),
+                actor=user.get("actor"),
+                view="advisory",
+                channel="api",
+                details={
+                    "assessment_status": result.get("assessment_status"),
+                    "severity": result.get("severity"),
+                    "session_id": (result.get("session") or {}).get("session_id"),
+                },
+            )
+            for event in result.get("audit_events") or []:
+                if isinstance(event, dict):
+                    self.store.record_audit(
+                        action=str(event.get("event") or "avatar_event"),
+                        product_id=str(event.get("product_id") or result.get("product_id") or payload.get("product_id") or "unknown-product"),
+                        role=user.get("role", "viewer"),
+                        actor=user.get("actor"),
+                        view="advisory",
+                        channel="avatar-layer",
+                        details=event,
+                    )
+            return self.send_json(result, HTTPStatus.CREATED)
+        if parsed.path == "/api/avatar-layer/events":
+            try:
+                payload = self.read_json()
+                event = record_avatar_user_action(self.store, payload, user)
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+            return self.send_json({"event": event}, HTTPStatus.CREATED)
         if parsed.path.startswith("/api/dpp/"):
             return self.update_dpp(parsed.path, user)
         return self.send_error_json(HTTPStatus.NOT_FOUND, "endpoint not found")
@@ -2284,7 +2562,9 @@ class Handler(SimpleHTTPRequestHandler):
             "Content-Security-Policy",
             "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'",
         )
-        self.send_header("Access-Control-Allow-Origin", "*")
+        cors_origin = os.environ.get("THEBEN_CORS_ALLOW_ORIGIN", "").strip()
+        if cors_origin:
+            self.send_header("Access-Control-Allow-Origin", cors_origin)
         self.send_header("Access-Control-Allow-Headers", "Authorization, Content-Type, X-Role, X-Role-Token, X-Purpose, X-Region")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS")
         if path.startswith("/api/"):
@@ -2398,7 +2678,7 @@ def render_docs(host: str) -> str:
 <body class="docs">
   <main>
     <h1>Thebenpaul Product Layer API</h1>
-    <p>Local OpenAPI documentation. Use <code>X-Role: viewer|editor|steward|admin</code> to exercise RBAC/ABAC behavior.</p>
+    <p>Local OpenAPI documentation. Trusted role headers are ignored by default unless a role token or trusted-header runtime mode is configured.</p>
     <p><a href="/api/openapi.json">OpenAPI JSON</a> | <a href="/">Web UI</a></p>
     <pre>{spec}</pre>
   </main>

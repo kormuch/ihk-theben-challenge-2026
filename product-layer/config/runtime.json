@@ -36,10 +36,27 @@
     "catalog_fallback_file": "../agents-layer/config/rule_catalog.json",
     "contract": "product-layer-agent-assessment-v1",
     "mode": "advisory",
+    "service_role": "reviewer",
+    "role_token_env": "THEBEN_AGENTS_LAYER_ROLE_TOKEN",
     "write_policy": "advisory output only; product master, DPP records, and evidence remain human-reviewed domain assets"
+  },
+  "avatar_layer": {
+    "enabled": true,
+    "base_url": "http://host.docker.internal:8095",
+    "local_base_url": "http://127.0.0.1:8095",
+    "timeout_seconds": 10,
+    "allowed_hosts": ["127.0.0.1", "localhost", "host.docker.internal", "avatar-layer"],
+    "contract": "product-layer-avatar-assessment-v1",
+    "mode": "thin_interaction_layer",
+    "service_role": "viewer",
+    "role_token_env": "THEBEN_AVATAR_LAYER_ROLE_TOKEN",
+    "write_policy": "presentation and spoken advisory output only; no product, DPP, agent, or evidence mutation"
   },
   "ollama": {
     "base_url": "http://192.168.178.60:11434",
+    "alternative_base_urls": [
+      "http://localhost:11434"
+    ],
     "lan_bind": "0.0.0.0:11434",
     "models": ["gpt-oss:20b"],
     "ai_integration_config": "./config/ai_integration.json",

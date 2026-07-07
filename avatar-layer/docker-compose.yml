@@ -1,0 +1,10 @@
+services:
+  avatar-layer:
+    build: .
+    container_name: thebenpaul-avatar-layer
+    ports:
+      - "8095:8095"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8095"
+      THEBEN_AVATAR_ROLE_TOKEN: "${THEBEN_AVATAR_LAYER_ROLE_TOKEN:-local-dev-avatar-token}"

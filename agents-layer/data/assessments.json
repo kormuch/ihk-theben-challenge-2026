@@ -563,5 +563,4048 @@
       "mempalace_summary_ready": true,
       "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
     }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-f6e96bd9b06b",
+    "created_at": "2026-07-06T10:51:10Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-54376b5b8959",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T10:51:10Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/thb-tim-0001",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "thb-tim-0001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "prototype",
+      "product_family": "Time Switch",
+      "product_id": "thb-tim-0001",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 0,
+      "score": 100,
+      "status": "ready_for_human_review"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-701c3bc48c43",
+    "created_at": "2026-07-06T10:51:13Z",
+    "findings": [
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-3991d448718f",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T10:51:13Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "thb-tim-0001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "prototype",
+      "product_family": "Time Switch",
+      "product_id": "thb-tim-0001",
+      "requested_agent_ids": [
+        "compliance-cybersecurity"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-4fe780e48553",
+    "created_at": "2026-07-06T10:54:26Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-f6d582a6f39f",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T10:54:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/thb-tim-0001",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "thb-tim-0001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "prototype",
+      "product_family": "Time Switch",
+      "product_id": "thb-tim-0001",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 0,
+      "score": 100,
+      "status": "ready_for_human_review"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-36d6aa13940c",
+    "created_at": "2026-07-06T10:54:29Z",
+    "findings": [
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-150203f12c15",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T10:54:29Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "thb-tim-0001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "prototype",
+      "product_family": "Time Switch",
+      "product_id": "thb-tim-0001",
+      "requested_agent_ids": [
+        "compliance-cybersecurity"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-b5734e83d03e",
+    "created_at": "2026-07-06T16:40:26Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-f17a781cb013",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-eed87e1f35c3",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "lineage/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-6d7d70b93bba",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/env-001",
+              "source_layer": "data-layer",
+              "type": "environmental_declaration"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-833d74d617bc",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/emc-001",
+              "source_layer": "data-layer",
+              "type": "emc_test_report"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-3c501a136134",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-a2b7423ced8a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-eee80a6df47a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-70aa772b6835",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "cad/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "cad_reference"
+            },
+            {
+              "confidence": "medium",
+              "reference": "service/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "service_instruction"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-c1479f480608",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-6a0d02e4f761",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "sales/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "sales_claim_evidence"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "draft",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-001",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 2,
+      "failed_checks": 4,
+      "score": 40,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-4f7f77f7ddfb",
+    "created_at": "2026-07-06T16:40:26Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-19530ca5a383",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "product_master_record"
+        ],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:40:26Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-002",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "unknown",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-002",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-d19193307706",
+    "created_at": "2026-07-06T16:42:47Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-b52d1e4825d0",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-3da90834c0b1",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "lineage/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-e33ddc28edc7",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/env-001",
+              "source_layer": "data-layer",
+              "type": "environmental_declaration"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-ff8c783267e1",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/emc-001",
+              "source_layer": "data-layer",
+              "type": "emc_test_report"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-8af43f4197ff",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-3e3bba0c00fd",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-341de4ea7040",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-43787ed8c9de",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "cad/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "cad_reference"
+            },
+            {
+              "confidence": "medium",
+              "reference": "service/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "service_instruction"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-6c4f632fa4a7",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-15ba6b7b769f",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "sales/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "sales_claim_evidence"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "draft",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-001",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 2,
+      "failed_checks": 4,
+      "score": 40,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-5aadbc882f08",
+    "created_at": "2026-07-06T16:42:47Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-5b77b1d760d5",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "product_master_record"
+        ],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:42:47Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-002",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "unknown",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-002",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-b55c4755b999",
+    "created_at": "2026-07-06T16:47:02Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-6a814df8e41a",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-0e2938485b59",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "lineage/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-4f03323219cf",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/env-001",
+              "source_layer": "data-layer",
+              "type": "environmental_declaration"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-8f2948bd73a9",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/emc-001",
+              "source_layer": "data-layer",
+              "type": "emc_test_report"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-525fe9a9b10e",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-e01d8b730c9e",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-61270eedd56a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-363d6da1ccea",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "cad/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "cad_reference"
+            },
+            {
+              "confidence": "medium",
+              "reference": "service/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "service_instruction"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-a5d98d12b02e",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-510082e7760c",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "sales/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "sales_claim_evidence"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "draft",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-001",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 2,
+      "failed_checks": 4,
+      "score": 40,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-96299e4d45bb",
+    "created_at": "2026-07-06T16:47:02Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-21b6dc877f71",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "product_master_record"
+        ],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:47:02Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-002",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "unknown",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-002",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-fe84aaa48207",
+    "created_at": "2026-07-06T16:51:15Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-469c02ba5b63",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-b2824d6ee557",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "lineage/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-3d57eee7959d",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/env-001",
+              "source_layer": "data-layer",
+              "type": "environmental_declaration"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-43a28ce276a1",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/emc-001",
+              "source_layer": "data-layer",
+              "type": "emc_test_report"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-810fdd4a517d",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-26002508466d",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-011503002c2c",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-7c208a919105",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "cad/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "cad_reference"
+            },
+            {
+              "confidence": "medium",
+              "reference": "service/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "service_instruction"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-4b376a583daf",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-fad47242e06d",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "sales/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "sales_claim_evidence"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "draft",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-001",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 2,
+      "failed_checks": 4,
+      "score": 40,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-83f082a52bb0",
+    "created_at": "2026-07-06T16:51:15Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-e597039a8cc1",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "product_master_record"
+        ],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T16:51:15Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-002",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "unknown",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-002",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-7ab0caf7df10",
+    "created_at": "2026-07-06T19:22:12Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-6df1a690fd97",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:22:12Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-488640349728",
+    "created_at": "2026-07-06T19:23:35Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-12945849d703",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:23:35Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/123456789",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "123456789",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-a6064c1ad2ae",
+    "created_at": "2026-07-06T19:23:43Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-a2293f108bc6",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:23:43Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/123456789",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "123456789",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-ef79d5891e4f",
+    "created_at": "2026-07-06T19:24:11Z",
+    "findings": [
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-d1c521263c3d",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:24:11Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "compliance-cybersecurity"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-e1d3483b1220",
+    "created_at": "2026-07-06T19:24:17Z",
+    "findings": [
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-b9814f535706",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:24:17Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "compliance-emc-electrical"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-e0e0cdce94ca",
+    "created_at": "2026-07-06T19:24:20Z",
+    "findings": [
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-df1f173301a9",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:24:20Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "compliance-wireless"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-7c29f13d4626",
+    "created_at": "2026-07-06T19:24:32Z",
+    "findings": [
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-5e441b0b3e3f",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:24:32Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "compliance-privacy"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-a4acc0015a45",
+    "created_at": "2026-07-06T19:24:42Z",
+    "findings": [],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "expert-sustainability-circularity"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 0,
+      "score": 100,
+      "status": "ready_for_human_review"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-c25094fe96a2",
+    "created_at": "2026-07-06T19:24:48Z",
+    "findings": [],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "expert-emc-design"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 0,
+      "score": 100,
+      "status": "ready_for_human_review"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-3d379b90e0e4",
+    "created_at": "2026-07-06T19:24:56Z",
+    "findings": [
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-0584d20085ef",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-06T19:24:56Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "expert-pricing-sales-market"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-2216580858e8",
+    "created_at": "2026-07-07T08:04:17Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-2a3066995133",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:04:17Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-4b92de7786c5",
+    "created_at": "2026-07-07T08:04:17Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-f747edcee37f",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:04:17Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/123456789",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "123456789",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-f1963d738356",
+    "created_at": "2026-07-07T08:05:15Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-bd4aa65d54e2",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-ce0189995d23",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "lineage/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-fa5eef593b3d",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/env-001",
+              "source_layer": "data-layer",
+              "type": "environmental_declaration"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-82145af64984",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "evidence/emc-001",
+              "source_layer": "data-layer",
+              "type": "emc_test_report"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-e251a80f7f4a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-2e6c0d7f130d",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-507be4941e27",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-8e74097fd363",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "cad/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "cad_reference"
+            },
+            {
+              "confidence": "medium",
+              "reference": "service/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "service_instruction"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-bf50740ca9e7",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-4702dc50ce24",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "2026-07-06",
+          "evidence_refs": [
+            {
+              "confidence": "medium",
+              "reference": "sales/THB-TEST-001",
+              "source_layer": "data-layer",
+              "type": "sales_claim_evidence"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-001",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-06",
+      "lifecycle_state": "draft",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-001",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 2,
+      "failed_checks": 4,
+      "score": 40,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-1b164dd68100",
+    "created_at": "2026-07-07T08:05:15Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-d5e27bb3dd0b",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "product_master_record"
+        ],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "KNX Actuator",
+          "product_id": "THB-TEST-002",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "unknown",
+      "product_family": "KNX Actuator",
+      "product_id": "THB-TEST-002",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-41058f7bc632",
+    "created_at": "2026-07-07T08:05:15Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-8c0c7b9ac3ff",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [
+            {
+              "confidence": "unknown",
+              "reference": "product-layer/THB-DPP-COMPLETE",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "THB-DPP-COMPLETE",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "THB-DPP-COMPLETE",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 0,
+      "score": 100,
+      "status": "ready_for_human_review"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-e9ec2a3c4b20",
+    "created_at": "2026-07-07T08:05:15Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-017f8b16c1fa",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:05:15Z",
+          "date_placing_on_market": "",
+          "evidence_refs": [
+            {
+              "confidence": "unknown",
+              "reference": "product-layer/THB-DPP-INCOMPLETE",
+              "source_layer": "data-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "THB-DPP-INCOMPLETE",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "THB-DPP-INCOMPLETE",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-72c69ec79dc3",
+    "created_at": "2026-07-07T08:47:30Z",
+    "findings": [
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-7c2a174cb26f",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:47:30Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [
+        "compliance-sustainability"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-c79557ba2144",
+    "created_at": "2026-07-07T08:47:54Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-f654e8b2b23a",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:47:54Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/test3",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-3940de51b88f",
+    "created_at": "2026-07-07T08:48:01Z",
+    "findings": [
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-6dceb74fc652",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:48:01Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [
+        "compliance-cybersecurity"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-349750445d25",
+    "created_at": "2026-07-07T08:48:08Z",
+    "findings": [
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-1b3fd1c7868a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:48:08Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [
+        "compliance-emc-electrical"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-53abb42aa571",
+    "created_at": "2026-07-07T08:48:12Z",
+    "findings": [],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [
+        "expert-emc-design"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 0,
+      "score": 100,
+      "status": "ready_for_human_review"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-e56f15745a4b",
+    "created_at": "2026-07-07T08:48:47Z",
+    "findings": [
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-df8960adff79",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:48:47Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [
+        "expert-pricing-sales-market"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
   }
 ]

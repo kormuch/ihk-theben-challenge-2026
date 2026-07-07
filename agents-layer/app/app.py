@@ -121,7 +121,17 @@ def requested_agent_ids(body: dict[str, Any]) -> set[str]:
 
 
 def role_from_headers(headers: Any) -> str:
-    return str(headers.get("X-Role") or os.getenv("THEBEN_DEFAULT_ROLE") or "viewer").strip().lower()
+    default_role = str(os.getenv("THEBEN_DEFAULT_ROLE") or "viewer").strip().lower()
+    requested_role = str(headers.get("X-Role") or default_role).strip().lower()
+    role_token = (os.getenv("THEBEN_AGENTS_ROLE_TOKEN") or os.getenv("THEBEN_ROLE_TOKEN") or "").strip()
+    provided_token = str(headers.get("X-Role-Token") or "").strip()
+    auth_header = str(headers.get("Authorization") or "").strip()
+    if auth_header.lower().startswith("bearer "):
+        provided_token = auth_header[7:].strip()
+    trust_headers = str(os.getenv("THEBEN_AGENTS_TRUST_ROLE_HEADERS") or "").strip().lower() in {"1", "true", "yes", "on"}
+    if role_token:
+        return requested_role if provided_token == role_token else default_role
+    return requested_role if trust_headers else default_role
 
 
 def permissions_for_role(config: dict[str, Any], role: str) -> set[str]:

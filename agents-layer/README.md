@@ -48,7 +48,7 @@ docker compose --profile test run --rm test
 ## Assessment Example
 
 ```bash
-curl -H 'X-Role: reviewer' -H 'Content-Type: application/json' \
+curl -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_AGENTS_LAYER_ROLE_TOKEN}" -H 'Content-Type: application/json' \
   -d '{
     "target_market": "EU",
     "date_placing_on_market": "2026-07-06",
@@ -132,4 +132,3 @@ Writes:
 - Mempalace-ready summaries.
 
 The service does not mutate product master data, DPP records, raw evidence, or formal certification state.
-

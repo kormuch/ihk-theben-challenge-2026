@@ -10,7 +10,8 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 8090
-      THEBEN_DEFAULT_ROLE: reviewer
+      THEBEN_DEFAULT_ROLE: viewer
+      THEBEN_AGENTS_ROLE_TOKEN: ${THEBEN_AGENTS_LAYER_ROLE_TOKEN:-local-dev-agents-token}
       THEBEN_AGENTS_DATA_DIR: /agents/data
     volumes:
       - ./config:/agents/config:ro

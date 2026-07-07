@@ -2,13 +2,15 @@ const state = {
   products: [],
   selected: null,
   agents: null,
+  lastAssessment: null,
+  lastAvatar: null,
+  lastAssessmentText: "",
 };
 
 const $ = (id) => document.getElementById(id);
 
 function headers(contentType) {
   const result = {
-    "X-Role": $("role").value,
     "X-Region": "EU",
     "X-Purpose": "analytics",
   };
@@ -129,9 +131,13 @@ function renderAgents(data) {
       </div>
     </div>
   `).join("");
+  const apiCalls = [
+    ...(integration.rest_api_calls || []),
+    ...((integration.avatar_layer && integration.avatar_layer.rest_api_calls) || []),
+  ];
   $("agentApiExamples").innerHTML = `
     <div class="api-grid">
-      ${(integration.rest_api_calls || []).map((call) => `
+      ${apiCalls.map((call) => `
         <div class="api-call">
           <strong>${escapeHtml(call.name)}</strong>
           <p class="muted">${escapeHtml(call.method)} ${escapeHtml(call.url)}</p>
@@ -286,9 +292,11 @@ async function runValidation() {
 
 async function runAgentAssessment(agentId) {
   if (!state.selected) {
-    $("agentAssessmentResult").textContent = "Select a product first.";
+    openAgentModal("Agent assessment", "<p>Select a product first.</p>", "");
     return;
   }
+  const label = agentId || "all advisory agents";
+  openAgentModal(`Assessment: ${label}`, "<p>Running assessment...</p>", "");
   const body = { product_id: state.selected };
   if (agentId) body.agent_ids = [agentId];
   try {
@@ -299,16 +307,25 @@ async function runAgentAssessment(agentId) {
     });
     renderAgentAssessment(data, agentId);
   } catch (error) {
-    $("agentAssessmentResult").innerHTML = `<p class="badge bad">${escapeHtml(error.message)}</p>`;
+    const message = `Assessment failed: ${error.message}`;
+    $("agentAssessmentResult").innerHTML = `<p class="badge bad">${escapeHtml(message)}</p>`;
+    openAgentModal(`Assessment: ${label}`, `<p class="badge bad">${escapeHtml(message)}</p>`, message);
   }
 }
 
 function renderAgentAssessment(data, agentId) {
   const readiness = data.readiness || {};
   const findings = data.findings || [];
+  const context = data.product_context || {};
   const statusClass = readiness.status === "ready_for_human_review" ? "ok" : readiness.status === "blocked" ? "bad" : "warn";
-  $("agentAssessmentResult").innerHTML = `
+  const html = `
     <h3>Assessment result${agentId ? `: ${escapeHtml(agentId)}` : ""}</h3>
+    <div class="assessment-context">
+      <span>Product ${escapeHtml(context.product_id || state.selected || "unknown")}</span>
+      <span>${escapeHtml(context.product_family || "unknown family")}</span>
+      <span>Lifecycle ${escapeHtml(context.lifecycle_state || "unknown")}</span>
+      <span>Market ${escapeHtml(context.target_market || "EU")}</span>
+    </div>
     <div class="assessment-summary">
       <span class="badge ${statusClass}">${escapeHtml(readiness.status || "unknown")}</span>
       <span>Score ${escapeHtml(String(readiness.score ?? ""))}</span>
@@ -324,7 +341,189 @@ function renderAgentAssessment(data, agentId) {
         </tr>
       `).join("")}
     </table>
+    <div id="avatarAssessmentPanel" class="avatar-assessment">
+      <div class="avatar-visual" data-avatar-state="thinking" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div>
+        <h3>Assess avatar</h3>
+        <p class="muted">Preparing spoken assessment...</p>
+      </div>
+    </div>
   `;
+  state.lastAssessment = data;
+  state.lastAssessmentText = "";
+  $("agentAssessmentResult").innerHTML = html;
+  openAgentModal(`Assessment: ${agentId || "all advisory agents"}`, html, "");
+  runAvatarAssessment(data, agentId).catch((error) => {
+    renderAvatarAssessmentError(error);
+  });
+}
+
+async function runAvatarAssessment(assessment, agentId) {
+  if (!state.selected) return;
+  const body = {
+    product_id: state.selected,
+    assessment,
+    assessment_mode: assessmentModeForAgent(agentId),
+  };
+  if (agentId) body.agent_ids = [agentId];
+  const data = await api("/api/avatar-layer/assessments", {
+    method: "POST",
+    contentType: "application/json",
+    body: JSON.stringify(body),
+  });
+  renderAvatarAssessment(data);
+}
+
+function assessmentModeForAgent(agentId) {
+  const raw = String(agentId || "").toLowerCase();
+  if (raw.includes("cyber") || raw.includes("security")) return "cybersecurity";
+  if (raw.includes("dpp") || raw.includes("passport")) return "dpp";
+  if (raw.includes("compliance")) return "compliance";
+  return "general";
+}
+
+function renderAvatarAssessment(data) {
+  state.lastAvatar = data;
+  state.lastAssessmentText = data.spoken_summary || state.lastAssessmentText;
+  const target = $("avatarAssessmentPanel");
+  if (!target) return;
+  const severity = data.severity || "none";
+  const stateName = severity === "critical" || severity === "high" ? "warning" : "speaking";
+  target.innerHTML = `
+    <div class="avatar-visual" data-avatar-state="${escapeHtml(stateName)}" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <div>
+      <h3>Assess avatar</h3>
+      <div class="assessment-summary">
+        <span class="badge ${severity === "high" || severity === "critical" ? "bad" : severity === "none" ? "" : "warn"}">${escapeHtml(data.assessment_status || "unknown")}</span>
+        <span>Severity ${escapeHtml(severity)}</span>
+        <span>${escapeHtml(String(Math.round((data.confidence || 0) * 100)))}% confidence</span>
+      </div>
+      <p>${escapeHtml(data.display_summary || data.spoken_summary || "")}</p>
+      <p class="muted">Transcript ${escapeHtml((data.transcript?.entries || []).length)} entries | restricted refs hidden ${escapeHtml(data.restricted_refs_hidden || 0)}</p>
+      ${renderAvatarTraceability(data)}
+    </div>
+  `;
+}
+
+function recordAvatarEvent(action) {
+  if (!state.selected) return;
+  const avatar = state.lastAvatar || {};
+  const session = avatar.session || {};
+  api("/api/avatar-layer/events", {
+    method: "POST",
+    contentType: "application/json",
+    body: JSON.stringify({
+      action,
+      product_id: avatar.product_id || state.selected,
+      session_id: session.session_id,
+      transcript_id: session.transcript_id,
+      assessment_mode: avatar.assessment_mode,
+    }),
+  }).catch(() => {});
+}
+
+function renderAvatarAssessmentError(error) {
+  state.lastAssessmentText = "";
+  const target = $("avatarAssessmentPanel");
+  if (!target) return;
+  target.innerHTML = `
+    <div class="avatar-visual" data-avatar-state="error" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <div>
+      <h3>Assess avatar</h3>
+      <p class="badge bad">${escapeHtml(error.message)}</p>
+    </div>
+  `;
+}
+
+function renderAvatarTraceability(data) {
+  const transcript = data.transcript?.entries || [];
+  const evidence = data.evidence_refs || [];
+  const missing = data.missing_evidence || [];
+  const actions = data.next_actions || [];
+  const versions = Object.entries(data.agent_versions || {});
+  const rules = data.rule_traceability || [];
+  const product = data.product_context || {};
+  return `
+    <div class="avatar-traceability">
+      <div>
+        <strong>Product context</strong>
+        <ul>
+          <li>${escapeHtml(product.id || data.product_id || "unknown-product")}</li>
+          <li>Lifecycle ${escapeHtml(product.lifecycle_state || "unknown")}</li>
+          <li>Classification ${escapeHtml(product.classification || "internal")}</li>
+          <li>Layer ${escapeHtml(product.lakehouse_layer || "curated")}</li>
+        </ul>
+      </div>
+      <div>
+        <strong>Transcript</strong>
+        <ol>${transcript.map((entry) => `<li>${escapeHtml(entry.kind || "entry")}: ${escapeHtml(entry.text || "")}</li>`).join("") || "<li>none</li>"}</ol>
+      </div>
+      <div>
+        <strong>Evidence</strong>
+        <ul>${evidence.map((ref) => `<li>${escapeHtml(ref.type || "evidence")} | ${escapeHtml(ref.reference || "")} | ${escapeHtml(ref.redacted ? "redacted" : ref.classification || "internal")}</li>`).join("") || "<li>none</li>"}</ul>
+      </div>
+      <div>
+        <strong>Missing evidence</strong>
+        <ul>${missing.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || "<li>none</li>"}</ul>
+      </div>
+      <div>
+        <strong>Next actions</strong>
+        <ul>${actions.map((item) => `<li>${escapeHtml(item)}</li>`).join("") || "<li>none</li>"}</ul>
+      </div>
+      <div>
+        <strong>Agent versions</strong>
+        <ul>${versions.map(([id, version]) => `<li>${escapeHtml(id)} v${escapeHtml(version)}</li>`).join("") || "<li>none</li>"}</ul>
+      </div>
+      <div>
+        <strong>Rule traceability</strong>
+        <ul>${rules.map((rule) => `<li>${escapeHtml(rule.agent_id || "agent")} | ${escapeHtml(rule.rule_id || "rule")} v${escapeHtml(rule.rule_version || "unknown")} | ${escapeHtml((rule.standard_refs || []).join(", ") || "no standards")} | review ${escapeHtml(rule.human_review_state || "required")}</li>`).join("") || "<li>none</li>"}</ul>
+      </div>
+      <p class="muted">Human review required: ${escapeHtml(data.human_review_required ? "yes" : "no")}</p>
+    </div>
+  `;
+}
+
+function openAgentModal(title, bodyHtml, voiceText) {
+  $("agentModalTitle").textContent = title;
+  $("agentModalBody").innerHTML = bodyHtml;
+  state.lastAssessmentText = voiceText || state.lastAssessmentText || "";
+  $("agentModal").classList.remove("hidden");
+}
+
+function closeAgentModal() {
+  recordAvatarEvent("close");
+  stopAgentSpeech();
+  $("agentModal").classList.add("hidden");
+}
+
+function speakAgentAssessment() {
+  if (!state.lastAssessmentText) {
+    $("agentModalBody").insertAdjacentHTML("afterbegin", '<p class="badge warn">Avatar spoken summary is not available yet.</p>');
+    return;
+  }
+  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+    $("agentModalBody").insertAdjacentHTML("afterbegin", '<p class="badge warn">Voice output is not supported in this browser.</p>');
+    return;
+  }
+  stopAgentSpeech();
+  const utterance = new SpeechSynthesisUtterance(state.lastAssessmentText);
+  utterance.rate = 0.95;
+  utterance.pitch = 1;
+  window.speechSynthesis.speak(utterance);
+  recordAvatarEvent("speak");
+}
+
+function stopAgentSpeech() {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+  recordAvatarEvent("stop");
 }
 
 async function refreshAll() {
@@ -347,7 +546,7 @@ function escapeHtml(value) {
   }[char]));
 }
 
-["search", "family", "status", "role"].forEach((id) => {
+["search", "family", "status"].forEach((id) => {
   $(id).addEventListener("input", refreshAll);
 });
 $("refresh").addEventListener("click", refreshAll);
@@ -358,6 +557,15 @@ $("loadGovernance").addEventListener("click", loadGovernance);
 $("syncDataLayer").addEventListener("click", syncDataLayer);
 $("loadAgents").addEventListener("click", loadAgents);
 $("runAgentAssessment").addEventListener("click", () => runAgentAssessment());
+$("closeAgentModal").addEventListener("click", closeAgentModal);
+$("speakAgentAssessment").addEventListener("click", speakAgentAssessment);
+$("stopAgentSpeech").addEventListener("click", stopAgentSpeech);
+$("agentModal").addEventListener("click", (event) => {
+  if (event.target === $("agentModal")) closeAgentModal();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("agentModal").classList.contains("hidden")) closeAgentModal();
+});
 
 Promise.all([refreshAll(), loadAgents()]).catch((error) => {
   $("products").innerHTML = `<p>${escapeHtml(error.message)}</p>`;

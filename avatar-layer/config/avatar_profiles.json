@@ -1,0 +1,38 @@
+{
+  "schema_version": "0.1.0",
+  "default_profile": "theben-assess",
+  "profiles": {
+    "theben-assess": {
+      "name": "Thebenpaul Assess Avatar",
+      "visual_style": "future-looking compliance cockpit",
+      "asset": {
+        "kind": "css-animated-avatar",
+        "path": "static",
+        "future_gltf_slot": "/assets/avatar/theben-assess.glb"
+      },
+      "states": {
+        "idle": "calm blue core with slow scan line",
+        "listening": "cyan ring expands with microphone-ready pulse",
+        "thinking": "amber sweep with segmented orbit",
+        "speaking": "green waveform and active transcript cursor",
+        "success": "green readiness halo",
+        "warning": "amber compliance warning halo",
+        "error": "red guarded review halo"
+      },
+      "modes": {
+        "general": {
+          "accent": "#4f8cff"
+        },
+        "dpp": {
+          "accent": "#2dd4bf"
+        },
+        "cybersecurity": {
+          "accent": "#f59e0b"
+        },
+        "compliance": {
+          "accent": "#a3e635"
+        }
+      }
+    }
+  }
+}

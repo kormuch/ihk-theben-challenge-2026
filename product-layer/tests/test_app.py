@@ -13,7 +13,9 @@ from app.app import (
     INDEX_PATH,
     ProductStore,
     agents_layer_contract,
+    avatar_layer_contract,
     build_agents_layer_assessment_payload,
+    build_avatar_layer_assessment_payload,
     apply_access_controls,
     catalog_data_products,
     current_user,
@@ -30,7 +32,10 @@ from app.app import (
     prepare_data_layer_products,
     product_identity,
     products_csv,
+    record_avatar_user_action,
     row_allowed,
+    run_avatar_layer_assessment,
+    run_agents_layer_assessment,
     sync_from_data_layer,
     validate_product,
 )
@@ -246,6 +251,19 @@ class ProductLayerTests(unittest.TestCase):
         self.assertEqual(spoofed["role"], "viewer")
         self.assertEqual(authorized["role"], "admin")
 
+    def test_role_headers_are_ignored_by_default_without_trust_switch(self):
+        with patch.dict(os.environ, {"THEBEN_DEFAULT_ROLE": "viewer"}, clear=False):
+            os.environ.pop("THEBEN_ROLE_TOKEN", None)
+            os.environ.pop("THEBEN_TRUST_ROLE_HEADERS", None)
+            user = current_user({"X-Role": "admin"})
+        self.assertEqual(user["role"], "viewer")
+
+    def test_role_headers_can_be_enabled_for_local_trusted_runtime(self):
+        with patch.dict(os.environ, {"THEBEN_DEFAULT_ROLE": "viewer", "THEBEN_TRUST_ROLE_HEADERS": "true"}, clear=False):
+            os.environ.pop("THEBEN_ROLE_TOKEN", None)
+            user = current_user({"X-Role": "editor"})
+        self.assertEqual(user["role"], "editor")
+
     def test_csv_export_contains_governance_fields(self):
         product = generate_products(1)[0]
         csv_text = products_csv([product]).decode("utf-8")
@@ -283,9 +301,23 @@ class ProductLayerTests(unittest.TestCase):
         self.assertEqual(contract["target_layer"], "advisory_agents")
         self.assertTrue(contract["human_review_required"])
         self.assertEqual(contract["interfaces"]["product_layer_proxy"]["agent_catalog"], "/api/agents-layer/agents")
+        self.assertEqual(contract["avatar_layer"]["target_layer"], "avatar_interaction_layer")
         calls = {call["name"]: call["curl"] for call in contract["rest_api_calls"]}
         self.assertIn("/api/agents-layer/assessments", calls["Run advisory assessment for one product through product-layer"])
         self.assertIn("agent_ids", calls["Run advisory assessment for one product through product-layer"])
+
+    def test_avatar_layer_contract_exposes_lakehouse_proxy_calls(self):
+        contract = avatar_layer_contract("127.0.0.1:8080")
+        self.assertEqual(contract["source_layer"], "product_ui_runtime")
+        self.assertEqual(contract["target_layer"], "avatar_interaction_layer")
+        self.assertTrue(contract["human_review_required"])
+        self.assertEqual(
+            contract["interfaces"]["product_layer_proxy"]["selected_product_avatar_assessment"],
+            "/api/avatar-layer/assessments",
+        )
+        calls = {call["name"]: call["curl"] for call in contract["rest_api_calls"]}
+        self.assertIn("/api/avatar-layer/assessments", calls["Run avatar assessment through product-layer"])
+        self.assertIn("/api/avatar/assess", calls["Run avatar assessment directly against avatar-layer"])
 
     def test_agents_layer_assessment_payload_carries_product_and_evidence_context(self):
         product = generate_products(1)[0]
@@ -299,6 +331,93 @@ class ProductLayerTests(unittest.TestCase):
         evidence_types = {item["type"] for item in payload["evidence"]}
         self.assertIn("product_master_record", evidence_types)
         self.assertIn("lineage_record", evidence_types)
+
+    def test_avatar_layer_assessment_payload_wraps_advisory_context(self):
+        product = generate_products(1)[0]
+        payload = build_avatar_layer_assessment_payload(
+            product,
+            {
+                "agent_ids": ["compliance-cybersecurity"],
+                "assessment": {"readiness": {"status": "review_required", "score": 71}},
+                "reduced_motion": True,
+            },
+            {"role": "viewer", "region": "EU", "purpose": "analytics"},
+        )
+        self.assertEqual(payload["product_id"], product["id"])
+        self.assertEqual(payload["assessment_mode"], "cybersecurity")
+        self.assertEqual(payload["product_context"]["lakehouse_layer"], "curated")
+        self.assertEqual(payload["product_context"]["lifecycle_state"], product["lifecycle_status"])
+        self.assertEqual(payload["source_contract"], "product-layer-avatar-assessment-v1")
+        self.assertTrue(payload["reduced_motion"])
+
+    def test_avatar_layer_assessment_proxy_adds_contract_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            expected = {
+                "product_id": product["id"],
+                "spoken_summary": "Avatar summary.",
+                "display_summary": "Avatar summary.",
+                "assessment_status": "review_required",
+                "severity": "medium",
+                "session": {"session_id": "av-test"},
+            }
+            with patch("app.app.fetch_json_url", return_value=expected) as fetch:
+                result = run_avatar_layer_assessment(
+                    store,
+                    {"product_id": product["id"], "agent_ids": ["expert-dpp-readiness"], "assessment": {"findings": []}},
+                    {"role": "viewer", "region": "EU", "purpose": "analytics"},
+                )
+        self.assertEqual(result["integration"]["source"], "product-layer-avatar-layer-proxy")
+        self.assertEqual(result["integration"]["contract"], "product-layer-avatar-assessment-v1")
+        payload = fetch.call_args.kwargs["payload"]
+        headers = fetch.call_args.kwargs["headers"]
+        self.assertEqual(payload["product_id"], product["id"])
+        self.assertEqual(payload["assessment_mode"], "dpp")
+        self.assertEqual(headers["X-Role"], "viewer")
+        self.assertEqual(headers["X-Delegated-Role"], "viewer")
+        self.assertEqual(payload["request_context"]["caller_role"], "viewer")
+
+    def test_agents_layer_proxy_uses_service_role_and_delegated_caller_context(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            expected = {
+                "assessment_id": "assessment-test",
+                "product_context": {"product_id": product["id"]},
+                "readiness": {"status": "review_required", "score": 71},
+                "findings": [],
+            }
+            with patch("app.app.fetch_json_url", return_value=expected) as fetch:
+                result = run_agents_layer_assessment(
+                    store,
+                    {"product_id": product["id"], "agent_ids": ["expert-dpp-readiness"]},
+                    {"role": "viewer", "region": "EU", "purpose": "analytics"},
+                )
+        self.assertEqual(result["integration"]["source"], "product-layer-agents-layer-proxy")
+        payload = fetch.call_args.kwargs["payload"]
+        headers = fetch.call_args.kwargs["headers"]
+        self.assertEqual(headers["X-Role"], "reviewer")
+        self.assertEqual(headers["X-Delegated-Role"], "viewer")
+        self.assertEqual(payload["request_context"]["caller_role"], "viewer")
+        self.assertEqual(payload["request_context"]["proxy_authorization_model"], "product-layer service role with delegated caller context")
+
+    def test_avatar_ui_action_is_audited(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            event = record_avatar_user_action(
+                store,
+                {
+                    "action": "speak",
+                    "product_id": "thb-tim-0001",
+                    "session_id": "avatar-session-test",
+                    "transcript_id": "transcript-test",
+                    "assessment_mode": "dpp",
+                },
+                {"role": "viewer", "actor": "viewer@example.local"},
+            )
+        self.assertEqual(event["action"], "avatar_ui_speak")
+        self.assertEqual(event["details"]["session_id"], "avatar-session-test")
 
     def test_prepare_data_layer_products_adds_lakehouse_lineage(self):
         payload = {
@@ -516,6 +635,7 @@ class ProductLayerTests(unittest.TestCase):
 
             self.assertEqual(api_headers["Cache-Control"], "no-store")
             self.assertEqual(api_headers["X-Content-Type-Options"], "nosniff")
+            self.assertNotIn("Access-Control-Allow-Origin", api_headers)
             self.assertIn("public, max-age=60", html_headers["Cache-Control"])
             self.assertIn("frame-ancestors 'none'", html_headers["Content-Security-Policy"])
 
@@ -551,6 +671,8 @@ class LiveHttpTests(unittest.TestCase):
         self.assertEqual(ctx.exception.code, 403)
 
     def test_editor_can_create_product(self):
+        if os.environ.get("TEST_ALLOW_HEADER_ROLES") != "true":
+            self.skipTest("set TEST_ALLOW_HEADER_ROLES=true when the target runtime trusts X-Role headers")
         body = json.dumps({"sku": "T-4", "name": "Demo"}).encode("utf-8")
         req = request.Request(
             self.base + "/api/products",

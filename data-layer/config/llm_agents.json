@@ -9,6 +9,9 @@
     "local_ollama_lan": [
       "ollama_lan"
     ],
+    "local_ollama_localhost": [
+      "ollama_localhost"
+    ],
     "enterprise_deepseek_existing": [
       "deepseek"
     ],
@@ -35,6 +38,7 @@
       "base_url": "http://192.168.178.60:11434",
       "endpoint": "/api/generate",
       "model": "gpt-oss:20b",
+      "trust_env": false,
       "timeout_seconds": 120,
       "temperature": 0.1,
       "max_tokens": 4096,
@@ -48,6 +52,27 @@
       ],
       "data_policy": "Only send data allowed for the local LAN Ollama environment. Human review remains required before changing product data or certification state."
     },
+    "ollama_localhost": {
+      "label": "Ollama localhost analyst",
+      "type": "ollama_generate",
+      "enabled": true,
+      "base_url": "http://localhost:11434",
+      "endpoint": "/api/generate",
+      "model": "gpt-oss:20b",
+      "trust_env": false,
+      "timeout_seconds": 120,
+      "temperature": 0.1,
+      "max_tokens": 4096,
+      "api_key_env": "OLLAMA_API_KEY",
+      "api_key_required": false,
+      "expertise": [
+        "document classification",
+        "product data extraction",
+        "metadata review",
+        "DPP drafting"
+      ],
+      "data_policy": "Alternative for host-local runs where Ollama is bound to localhost:11434. In Docker Desktop, localhost means the backend container itself; use host.docker.internal or LAN IP when Ollama runs outside the container."
+    },
     "ollama_certification_expert": {
       "label": "Environment-local certification expert",
       "type": "ollama_generate",
@@ -55,6 +80,7 @@
       "base_url": "http://192.168.178.60:11434",
       "endpoint": "/api/generate",
       "model": "gpt-oss:20b",
+      "trust_env": false,
       "timeout_seconds": 120,
       "temperature": 0.05,
       "max_tokens": 4096,
@@ -115,6 +141,24 @@
       "description": "Default LAN Ollama generate call for local document analysis.",
       "method": "POST",
       "url": "http://192.168.178.60:11434/api/generate",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "model": "gpt-oss:20b",
+        "prompt": "Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.",
+        "stream": false,
+        "options": {
+          "temperature": 0.1,
+          "num_predict": 4096
+        }
+      },
+      "example_curl": "curl http://192.168.178.60:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Classify this product document and return JSON with document_type, confidence, reasoning, multi_product, and detected_products.\",\"stream\":false,\"options\":{\"temperature\":0.1,\"num_predict\":4096}}'"
+    },
+    "ollama_localhost": {
+      "description": "Alternative localhost Ollama generate call for host-local data-layer runs.",
+      "method": "POST",
+      "url": "http://localhost:11434/api/generate",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -231,6 +275,16 @@
       },
       "provider_changes": {
         "ollama_lan.enabled": true
+      }
+    },
+    "alternative_local_ollama_localhost": {
+      "description": "Alternative host-local setup for running the data-layer backend directly on a machine where Ollama listens on localhost:11434.",
+      "environment": {
+        "DATA_LAYER_LLM_CONFIG": "/config/llm_agents.json",
+        "DATA_LAYER_LLM_CHAIN": "local_ollama_localhost"
+      },
+      "provider_changes": {
+        "DATA_LAYER_LLM_CHAIN": "local_ollama_localhost"
       }
     },
     "alternative_existing_deepseek": {

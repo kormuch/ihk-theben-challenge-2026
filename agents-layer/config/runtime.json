@@ -29,6 +29,9 @@
   "llm": {
     "default_provider": "ollama_lan",
     "base_url": "http://192.168.178.60:11434",
+    "alternative_base_urls": [
+      "http://localhost:11434"
+    ],
     "model": "gpt-oss:20b",
     "mode": "advisory_assist_only",
     "human_review_required": true
@@ -64,4 +67,3 @@
     ]
   }
 }
-

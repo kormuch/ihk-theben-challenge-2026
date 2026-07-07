@@ -270,15 +270,15 @@ steward  -> cross-region domain steward with unmasked commercial attributes
 admin    -> central IT/platform administrator for MVP operations
 ```
 
-Use the `X-Role` header for local testing:
+Trusted role headers are ignored by default. For local privileged testing, configure `THEBEN_ROLE_TOKEN` or `THEBEN_TRUST_ROLE_HEADERS=true` and use a token-gated trusted role header:
 
 ```bash
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/data-product
+curl -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" http://127.0.0.1:8080/api/data-product
 ```
 
 Production target:
 
-- Replace local role headers with SSO/IAM claims.
+- Replace token-gated local role headers with SSO/IAM claims.
 - Enforce policies in platform security, governed SQL views, and APIs.
 - Audit read, write, import, sync, export, and DPP access.
 - Keep direct raw access limited to approved engineering, audit, and diagnostic use cases.
@@ -387,7 +387,7 @@ python3 -m app.app --host 127.0.0.1 --port 8080
 Trigger sync:
 
 ```bash
-curl -X POST -H 'X-Role: editor' http://127.0.0.1:8080/api/sync/data-layer
+curl -X POST -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" http://127.0.0.1:8080/api/sync/data-layer
 ```
 
 Docker Desktop for Mac default:
@@ -433,7 +433,7 @@ curl http://127.0.0.1:8080/api/products?search=knx
 Get summary:
 
 ```bash
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/summary
+curl http://127.0.0.1:8080/api/summary
 ```
 
 Inspect data product catalog:
@@ -445,7 +445,7 @@ curl http://127.0.0.1:8080/api/catalog/data-products
 Inspect role-aware data product surface:
 
 ```bash
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/data-product
+curl http://127.0.0.1:8080/api/data-product
 ```
 
 Inspect lineage:
@@ -457,7 +457,7 @@ curl http://127.0.0.1:8080/api/lineage
 Inspect access policy:
 
 ```bash
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/access-policy
+curl http://127.0.0.1:8080/api/access-policy
 ```
 
 Inspect data-layer integration:
@@ -469,7 +469,7 @@ curl http://127.0.0.1:8080/api/integrations/data-layer
 Create a product:
 
 ```bash
-curl -H 'X-Role: editor' -H 'Content-Type: application/json' \
+curl -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" -H 'Content-Type: application/json' \
   -d '{"sku":"THB-DEMO-1","name":"Demo","family":"Time Switch","attributes":{"gtin":"04003468999999","batch_lot_number":"LOT-2026-001","serial_number":"SN-0000000001","nominal_voltage":"230V","ip_rating":"IP20","co2_kg":1.2,"recyclable_share_pct":82}}' \
   http://127.0.0.1:8080/api/products
 ```
@@ -478,7 +478,7 @@ Read DPP views:
 
 ```bash
 curl http://127.0.0.1:8080/api/dpp/thb-tim-0001?view=consumer
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/dpp/thb-tim-0001?view=authority
+curl -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" http://127.0.0.1:8080/api/dpp/thb-tim-0001?view=authority
 curl http://127.0.0.1:8080/dpp/thb-tim-0001
 ```
 
@@ -595,7 +595,7 @@ Wave 4 enterprise expansion:
 
 Before production use, resolve or confirm:
 
-- SSO/IAM integration replaces local `X-Role` demo headers.
+- SSO/IAM integration replaces token-gated trusted role headers.
 - TLS reverse proxy is configured.
 - Firewall rules are reviewed for product-layer and Ollama ports.
 - Persistent volumes have backup and restore procedures.

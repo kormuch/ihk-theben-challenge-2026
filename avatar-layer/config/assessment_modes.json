@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1.0",
+  "default_mode": "general",
+  "modes": {
+    "general": {
+      "label": "Product Assessment",
+      "summary_focus": [
+        "readiness status",
+        "open gaps",
+        "human review"
+      ],
+      "preferred_agents": [
+        "expert-governance"
+      ],
+      "visual_state": "idle"
+    },
+    "dpp": {
+      "label": "DPP Readiness",
+      "summary_focus": [
+        "product identity",
+        "Data Matrix readiness",
+        "supply-chain evidence",
+        "missing DPP fields"
+      ],
+      "preferred_agents": [
+        "expert-dpp-readiness"
+      ],
+      "visual_state": "thinking"
+    },
+    "cybersecurity": {
+      "label": "Cybersecurity Compliance",
+      "summary_focus": [
+        "secure design evidence",
+        "SBOM",
+        "vulnerability handling",
+        "CRA readiness"
+      ],
+      "preferred_agents": [
+        "compliance-cybersecurity",
+        "expert-cybersecurity-quality"
+      ],
+      "visual_state": "warning"
+    },
+    "compliance": {
+      "label": "Compliance Review",
+      "summary_focus": [
+        "standards evidence",
+        "test reports",
+        "certification readiness",
+        "review ownership"
+      ],
+      "preferred_agents": [
+        "compliance-emc-electrical",
+        "compliance-wireless",
+        "compliance-privacy"
+      ],
+      "visual_state": "speaking"
+    }
+  }
+}

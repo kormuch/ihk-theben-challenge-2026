@@ -47,17 +47,17 @@ curl http://192.168.178.35:11434/api/generate \
 
 ```bash
 curl http://127.0.0.1:8080/api/products?search=knx
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/summary
+curl http://127.0.0.1:8080/api/summary
 curl http://127.0.0.1:8080/api/catalog/data-products
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/data-product
+curl http://127.0.0.1:8080/api/data-product
 curl http://127.0.0.1:8080/api/lineage
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/access-policy
+curl http://127.0.0.1:8080/api/access-policy
 curl http://127.0.0.1:8080/api/integrations/data-layer
-curl -H 'X-Role: editor' -H 'Content-Type: application/json' \
+curl -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" -H 'Content-Type: application/json' \
   -d '{"sku":"THB-DEMO-1","name":"Demo","family":"Time Switch","attributes":{"gtin":"04003468999999","batch_lot_number":"LOT-2026-001","serial_number":"SN-0000000001","nominal_voltage":"230V","ip_rating":"IP20","co2_kg":1.2,"recyclable_share_pct":82}}' \
   http://127.0.0.1:8080/api/products
 curl http://127.0.0.1:8080/api/dpp/thb-tim-0001?view=consumer
-curl -H 'X-Role: steward' http://127.0.0.1:8080/api/dpp/thb-tim-0001?view=authority
+curl -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" http://127.0.0.1:8080/api/dpp/thb-tim-0001?view=authority
 curl http://127.0.0.1:8080/dpp/thb-tim-0001
 ```
 
@@ -90,7 +90,7 @@ THEBEN_DATA_LAYER_SYNC_ENABLED=true \
 THEBEN_DATA_LAYER_EXPORT_URL=http://127.0.0.1:8000/api/v1/export/products.json \
 python3 -m app.app --host 127.0.0.1 --port 8080
 
-curl -X POST -H 'X-Role: editor' http://127.0.0.1:8080/api/sync/data-layer
+curl -X POST -H "X-Role: ${THEBEN_TRUSTED_ROLE}" -H "X-Role-Token: ${THEBEN_ROLE_TOKEN}" http://127.0.0.1:8080/api/sync/data-layer
 ```
 
 ### Debug data-layer to product-layer flow

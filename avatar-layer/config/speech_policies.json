@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "advisory_only": true,
+  "human_review_required": true,
+  "restricted_categories": [
+    "vulnerability_details",
+    "supplier_declarations",
+    "unreleased_firmware",
+    "restricted_lab_evidence",
+    "authority_only_findings",
+    "commercial_customer_specific_data",
+    "draft_standard_interpretation"
+  ],
+  "spoken_redaction_terms": [
+    "CVE",
+    "exploit",
+    "supplier declaration",
+    "unreleased firmware",
+    "restricted lab",
+    "authority-only"
+  ],
+  "roles": {
+    "viewer": {
+      "description": "Can hear and see non-restricted advisory output.",
+      "can_view_restricted_evidence": false,
+      "hide_restricted_reference_ids": false,
+      "mute_restricted_detail_in_speech": true
+    },
+    "reviewer": {
+      "description": "Can review non-restricted traceability and see redacted restricted evidence markers.",
+      "can_view_restricted_evidence": false,
+      "hide_restricted_reference_ids": false,
+      "mute_restricted_detail_in_speech": true
+    },
+    "steward": {
+      "description": "Can review restricted evidence references for governed internal review.",
+      "can_view_restricted_evidence": true,
+      "hide_restricted_reference_ids": false,
+      "mute_restricted_detail_in_speech": true
+    },
+    "admin": {
+      "description": "Can inspect full avatar assessment payloads for platform diagnostics.",
+      "can_view_restricted_evidence": true,
+      "hide_restricted_reference_ids": false,
+      "mute_restricted_detail_in_speech": true
+    }
+  }
+}

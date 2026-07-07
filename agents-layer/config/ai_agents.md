@@ -46,6 +46,14 @@ base_url: http://192.168.178.60:11434
 model: gpt-oss:20b
 ```
 
+Alternative localhost provider for host-local runs:
+
+```text
+provider: ollama_localhost
+base_url: http://localhost:11434
+model: gpt-oss:20b
+```
+
 LLM output may help with explanation and synthesis, but deterministic checks and traceability remain visible in the returned assessment.
 
 ## Escalation Policy
@@ -58,4 +66,3 @@ LLM output may help with explanation and synthesis, but deterministic checks and
 ## Sign-Off Policy
 
 No agent can provide final certification, engineering, legal, privacy, or market sign-off.
-

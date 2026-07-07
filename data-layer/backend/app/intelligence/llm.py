@@ -32,6 +32,7 @@ DEFAULT_CONFIG = {
             "base_url": "http://192.168.178.60:11434",
             "endpoint": "/api/generate",
             "model": "gpt-oss:20b",
+            "trust_env": False,
             "api_key_env": "OLLAMA_API_KEY",
             "api_key_required": False,
             "temperature": 0.1,
@@ -117,6 +118,31 @@ def configured_env_keys(chain: list[tuple[str, dict[str, Any]]]) -> list[str]:
     return sorted(set(keys))
 
 
+def required_env_keys(chain: list[tuple[str, dict[str, Any]]]) -> list[str]:
+    keys = [
+        env_key(provider)
+        for _, provider in chain
+        if provider.get("api_key_required", False) and env_key(provider)
+    ]
+    return sorted(set(keys))
+
+
+def provider_trust_env(provider: dict[str, Any]) -> bool:
+    """Whether httpx should honor proxy-related environment variables."""
+    if "trust_env" in provider:
+        return bool(provider.get("trust_env"))
+    return provider.get("type") != "ollama_generate"
+
+
+def provider_url(provider: dict[str, Any]) -> str:
+    provider_type = provider.get("type")
+    if provider_type == "ollama_generate":
+        base_url = str(provider.get("base_url") or "").rstrip("/")
+        endpoint = str(provider.get("endpoint") or "/api/generate")
+        return f"{base_url}{endpoint if endpoint.startswith('/') else '/' + endpoint}"
+    return str(provider.get("url") or "")
+
+
 async def _call_openai_chat(prompt: str, provider: dict[str, Any], api_key: str) -> str:
     payload = {
         "model": provider["model"],
@@ -124,7 +150,10 @@ async def _call_openai_chat(prompt: str, provider: dict[str, Any], api_key: str)
         "temperature": provider.get("temperature", 0.1),
         "max_tokens": provider.get("max_tokens", 4096),
     }
-    async with httpx.AsyncClient(timeout=float(provider.get("timeout_seconds", 60))) as client:
+    async with httpx.AsyncClient(
+        timeout=float(provider.get("timeout_seconds", 60)),
+        trust_env=provider_trust_env(provider),
+    ) as client:
         response = await client.post(
             provider["url"],
             json=payload,
@@ -142,7 +171,10 @@ async def _call_gemini(prompt: str, provider: dict[str, Any], api_key: str) -> s
             "maxOutputTokens": provider.get("max_tokens", 4096),
         },
     }
-    async with httpx.AsyncClient(timeout=float(provider.get("timeout_seconds", 60))) as client:
+    async with httpx.AsyncClient(
+        timeout=float(provider.get("timeout_seconds", 60)),
+        trust_env=provider_trust_env(provider),
+    ) as client:
         response = await client.post(
             f"{provider['url']}?key={api_key}",
             json=payload,
@@ -153,9 +185,9 @@ async def _call_gemini(prompt: str, provider: dict[str, Any], api_key: str) -> s
 
 
 async def _call_ollama_generate(prompt: str, provider: dict[str, Any], api_key: str) -> str:
-    base_url = str(provider.get("base_url") or "").rstrip("/")
-    endpoint = str(provider.get("endpoint") or "/api/generate")
-    url = f"{base_url}{endpoint if endpoint.startswith('/') else '/' + endpoint}"
+    url = provider_url(provider)
+    if not url.startswith(("http://", "https://")):
+        raise ValueError("Ollama provider requires base_url with http:// or https://")
     payload = {
         "model": provider["model"],
         "prompt": prompt,
@@ -165,7 +197,10 @@ async def _call_ollama_generate(prompt: str, provider: dict[str, Any], api_key: 
     headers = {"Content-Type": "application/json"}
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"
-    async with httpx.AsyncClient(timeout=float(provider.get("timeout_seconds", 120))) as client:
+    async with httpx.AsyncClient(
+        timeout=float(provider.get("timeout_seconds", 120)),
+        trust_env=provider_trust_env(provider),
+    ) as client:
         response = await client.post(url, json=payload, headers=headers)
         response.raise_for_status()
         return response.json().get("response", "")
@@ -184,6 +219,7 @@ async def _call_provider(prompt: str, provider: dict[str, Any], api_key: str) ->
 
 async def _call_with_retry(prompt: str, provider_id: str, provider: dict[str, Any], api_key: str) -> str:
     name = provider_label(provider_id, provider)
+    url = provider_url(provider) or "unconfigured URL"
     for attempt in range(MAX_RETRIES):
         try:
             return await _call_provider(prompt, provider, api_key)
@@ -192,7 +228,7 @@ async def _call_with_retry(prompt: str, provider_id: str, provider: dict[str, An
             if retryable and attempt < MAX_RETRIES - 1:
                 delay = COOLDOWN_SECONDS * (2**attempt)
                 reason = getattr(getattr(exc, "response", None), "status_code", exc.__class__.__name__)
-                log.warning("%s %s - retry %s/%s in %.0fs", name, reason, attempt + 1, MAX_RETRIES, delay)
+                log.warning("%s at %s %s - retry %s/%s in %.0fs", name, url, reason, attempt + 1, MAX_RETRIES, delay)
                 await asyncio.sleep(delay)
             else:
                 raise
@@ -229,17 +265,21 @@ async def call_llm(prompt: str) -> str:
                 if retryable:
                     _backoff_until[provider_id] = time.time() + 60
                     log.warning("%s exhausted retries - skipping for 60s", name)
-                last_error = exc
+                last_error = f"{name} at {provider_url(provider) or 'unconfigured URL'}: {exc}"
+            except ValueError as exc:
+                last_error = f"{name}: {exc}"
 
         if last_error:
-            keys = ", ".join(configured_env_keys(chain)) or "no api_key_env values configured"
+            keys = ", ".join(required_env_keys(chain))
+            key_hint = f" Required env vars: {keys}." if keys else ""
             raise ValueError(
                 f"No configured LLM provider is usable. Last provider error: {last_error}. "
-                f"Configure data-layer/config/llm_agents.json or set env vars: {keys}"
-            ) from last_error
+                f"Configure data-layer/config/llm_agents.json or check provider network reachability.{key_hint}"
+            )
 
-        keys = ", ".join(configured_env_keys(chain)) or "no api_key_env values configured"
+        keys = ", ".join(required_env_keys(chain))
         missing = "; skipped missing keys: " + ", ".join(skipped_missing_key) if skipped_missing_key else ""
+        key_hint = f" or set env vars: {keys}" if keys else ""
         raise ValueError(
-            f"No configured LLM provider is usable. Configure data-layer/config/llm_agents.json or set env vars: {keys}{missing}"
+            f"No configured LLM provider is usable. Configure data-layer/config/llm_agents.json{key_hint}{missing}"
         )

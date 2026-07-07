@@ -13,6 +13,17 @@
       "timeout_seconds": 120,
       "network_scope": "lan",
       "access_note": "Ollama is expected to be reachable from the local LAN. Keep firewall and model access policy under central IT control."
+    },
+    "ollama_localhost": {
+      "type": "ollama",
+      "enabled": true,
+      "base_url": "http://localhost:11434",
+      "generate_endpoint": "/api/generate",
+      "chat_endpoint": "/api/chat",
+      "default_model": "gpt-oss:20b",
+      "timeout_seconds": 120,
+      "network_scope": "localhost",
+      "access_note": "Alternative for host-local product-layer runs where Ollama is bound to localhost:11434. In Docker, localhost means the product-layer container unless the runtime maps this explicitly."
     }
   },
   "ai_colleagues": [
@@ -45,7 +56,22 @@
       "stream": false
     }
   },
+  "alternative_requests": {
+    "ollama_localhost": {
+      "method": "POST",
+      "url": "http://localhost:11434/api/generate",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "model": "gpt-oss:20b",
+        "prompt": "Elaborate weather gradient for Stuttgart the next days.",
+        "stream": false
+      }
+    }
+  },
   "example_curl": "curl http://192.168.178.60:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Elaborate weather gradient for Stuttgart the next days.\",\"stream\":false}'",
+  "alternative_example_curl": "curl http://localhost:11434/api/generate -H \"Content-Type: application/json\" -d '{\"model\":\"gpt-oss:20b\",\"prompt\":\"Elaborate weather gradient for Stuttgart the next days.\",\"stream\":false}'",
   "governance": {
     "owner": "Central IT / Data Platform",
     "domain": "product",

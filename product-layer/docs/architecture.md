@@ -55,9 +55,9 @@ Discoverable runtime endpoints:
 
 ## Governance and access
 
-The MVP implements local header-driven controls for demonstration:
+The MVP implements token-gated trusted role controls for local testing:
 
-- RBAC: `X-Role` supports `viewer`, `editor`, `steward`, and `admin`.
+- RBAC: trusted runtime role claims map to viewer, editor, steward, and admin permission sets.
 - ABAC placeholders: role, purpose, region, classification.
 - Row-level security: regional products are filtered unless the role can read all regions.
 - Masking: confidential commercial price attributes are masked unless the role can unmask them.
