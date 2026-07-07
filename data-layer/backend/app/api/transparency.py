@@ -10,7 +10,7 @@ from app.intelligence.prompts import load_prompts
 
 router = APIRouter(prefix="/analyze", tags=["transparency"])
 
-CONFIDENCE_THRESHOLD = 85
+CONFIDENCE_THRESHOLD = 80
 
 
 @router.get("/prompts")

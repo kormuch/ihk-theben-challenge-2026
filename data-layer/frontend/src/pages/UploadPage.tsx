@@ -45,7 +45,12 @@ export function UploadPage() {
             existing = await analyze.lookup(articleNumbers);
           } catch { /* lookup is best-effort */ }
         }
-        updateJob(idx, { stage: 'extracted', result: res, editedProducts: res.extraction.products, existingProducts: existing });
+        let familyList = fams;
+        try {
+          familyList = await families.list();
+          setFams(familyList);
+        } catch {}
+        updateJob(idx, { stage: 'extracted', result: res, editedProducts: applyProductMatches(res.extraction.products, existing, familyList), existingProducts: existing });
       } else if (res.status === 'classified') {
         updateJob(idx, { stage: 'classified', result: res });
       }
@@ -83,6 +88,27 @@ export function UploadPage() {
   const jobHasMissingArticle = (job: FileJob) =>
     job.editedProducts.some((p) => !p.article_number?.trim());
 
+  const applyProductMatches = (
+    products: ExtractedProduct[],
+    existing: Record<string, ExistingProductInfo>,
+    familyList: ProductFamily[],
+  ) => {
+    const unsorted = familyList.find((family) => family.name.toLowerCase() === 'unsorted');
+    return products.map((product) => {
+      const match = existing[product.article_number];
+      if (match) return { ...product, family_id: match.family_id };
+      if (unsorted) {
+        return {
+          ...product,
+          family_id: unsorted.id,
+          family_name: unsorted.name,
+          family_suggestion: product.family_suggestion || unsorted.name,
+        };
+      }
+      return product;
+    });
+  };
+
   const handleConfirm = async (idx: number) => {
     const job = jobs[idx];
     if (!job.result || job.editedProducts.length === 0) return;
@@ -93,11 +119,10 @@ export function UploadPage() {
         stored_as: job.result.stored_as,
         doc_type: job.result.classification?.document_type || 'Unknown',
         products: job.editedProducts
-          .filter((p) => p.family_id)
           .map((p) => ({
             article_number: p.article_number,
             name: p.name,
-            family_id: p.family_id!,
+            family_id: p.family_id || null,
             attributes: p.attributes,
           })),
       });
@@ -123,6 +148,40 @@ export function UploadPage() {
       next[jobIdx] = { ...next[jobIdx], editedProducts: products };
       return next;
     });
+  };
+
+  const updateProductAttribute = (jobIdx: number, prodIdx: number, key: string, value: any) => {
+    setJobs((prev) => {
+      const next = [...prev];
+      const products = [...next[jobIdx].editedProducts];
+      const product = products[prodIdx];
+      products[prodIdx] = {
+        ...product,
+        attributes: { ...product.attributes, [key]: value },
+      };
+      next[jobIdx] = { ...next[jobIdx], editedProducts: products };
+      return next;
+    });
+  };
+
+  const removeProductAttribute = (jobIdx: number, prodIdx: number, key: string) => {
+    setJobs((prev) => {
+      const next = [...prev];
+      const products = [...next[jobIdx].editedProducts];
+      const product = products[prodIdx];
+      const attributes = { ...product.attributes };
+      delete attributes[key];
+      products[prodIdx] = { ...product, attributes };
+      next[jobIdx] = { ...next[jobIdx], editedProducts: products };
+      return next;
+    });
+  };
+
+  const addProductAttribute = (jobIdx: number, prodIdx: number) => {
+    const key = window.prompt('Attribute key');
+    if (!key?.trim()) return;
+    const value = window.prompt('Attribute value') ?? '';
+    updateProductAttribute(jobIdx, prodIdx, key.trim(), value);
   };
 
   const removeProduct = (jobIdx: number, prodIdx: number) => {
@@ -265,7 +324,7 @@ export function UploadPage() {
             {job.stage === 'classified' && job.result?.needs_review && (
               <div className="px-5 py-3 space-y-2">
                 <div className="text-xs text-[#fbbf24]">
-                  Confidence too low for auto-extraction. Select or type a document type to retry:
+                  Confidence below 80%. Select or type a document type to retry extraction:
                 </div>
                 <div className="flex items-center gap-2">
                   <select
@@ -297,10 +356,15 @@ export function UploadPage() {
                         if (articleNumbers.length > 0) {
                           try { existing = await analyze.lookup(articleNumbers); } catch {}
                         }
+                        let familyList = fams;
+                        try {
+                          familyList = await families.list();
+                          setFams(familyList);
+                        } catch {}
                         updateJob(jobIdx, {
                           stage: 'extracted',
                           result: { ...job.result!, status: 'extracted', extraction: res.extraction, classification: { ...job.result!.classification!, document_type: docType, confidence: 100 } },
-                          editedProducts: res.extraction.products,
+                          editedProducts: applyProductMatches(res.extraction.products, existing, familyList),
                           existingProducts: existing,
                         });
                       } catch (err: any) {
@@ -390,11 +454,11 @@ export function UploadPage() {
                           <div key={key} className="flex items-start gap-3 text-xs">
                             <div className="w-[140px] min-w-[140px] text-gray-500 pt-0.5">{key}</div>
                             <div className={`flex-1 ${isNew ? 'text-[#4ade80]' : hasChanged ? 'text-[#fbbf24]' : 'text-[#e2e8f0]'}`}>
-                              {typeof value === 'boolean'
-                                ? value ? '✓ Yes' : '✗ No'
-                                : Array.isArray(value)
-                                ? value.join(', ')
-                                : String(value ?? '—')}
+                              <input
+                                value={Array.isArray(value) ? value.join(', ') : String(value ?? '')}
+                                onChange={(e) => updateProductAttribute(jobIdx, prodIdx, key, e.target.value)}
+                                className="bg-[#161b27] border border-[#1f2937] rounded px-2 py-1 text-xs text-[#e2e8f0] outline-none w-full"
+                              />
                               {hasChanged && (
                                 <span className="text-[10px] text-[#6b7280] ml-2">was: {String(oldVal)}</span>
                               )}
@@ -407,6 +471,12 @@ export function UploadPage() {
                                 {citation.length > 70 ? citation.slice(0, 70) + '…' : citation}
                               </div>
                             )}
+                            <button
+                              onClick={() => removeProductAttribute(jobIdx, prodIdx, key)}
+                              className="text-[10px] text-gray-600 hover:text-red-400 cursor-pointer"
+                            >
+                              Remove
+                            </button>
                           </div>
                         );
                       })}
@@ -422,6 +492,12 @@ export function UploadPage() {
                           </div>
                         );
                       })}
+                      <button
+                        onClick={() => addProductAttribute(jobIdx, prodIdx)}
+                        className="mt-2 text-[10px] font-semibold px-3 py-1 rounded border border-[#1f2937] text-[#93c5fd] hover:border-[#3b82f6] cursor-pointer transition-colors"
+                      >
+                        Add attribute
+                      </button>
                     </div>
                   </div>
                   );

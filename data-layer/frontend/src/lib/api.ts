@@ -196,6 +196,6 @@ export const analyze = {
   confirm: (data: {
     stored_as: string;
     doc_type: string;
-    products: { article_number: string; name: string; family_id: string; attributes: Record<string, any> }[];
+    products: { article_number: string; name: string; family_id: string | null; attributes: Record<string, any> }[];
   }) => request<ConfirmResult>('/analyze/confirm', { method: 'POST', body: JSON.stringify(data) }),
 };

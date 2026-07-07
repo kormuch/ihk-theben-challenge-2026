@@ -6,6 +6,11 @@ it does not enforce them, but the UI can use it for completeness checks.
 
 FAMILIES = [
     {
+        "name": "Unsorted",
+        "description": "Holding family for imported or AI-extracted products that need manual classification",
+        "attribute_schema": {},
+    },
+    {
         "name": "Timer",
         "description": "Analog and digital timers for residential and industrial installation",
         "attribute_schema": {

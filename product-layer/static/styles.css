@@ -1,14 +1,19 @@
 :root {
-  --ink: #1d2a25;
-  --muted: #5e6b64;
-  --line: #d9ded8;
-  --bg: #f7f8f5;
+  --ink: #0f1117;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --line-strong: #cbd5e1;
+  --bg: #ffffff;
+  --soft: #f8fafc;
   --panel: #ffffff;
-  --brand: #16382e;
-  --accent: #a94f2b;
-  --ok: #2f7651;
-  --warn: #9c6a11;
-  --bad: #a33333;
+  --brand: #22c55e;
+  --brand-hover: #16a34a;
+  --brand-ink: #0f1117;
+  --accent: #22c55e;
+  --ok: #16a34a;
+  --warn: #d97706;
+  --bad: #dc2626;
+  --shadow: 0 10px 28px rgba(15, 17, 23, 0.07);
 }
 
 * {
@@ -17,13 +22,15 @@
 
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
   color: var(--ink);
   background: var(--bg);
 }
 
 a {
-  color: var(--brand);
+  color: var(--ok);
 }
 
 .topbar {
@@ -31,19 +38,22 @@ a {
   justify-content: space-between;
   gap: 24px;
   align-items: center;
-  padding: 22px 28px;
-  background: var(--brand);
-  color: #fff;
+  padding: 18px 28px;
+  background: #fff;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 
 .topbar h1 {
   margin: 0 0 6px;
-  font-size: 28px;
+  font-size: 20px;
+  font-weight: 800;
 }
 
 .topbar p {
   margin: 0;
-  color: #dce7e1;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .topbar nav {
@@ -53,10 +63,20 @@ a {
 }
 
 .topbar a {
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  padding: 8px 10px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 10px;
   text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--soft);
+  transition: border-color 140ms ease, color 140ms ease;
+}
+
+.topbar a:hover {
+  border-color: rgba(34, 197, 94, 0.45);
+  color: var(--ok);
 }
 
 .layout {
@@ -70,6 +90,7 @@ a {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 16px;
+  box-shadow: var(--shadow);
 }
 
 .controls {
@@ -82,8 +103,11 @@ a {
 label {
   display: grid;
   gap: 6px;
-  font-size: 13px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
   color: var(--muted);
+  letter-spacing: 0.04em;
 }
 
 input,
@@ -99,9 +123,19 @@ textarea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 9px 10px;
-  background: #fff;
+  padding: 9px 11px;
+  background: var(--soft);
   color: var(--ink);
+  outline: none;
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(34, 197, 94, 0.6);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
 }
 
 textarea {
@@ -114,8 +148,11 @@ button {
   border-radius: 6px;
   padding: 10px 12px;
   background: var(--brand);
-  color: #fff;
+  color: var(--brand-ink);
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
 .secondary-button {
@@ -125,7 +162,13 @@ button {
 }
 
 button:hover {
-  filter: brightness(1.08);
+  background: var(--brand-hover);
+}
+
+.secondary-button:hover {
+  background: var(--soft);
+  color: var(--ok);
+  border-color: rgba(34, 197, 94, 0.45);
 }
 
 .summary-grid {
@@ -138,14 +181,16 @@ button:hover {
 .metric {
   background: #fff;
   border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
+  border-left: 3px solid var(--accent);
   border-radius: 8px;
   padding: 14px;
+  box-shadow: var(--shadow);
 }
 
 .metric strong {
   display: block;
-  font-size: 28px;
+  font-size: 24px;
+  font-weight: 800;
 }
 
 .metric span {
@@ -178,7 +223,8 @@ button:hover {
 
 h2 {
   margin: 0;
-  font-size: 20px;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .product-list {
@@ -199,11 +245,14 @@ h2 {
   background: #fff;
   color: var(--ink);
   padding: 11px;
+  transition: background 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .product:hover,
 .product.active {
   border-color: var(--accent);
+  background: #f9fffb;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.08);
 }
 
 .product small,
@@ -215,20 +264,25 @@ h2 {
   display: inline-block;
   border-radius: 999px;
   padding: 3px 8px;
-  background: #edf2ee;
+  background: #f1f5f9;
+  color: #475569;
   font-size: 12px;
+  font-weight: 700;
 }
 
 .badge.ok {
   color: var(--ok);
+  background: rgba(22, 163, 74, 0.12);
 }
 
 .badge.warn {
   color: var(--warn);
+  background: rgba(217, 119, 6, 0.12);
 }
 
 .badge.bad {
   color: var(--bad);
+  background: rgba(220, 38, 38, 0.12);
 }
 
 .detail table,
@@ -257,6 +311,79 @@ h2 {
   width: 38%;
 }
 
+.detail-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.detail-hero h3 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.detail-badges {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.detail-section {
+  margin-top: 18px;
+}
+
+.detail-section h3 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.attribute-list {
+  display: grid;
+  gap: 12px;
+}
+
+.attribute-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 190px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.attribute-label {
+  min-width: 0;
+}
+
+.attribute-name {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.attribute-source {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 10px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.attribute-value {
+  min-width: 0;
+}
+
+.attribute-value input {
+  padding: 7px 9px;
+  font-size: 13px;
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -270,6 +397,14 @@ h2 {
   padding: 7px 9px;
   text-decoration: none;
   background: #fff;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.actions a:hover {
+  border-color: rgba(34, 197, 94, 0.45);
+  color: var(--ok);
 }
 
 .import-panel,
@@ -309,7 +444,7 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 4px 9px;
-  background: #f7f8f5;
+  background: var(--soft);
 }
 
 .agent-layer {
@@ -356,8 +491,10 @@ h2 {
 .api-call pre {
   margin: 0;
   padding: 10px;
-  background: #f7f8f5;
+  background: var(--soft);
   font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
 }
 
 .agents-panel table {
@@ -390,7 +527,7 @@ h2 {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(29, 42, 37, 0.48);
+  background: rgba(15, 17, 23, 0.42);
 }
 
 .modal-panel {
@@ -400,7 +537,7 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0 18px 54px rgba(29, 42, 37, 0.24);
+  box-shadow: 0 18px 54px rgba(15, 17, 23, 0.18);
 }
 
 .modal-head,
@@ -608,8 +745,9 @@ h2 {
 
 pre {
   white-space: pre-wrap;
-  background: #fff;
+  background: var(--soft);
   border: 1px solid var(--line);
+  border-radius: 8px;
   padding: 16px;
   overflow: auto;
 }

@@ -207,21 +207,34 @@ async function selectProduct(id) {
 function renderDetail(product, passport) {
   const attrs = product.attributes || {};
   const identity = passport.identity || {};
+  const documents = product.documents || [];
   $("htmlExport").href = `/api/export/passport/${product.id}.html`;
   $("svgExport").href = `/api/export/passport/${product.id}.svg`;
   $("detail").innerHTML = `
-    <h3>${escapeHtml(product.name)}</h3>
-    <p class="muted">${escapeHtml(product.sku)} | ${escapeHtml(product.family)}</p>
-    <p>${(product.certifications || []).map((c) => `<span class="badge">${escapeHtml(c)}</span>`).join(" ")}</p>
-    <h3>Attribute editor</h3>
-    <table>${Object.entries(attrs).map(([key, value]) => `
-      <tr>
-        <th>${escapeHtml(key)}</th>
-        <td><input data-attr="${escapeHtml(key)}" value="${escapeHtml(String(value))}"></td>
-      </tr>
-    `).join("")}</table>
-    <div class="actions"><button id="saveAttrs">Save attributes</button></div>
-    <h3>Digital Product Passport preview</h3>
+    <div class="detail-hero">
+      <div>
+        <h3>${escapeHtml(product.name)}</h3>
+        <p class="muted">${escapeHtml(product.sku)} | ${escapeHtml(product.family)}</p>
+      </div>
+      <div class="detail-badges">${(product.certifications || []).map((c) => `<span class="badge">${escapeHtml(c)}</span>`).join(" ")}</div>
+    </div>
+    <section class="detail-section">
+      <h3>Attributes</h3>
+      <div class="attribute-list">${Object.entries(attrs).sort(([left], [right]) => left.localeCompare(right)).map(([key, value]) => `
+        <div class="attribute-row">
+          <div class="attribute-label">
+            <div class="attribute-name">${escapeHtml(formatAttributeLabel(key))}</div>
+            <div class="attribute-source">${escapeHtml(attributeSource(product, key))}</div>
+          </div>
+          <div class="attribute-value">
+            <input data-attr="${escapeHtml(key)}" value="${escapeHtml(formatAttributeValue(value))}">
+          </div>
+        </div>
+      `).join("")}</div>
+      <div class="actions"><button id="saveAttrs">Save attributes</button></div>
+    </section>
+    <section class="detail-section">
+      <h3>Digital Product Passport preview</h3>
     <div class="actions">
       <a href="/dpp/${encodeURIComponent(product.id)}" target="_blank">Public DPP</a>
       <a href="/api/dpp/${encodeURIComponent(product.id)}?view=consumer" target="_blank">Consumer JSON</a>
@@ -236,10 +249,36 @@ function renderDetail(product, passport) {
       <tr><th>Owner</th><td>${escapeHtml(product.metadata?.owner || "")}</td></tr>
       <tr><th>Lineage</th><td>${escapeHtml(product.metadata?.lineage || "")}</td></tr>
       <tr><th>Classification</th><td>${escapeHtml(product.metadata?.classification || "")}</td></tr>
-      <tr><th>Documents</th><td>${(product.documents || []).map((d) => escapeHtml(d.name)).join("<br>")}</td></tr>
+      <tr><th>Documents</th><td>${documents.map((d) => escapeHtml(d.name)).join("<br>")}</td></tr>
     </table>
+    </section>
   `;
   $("saveAttrs").addEventListener("click", saveAttributes);
+}
+
+function formatAttributeLabel(key) {
+  return String(key || "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function formatAttributeValue(value) {
+  if (Array.isArray(value)) return value.join(", ");
+  if (value && typeof value === "object") return JSON.stringify(value);
+  return String(value ?? "");
+}
+
+function attributeSource(product, key) {
+  const metadata = product.metadata || {};
+  const explicitSources = product.attribute_sources || metadata.attribute_sources || product.sources || {};
+  if (explicitSources[key]) return explicitSources[key];
+  const citations = product.citations || metadata.citations || {};
+  if (citations[key]) return citations[key];
+  const document = (product.documents || [])[0];
+  if (document?.source_uri) return `${metadata.source_system || "data-layer"} -> ${document.source_uri} -> attributes.${key}`;
+  if (document?.name) return `${metadata.source_system || "data-layer"} -> ${document.name} -> attributes.${key}`;
+  if (metadata.upstream_export_url) return `${metadata.source_system || "data-layer"} -> ${metadata.upstream_export_url} -> attributes.${key}`;
+  return `${metadata.source_system || "product-layer"} -> attributes.${key}`;
 }
 
 async function saveAttributes() {
@@ -568,10 +607,9 @@ function escapeHtml(value) {
   }[char]));
 }
 
-["search", "family", "status"].forEach((id) => {
+["family", "status"].forEach((id) => {
   $(id).addEventListener("input", refreshAll);
 });
-$("refresh").addEventListener("click", refreshAll);
 $("importJson").addEventListener("click", () => importPayload("application/json"));
 $("importCsv").addEventListener("click", () => importPayload("text/csv"));
 $("validate").addEventListener("click", runValidation);

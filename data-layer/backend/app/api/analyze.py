@@ -9,7 +9,8 @@ import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from sqlalchemy.orm.attributes import flag_modified
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -22,7 +23,39 @@ from app.models.product import Product, ProductFamily, ProductDocument
 router = APIRouter(prefix="/analyze", tags=["analyze"])
 
 STORAGE = Path(settings.STORAGE_PATH)
-CONFIDENCE_THRESHOLD = 85
+CONFIDENCE_THRESHOLD = 80
+UNSORTED_FAMILY_NAME = "Unsorted"
+
+
+def get_or_create_unsorted_family(db: Session) -> ProductFamily:
+    family = db.query(ProductFamily).filter_by(name=UNSORTED_FAMILY_NAME).first()
+    if family:
+        return family
+    family = ProductFamily(
+        name=UNSORTED_FAMILY_NAME,
+        description="Holding family for AI-ingested products that need manual classification.",
+        attribute_schema={},
+    )
+    db.add(family)
+    db.commit()
+    db.refresh(family)
+    return family
+
+
+def enrich_products_with_family_ids(products: list[dict], db: Session) -> None:
+    families_db = {f.name.lower(): f for f in db.query(ProductFamily).all()}
+    unsorted = families_db.get(UNSORTED_FAMILY_NAME.lower()) or get_or_create_unsorted_family(db)
+    families_db[UNSORTED_FAMILY_NAME.lower()] = unsorted
+    for product in products:
+        suggestion = str(product.get("family_suggestion") or "").strip()
+        match = families_db.get(suggestion.lower()) if suggestion else None
+        if match:
+            product["family_id"] = str(match.id)
+            product["family_name"] = match.name
+        else:
+            product["family_id"] = str(unsorted.id)
+            product["family_name"] = unsorted.name
+            product["family_suggestion"] = suggestion or UNSORTED_FAMILY_NAME
 
 
 @router.post("/")
@@ -90,17 +123,7 @@ async def analyze_file(
     if confidence >= CONFIDENCE_THRESHOLD:
         try:
             extraction = await extract_from_document(doc_type, text_content)
-            # Enrich products with existing family IDs
-            families_db = {f.name.lower(): f for f in db.query(ProductFamily).all()}
-            for product in extraction.get("products", []):
-                suggestion = product.get("family_suggestion", "")
-                match = families_db.get(suggestion.lower())
-                if match:
-                    product["family_id"] = str(match.id)
-                    product["family_name"] = match.name
-                else:
-                    product["family_id"] = None
-                    product["family_name"] = suggestion
+            enrich_products_with_family_ids(extraction.get("products", []), db)
             result["extraction"] = extraction
             result["status"] = "extracted"
         except Exception as exc:
@@ -161,17 +184,7 @@ async def re_extract(
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Extraction failed: {exc}")
 
-    # Enrich with existing family IDs
-    families_db = {f.name.lower(): f for f in db.query(ProductFamily).all()}
-    for product in extraction.get("products", []):
-        suggestion = product.get("family_suggestion", "")
-        match = families_db.get(suggestion.lower())
-        if match:
-            product["family_id"] = str(match.id)
-            product["family_name"] = match.name
-        else:
-            product["family_id"] = None
-            product["family_name"] = suggestion
+    enrich_products_with_family_ids(extraction.get("products", []), db)
 
     return {
         "status": "extracted",
@@ -183,14 +196,14 @@ async def re_extract(
 class ConfirmProduct(BaseModel):
     article_number: str
     name: str
-    family_id: str
-    attributes: dict = {}
+    family_id: str | None = None
+    attributes: dict = Field(default_factory=dict)
 
 
 class ConfirmRequest(BaseModel):
     stored_as: str
     doc_type: str
-    products: list[ConfirmProduct]
+    products: list[ConfirmProduct] = Field(default_factory=list)
 
 
 @router.post("/confirm")
@@ -206,29 +219,34 @@ def confirm_extraction(
     errors = []
 
     for p in body.products:
-        try:
-            family_id = uuid.UUID(p.family_id)
-        except ValueError:
-            errors.append({"article_number": p.article_number, "error": "Invalid family_id"})
-            continue
+        if p.family_id:
+            try:
+                family_id = uuid.UUID(p.family_id)
+            except ValueError:
+                errors.append({"article_number": p.article_number, "error": "Invalid family_id"})
+                continue
+        else:
+            family_id = get_or_create_unsorted_family(db).id
 
         if not db.get(ProductFamily, family_id):
-            errors.append({"article_number": p.article_number, "error": "Family not found"})
-            continue
+            family_id = get_or_create_unsorted_family(db).id
 
         existing = db.query(Product).filter_by(article_number=p.article_number).first()
         if existing:
-            # Merge attributes
-            merged = {**existing.attributes, **p.attributes}
+            merged = {**(existing.attributes or {}), **p.attributes}
+            existing.name = p.name
+            existing.family_id = family_id
             existing.attributes = merged
+            flag_modified(existing, "attributes")
             db.commit()
+            db.refresh(existing)
             updated.append(p.article_number)
         else:
             product = Product(
                 name=p.name,
                 article_number=p.article_number,
                 family_id=family_id,
-                attributes=p.attributes,
+                attributes=dict(p.attributes),
             )
             db.add(product)
             db.commit()
