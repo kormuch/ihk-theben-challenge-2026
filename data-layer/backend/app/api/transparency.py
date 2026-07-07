@@ -5,9 +5,8 @@ Read-only, no DB access, no side effects.
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from app.intelligence.classifier import CLASSIFIER_PROMPT, DOCUMENT_TYPES
-from app.intelligence.extractors import EXTRACTOR_PROMPTS, _BASE, _GENERIC_INSTRUCTIONS
 from app.intelligence.llm import get_active_config
+from app.intelligence.prompts import load_prompts
 
 router = APIRouter(prefix="/analyze", tags=["transparency"])
 
@@ -17,7 +16,11 @@ CONFIDENCE_THRESHOLD = 85
 @router.get("/prompts")
 def get_prompts():
     """Return all AI prompts, document types, and active LLM configuration."""
+    prompt_config = load_prompts()
     llm_config = get_active_config()
+    document_types = prompt_config.get("document_types", [])
+    classifier_prompt = str(prompt_config.get("classifier_prompt", ""))
+    extractor_base = str(prompt_config.get("extractor_base_template", ""))
 
     return JSONResponse(content={
         "pipeline": {
@@ -31,12 +34,12 @@ def get_prompts():
                 "extractor": "12,000 characters",
             },
         },
-        "document_types": DOCUMENT_TYPES,
+        "document_types": document_types,
         "prompts": {
-            "classifier": CLASSIFIER_PROMPT.replace("{types}", "\n".join(f"- {t}" for t in DOCUMENT_TYPES)).replace("{content}", "<document content>"),
-            "extractor_base": _BASE.replace("{doc_type}", "<document type>").replace("{specific_instructions}", "<see per-type instructions below>").replace("{content}", "<document content>"),
-            "extractor_per_type": EXTRACTOR_PROMPTS,
-            "extractor_fallback": _GENERIC_INSTRUCTIONS,
+            "classifier": classifier_prompt.replace("{types}", "\n".join(f"- {t}" for t in document_types)).replace("{content}", "<document content>"),
+            "extractor_base": extractor_base.replace("{doc_type}", "<document type>").replace("{specific_instructions}", "<see per-type instructions below>").replace("{content}", "<document content>"),
+            "extractor_per_type": prompt_config.get("extractor_prompts", {}),
+            "extractor_fallback": prompt_config.get("generic_extractor_instructions", ""),
         },
         "llm": llm_config,
     })
