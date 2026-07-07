@@ -63,10 +63,12 @@ Drop files  -->  AI Classifier  -->  AI Extractor  -->  Human Review  -->  Datab
 
 - **Confidence gate**: >= 85% auto-extracts, < 85% lets user pick/type document type and retry
 - **Existing product diff**: Shows attribute-level changes (new, changed, kept) when a product already exists
-- **Cross-file dedup**: Flags same article number found in multiple files during bulk upload
+- **Multi-source detection**: Flags same article number found in multiple files during bulk upload, data is merged on confirm
 - **LLM fallback**: Gemini 2.0 Flash primary, Groq (Llama 3.3 70B) fallback with retry + backoff
 - **OCR support**: Images (PNG, JPG, TIFF, BMP, WEBP) and scanned PDFs via Tesseract OCR (deu+eng)
 - **Bulk upload**: Multiple files at once, serialized processing with rate-limit awareness
+- **Article number validation**: Import blocked until article number is provided for every product
+- **AI transparency**: Full prompt visibility via `GET /api/v1/analyze/prompts` (see [HOW-IT-WORKS.md](HOW-IT-WORKS.md))
 - **Product-Layer sync**: Auto-export on confirm with retry + exponential backoff
 
 ---

@@ -16,6 +16,7 @@ export function ProductsPage({ onSelectProduct }: Props) {
   const [newArticle, setNewArticle] = useState('');
   const [newFamily, setNewFamily] = useState('');
   const [creating, setCreating] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -52,9 +53,13 @@ export function ProductsPage({ onSelectProduct }: Props) {
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (!confirm('Delete this product?')) return;
-    await products.delete(id);
-    load();
+    if (confirmDeleteId === id) {
+      setConfirmDeleteId(null);
+      await products.delete(id);
+      load();
+    } else {
+      setConfirmDeleteId(id);
+    }
   };
 
   return (
@@ -192,10 +197,11 @@ export function ProductsPage({ onSelectProduct }: Props) {
                 <td className="px-1 py-2.5 border-b border-[#1f293710]">
                   <button
                     onClick={(e) => handleDelete(e, p.id)}
-                    className="text-gray-700 hover:text-red-400 text-xs cursor-pointer transition-colors"
-                    title="Delete"
+                    onBlur={() => setConfirmDeleteId(null)}
+                    className={`text-xs cursor-pointer transition-colors ${confirmDeleteId === p.id ? 'text-red-500 font-bold' : 'text-gray-700 hover:text-red-400'}`}
+                    title={confirmDeleteId === p.id ? 'Click again to confirm' : 'Delete'}
                   >
-                    ✕
+                    {confirmDeleteId === p.id ? 'Sure?' : '✕'}
                   </button>
                 </td>
               </tr>

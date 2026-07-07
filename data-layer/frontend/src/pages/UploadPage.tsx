@@ -80,9 +80,13 @@ export function UploadPage() {
     if (e.dataTransfer.files.length > 0) handleFiles(e.dataTransfer.files);
   }, [handleFiles]);
 
+  const jobHasMissingArticle = (job: FileJob) =>
+    job.editedProducts.some((p) => !p.article_number?.trim());
+
   const handleConfirm = async (idx: number) => {
     const job = jobs[idx];
     if (!job.result || job.editedProducts.length === 0) return;
+    if (jobHasMissingArticle(job)) return;
     updateJob(idx, { stage: 'analyzing' }); // reuse as "working" indicator
     try {
       const res = await analyze.confirm({
@@ -229,7 +233,9 @@ export function UploadPage() {
                 {job.stage === 'extracted' && job.editedProducts.length > 0 && (
                   <button
                     onClick={() => handleConfirm(jobIdx)}
-                    className="text-[10px] font-semibold px-3 py-1 rounded bg-[#22c55e] text-[#0f1117] hover:bg-[#16a34a] cursor-pointer transition-colors"
+                    disabled={jobHasMissingArticle(job)}
+                    className={`text-[10px] font-semibold px-3 py-1 rounded transition-colors ${jobHasMissingArticle(job) ? 'bg-[#374151] text-[#6b7280] cursor-not-allowed' : 'bg-[#22c55e] text-[#0f1117] hover:bg-[#16a34a] cursor-pointer'}`}
+                    title={jobHasMissingArticle(job) ? 'Article number required for all products' : ''}
                   >
                     Confirm ({job.editedProducts.length})
                   </button>
@@ -320,8 +326,8 @@ export function UploadPage() {
                     {/* Cross-file duplicate warning */}
                     {dupFiles && (
                       <div className="flex items-center gap-2 mb-3 px-2 py-1.5 bg-[#ef444410] border border-[#ef444430] rounded text-xs text-[#f87171]">
-                        <span className="font-semibold">DUPLICATE</span>
-                        <span className="text-[#9ca3af]">— {product.article_number} also found in: {dupFiles.filter((f) => f !== job.file.name).join(', ') || 'this file (multiple)'}</span>
+                        <span className="font-semibold">Multiple sources</span>
+                        <span className="text-[#e2e8f0]">— {product.article_number} also found in: {dupFiles.filter((f) => f !== job.file.name).join(', ') || 'this file (multiple)'}. Data will be merged on confirm.</span>
                       </div>
                     )}
                     {/* Existing product banner */}
@@ -335,11 +341,12 @@ export function UploadPage() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex gap-3 items-end flex-1">
                         <div>
-                          <label className="text-[10px] text-gray-500 uppercase tracking-wider block mb-1">Article No.</label>
+                          <label className={`text-[10px] uppercase tracking-wider block mb-1 ${!product.article_number?.trim() ? 'text-red-400' : 'text-gray-500'}`}>Article No. {!product.article_number?.trim() && '*'}</label>
                           <input
                             value={product.article_number}
                             onChange={(e) => updateProduct(jobIdx, prodIdx, 'article_number', e.target.value)}
-                            className="bg-[#161b27] border border-[#1f2937] rounded px-2 py-1 text-sm text-[#e2e8f0] outline-none w-[140px]"
+                            placeholder="Required"
+                            className={`bg-[#161b27] border rounded px-2 py-1 text-sm text-[#e2e8f0] outline-none w-[140px] ${!product.article_number?.trim() ? 'border-red-500' : 'border-[#1f2937]'}`}
                           />
                         </div>
                         <div className="flex-1">
