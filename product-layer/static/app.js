@@ -5,6 +5,7 @@ const state = {
   lastAssessment: null,
   lastAvatar: null,
   lastAssessmentText: "",
+  selectedProductRecord: null,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -208,6 +209,7 @@ function renderDetail(product, passport) {
   const attrs = product.attributes || {};
   const identity = passport.identity || {};
   const documents = product.documents || [];
+  state.selectedProductRecord = product;
   $("htmlExport").href = `/api/export/passport/${product.id}.html`;
   $("svgExport").href = `/api/export/passport/${product.id}.svg`;
   $("detail").innerHTML = `
@@ -223,7 +225,9 @@ function renderDetail(product, passport) {
       <div class="attribute-list">${Object.entries(attrs).sort(([left], [right]) => left.localeCompare(right)).map(([key, value]) => `
         <div class="attribute-row">
           <div class="attribute-label">
-            <div class="attribute-name">${escapeHtml(formatAttributeLabel(key))}</div>
+            <button class="attribute-name attribute-name-button" data-history-attr="${escapeHtml(key)}" type="button">
+              ${escapeHtml(formatAttributeLabel(key))}
+            </button>
             <div class="attribute-source">${escapeHtml(attributeSource(product, key))}</div>
           </div>
           <div class="attribute-value">
@@ -254,6 +258,9 @@ function renderDetail(product, passport) {
     </section>
   `;
   $("saveAttrs").addEventListener("click", saveAttributes);
+  document.querySelectorAll("[data-history-attr]").forEach((button) => {
+    button.addEventListener("click", () => showAttributeHistory(product, button.dataset.historyAttr));
+  });
 }
 
 function formatAttributeLabel(key) {
@@ -279,6 +286,90 @@ function attributeSource(product, key) {
   if (document?.name) return `${metadata.source_system || "data-layer"} -> ${document.name} -> attributes.${key}`;
   if (metadata.upstream_export_url) return `${metadata.source_system || "data-layer"} -> ${metadata.upstream_export_url} -> attributes.${key}`;
   return `${metadata.source_system || "product-layer"} -> attributes.${key}`;
+}
+
+function attributeHistory(product, key) {
+  const history = product.attribute_history || product.metadata?.attribute_history || {};
+  const entries = Array.isArray(history[key]) ? history[key] : [];
+  if (entries.length) return entries;
+  const value = (product.attributes || {})[key];
+  return [{
+    value,
+    previous_value: null,
+    changed_at: product.updated_at || product.created_at || "",
+    operation: "current_value",
+    source_system: product.metadata?.source_system || "product-layer",
+    source_name: attributeSource(product, key),
+    source_type: "current_curated_value",
+    source_uri: product.metadata?.upstream_export_url || "",
+    lineage: product.metadata?.lineage || "",
+    owner: product.metadata?.owner || "",
+    domain: product.metadata?.domain || "product",
+    classification: product.metadata?.classification || "",
+    changed_by: "",
+  }];
+}
+
+function showAttributeHistory(product, key) {
+  const modal = $("attributeHistoryModal");
+  const body = $("attributeHistoryBody");
+  if (!modal || !body || !key) return;
+  const entries = attributeHistory(product, key);
+  $("attributeHistoryTitle").textContent = `${formatAttributeLabel(key)} value history`;
+  body.innerHTML = `
+    <div class="attribute-history-head">
+      <div>
+        <strong>${escapeHtml(formatAttributeLabel(key))}</strong>
+        <span>${entries.length} value ${entries.length === 1 ? "event" : "events"}</span>
+      </div>
+    </div>
+    <div class="attribute-history-list">
+      ${entries.map((entry, index) => {
+        const nextEntry = entries[index + 1];
+        const sourceChanged = Boolean(nextEntry) && sourceSignature(entry) !== sourceSignature(nextEntry);
+        return `
+        <div class="attribute-history-item">
+          <div class="attribute-history-row-head">
+            <div class="attribute-history-value">${escapeHtml(formatAttributeValue(entry.value))}</div>
+            ${sourceChanged ? '<span class="badge warn">Source changed</span>' : ""}
+          </div>
+          <div class="attribute-history-meta">
+            <span>${escapeHtml(formatTimestamp(entry.changed_at))}</span>
+            <span>${escapeHtml(entry.operation || "value")}</span>
+            <span>${escapeHtml(entry.source_system || "")}</span>
+          </div>
+          <div class="attribute-history-source">
+            Data source: ${escapeHtml([entry.source_name, entry.source_uri].filter(Boolean).join(" | ") || attributeSource(product, key))}
+          </div>
+          ${entry.previous_value !== null && entry.previous_value !== undefined ? `
+            <div class="attribute-history-previous">Previous: ${escapeHtml(formatAttributeValue(entry.previous_value))}</div>
+          ` : ""}
+          ${entry.lineage ? `<div class="attribute-history-lineage">Lineage: ${escapeHtml(entry.lineage)}</div>` : ""}
+        </div>
+      `; }).join("")}
+    </div>
+  `;
+  modal.classList.remove("hidden");
+}
+
+function closeAttributeHistoryModal() {
+  $("attributeHistoryModal").classList.add("hidden");
+}
+
+function sourceSignature(entry) {
+  return [
+    entry.source_system || "",
+    entry.source_name || "",
+    entry.source_uri || "",
+    entry.source_type || "",
+  ].join("|");
+}
+
+function formatTimestamp(value) {
+  if (!value) return "unknown time";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString();
 }
 
 async function saveAttributes() {
@@ -610,6 +701,11 @@ function escapeHtml(value) {
 ["family", "status"].forEach((id) => {
   $(id).addEventListener("input", refreshAll);
 });
+$("search").addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+  event.preventDefault();
+  refreshAll();
+});
 $("importJson").addEventListener("click", () => importPayload("application/json"));
 $("importCsv").addEventListener("click", () => importPayload("text/csv"));
 $("validate").addEventListener("click", runValidation);
@@ -618,13 +714,18 @@ $("syncDataLayer").addEventListener("click", syncDataLayer);
 $("loadAgents").addEventListener("click", loadAgents);
 $("runAgentAssessment").addEventListener("click", () => runAgentAssessment());
 $("closeAgentModal").addEventListener("click", closeAgentModal);
+$("closeAttributeHistoryModal").addEventListener("click", closeAttributeHistoryModal);
 $("speakAgentAssessment").addEventListener("click", speakAgentAssessment);
 $("stopAgentSpeech").addEventListener("click", stopAgentSpeech);
 $("agentModal").addEventListener("click", (event) => {
   if (event.target === $("agentModal")) closeAgentModal();
 });
+$("attributeHistoryModal").addEventListener("click", (event) => {
+  if (event.target === $("attributeHistoryModal")) closeAttributeHistoryModal();
+});
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !$("agentModal").classList.contains("hidden")) closeAgentModal();
+  if (event.key === "Escape" && !$("attributeHistoryModal").classList.contains("hidden")) closeAttributeHistoryModal();
 });
 
 Promise.all([refreshAll(), loadAgents()]).catch((error) => {

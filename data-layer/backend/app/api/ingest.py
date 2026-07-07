@@ -11,6 +11,7 @@ from app.api.schemas import IngestResult
 from app.core.config import settings
 from app.core.database import get_db
 from app.ingestion.registry import ingest_file
+from app.lineage.attribute_history import record_attribute_history
 from app.models.product import Product, ProductDocument
 
 logger = logging.getLogger("paul.ingest")
@@ -69,10 +70,24 @@ def upload_and_ingest(
     try:
         records = ingest_file(dest)
         # Merge all parsed attributes into product (last record wins on key conflict)
-        merged_attrs = {**product.attributes}
+        previous_attributes = dict(product.attributes or {})
+        parsed_attributes = {}
+        merged_attrs = {**previous_attributes}
         for record in records:
-            merged_attrs.update({k: v for k, v in record.items() if not k.startswith("_")})
+            record_attrs = {k: v for k, v in record.items() if not k.startswith("_")}
+            parsed_attributes.update(record_attrs)
+            merged_attrs.update(record_attrs)
         product.attributes = merged_attrs
+        record_attribute_history(
+            db,
+            product=product,
+            attributes=parsed_attributes,
+            previous_attributes=previous_attributes,
+            source_document=doc,
+            lineage="raw-document -> parser-ingest -> data-layer-postgres -> curated-product",
+            operation="document_ingest",
+            changed_by="paul-parser-ingest",
+        )
         doc.status = "done"
         db.commit()
         logger.info(
@@ -113,9 +128,33 @@ def download_original(document_id: uuid.UUID, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="File not found on disk")
     return FileResponse(
         path=str(file_path),
-        filename=doc.original_filename,
+        filename=download_filename(doc),
         media_type="application/octet-stream",
     )
+
+
+@router.get("/documents/{document_id}/download/{download_name:path}")
+def download_original_named(document_id: uuid.UUID, download_name: str, db: Session = Depends(get_db)):
+    """Return the original uploaded file with a filename suffix in the URL for browser previews."""
+    doc = db.get(ProductDocument, document_id)
+    if not doc:
+        raise HTTPException(status_code=404, detail="Document not found")
+    file_path = Path(doc.file_path)
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found on disk")
+    return FileResponse(
+        path=str(file_path),
+        filename=download_filename(doc),
+        media_type="application/octet-stream",
+    )
+
+
+def download_filename(doc: ProductDocument) -> str:
+    original = doc.original_filename or doc.filename
+    if Path(original).suffix:
+        return original
+    suffix = Path(doc.filename or doc.file_path).suffix
+    return f"{original}{suffix}" if suffix else original
 
 
 def _trigger_export(db: Session) -> None:

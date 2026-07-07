@@ -36,6 +36,7 @@ class Product(Base):
 
     family = relationship("ProductFamily", back_populates="products")
     documents = relationship("ProductDocument", back_populates="product", cascade="all, delete-orphan")
+    attribute_history = relationship("ProductAttributeHistory", back_populates="product", cascade="all, delete-orphan")
 
 
 class ProductDocument(Base):
@@ -53,3 +54,29 @@ class ProductDocument(Base):
     created_at = Column(DateTime, default=_utcnow)
 
     product = relationship("Product", back_populates="documents")
+    attribute_history = relationship("ProductAttributeHistory", back_populates="source_document")
+
+
+class ProductAttributeHistory(Base):
+    __tablename__ = "product_attribute_history"
+
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    product_id = Column(Uuid, ForeignKey("products.id"), nullable=False)
+    attribute_key = Column(String(255), nullable=False)
+    value = Column(JSON, default=dict)
+    previous_value = Column(JSON, nullable=True)
+    source_document_id = Column(Uuid, ForeignKey("product_documents.id"), nullable=True)
+    source_uri = Column(String(1000))
+    source_name = Column(String(500))
+    source_type = Column(String(100))
+    source_system = Column(String(255), default="paul-data-layer")
+    lineage = Column(Text)
+    operation = Column(String(50), default="upsert")
+    owner = Column(String(255), default="Product Data Domain")
+    domain = Column(String(100), default="product")
+    classification = Column(String(100), default="internal")
+    changed_by = Column(String(255), default="paul-ai-ingest")
+    changed_at = Column(DateTime, default=_utcnow)
+
+    product = relationship("Product", back_populates="attribute_history")
+    source_document = relationship("ProductDocument", back_populates="attribute_history")

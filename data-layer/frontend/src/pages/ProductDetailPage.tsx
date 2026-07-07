@@ -47,6 +47,15 @@ export function ProductDetailPage({ productId, onBack }: Props) {
     e.target.value = '';
   };
 
+  const originalFilename = (doc: NonNullable<Product['documents']>[number]) => {
+    if (/\.[A-Za-z0-9]+$/.test(doc.original_filename)) return doc.original_filename;
+    const storedExt = doc.filename.match(/\.[A-Za-z0-9]+$/)?.[0] ?? '';
+    return `${doc.original_filename}${storedExt}`;
+  };
+
+  const fileExtension = (doc: NonNullable<Product['documents']>[number]) =>
+    originalFilename(doc).match(/\.([A-Za-z0-9]+)$/)?.[1]?.toUpperCase();
+
   return (
     <div>
       {/* Header */}
@@ -195,10 +204,10 @@ export function ProductDetailPage({ productId, onBack }: Props) {
                   )}
                   <div className="flex gap-3 mt-2">
                     <a
-                      href={ingest.downloadUrl(doc.id)}
+                      href={ingest.downloadUrl(doc.id, originalFilename(doc))}
                       className="text-[10px] text-[#4ade80] hover:underline"
                     >
-                      View original
+                      View original{fileExtension(doc) ? ` .${fileExtension(doc)}` : ''}
                     </a>
                     <button
                       onClick={() => ingest.deleteDocument(doc.id).then(reload)}

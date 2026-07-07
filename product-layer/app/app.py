@@ -472,7 +472,38 @@ class ProductStore:
             self.reload_if_changed()
             for product in self.products:
                 if product.get("id") == product_id:
+                    previous_attributes = dict(product.get("attributes") or {})
                     product.setdefault("attributes", {}).update(attributes)
+                    history = product.setdefault("attribute_history", {})
+                    if not isinstance(history, dict):
+                        history = {}
+                        product["attribute_history"] = history
+                    sources = product.setdefault("attribute_sources", {})
+                    if not isinstance(sources, dict):
+                        sources = {}
+                        product["attribute_sources"] = sources
+                    changed_at = utc_now()
+                    for key, value in attributes.items():
+                        source_line = f"product-layer-ui -> attributes.{key}"
+                        history.setdefault(key, []).insert(
+                            0,
+                            {
+                                "value": value,
+                                "previous_value": previous_attributes.get(key),
+                                "changed_at": changed_at,
+                                "operation": "product_layer_edit",
+                                "source_system": "product-layer-ui",
+                                "source_name": "Attribute editor",
+                                "source_type": "manual_edit",
+                                "source_uri": f"product-layer://products/{product_id}/attributes/{key}",
+                                "lineage": "product-layer-ui -> curated-json-store",
+                                "owner": product.get("metadata", {}).get("owner", "Product Data Domain"),
+                                "domain": product.get("metadata", {}).get("domain", "product"),
+                                "classification": product.get("metadata", {}).get("classification", "internal"),
+                                "changed_by": "product-layer-user",
+                            },
+                        )
+                        sources[key] = source_line
                     product["updated_at"] = utc_now()
                     self.save()
                     return product
@@ -1014,6 +1045,8 @@ def normalize_product(product: dict[str, Any]) -> dict[str, Any]:
         "family": family,
         "lifecycle_status": str(product.get("lifecycle_status") or "active"),
         "attributes": dict(product.get("attributes") or {}),
+        "attribute_history": dict(product.get("attribute_history") or {}),
+        "attribute_sources": dict(product.get("attribute_sources") or {}),
         "certifications": list(product.get("certifications") or []),
         "documents": list(product.get("documents") or []),
         "metadata": metadata,

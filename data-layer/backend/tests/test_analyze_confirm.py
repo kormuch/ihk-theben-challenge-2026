@@ -33,7 +33,7 @@ class AnalyzeConfirmPersistenceTests(unittest.TestCase):
 
     def test_confirm_creates_unsorted_product_with_review_added_attribute(self):
         from app.api.analyze import ConfirmProduct, ConfirmRequest
-        from app.models.product import Product
+        from app.models.product import Product, ProductAttributeHistory
 
         db = self.Session()
         try:
@@ -58,12 +58,19 @@ class AnalyzeConfirmPersistenceTests(unittest.TestCase):
             self.assertEqual(product.name, "New Review Product")
             self.assertEqual(product.family.name, "Unsorted")
             self.assertEqual(product.attributes["manual_voltage"], "230 V")
+            history = db.query(ProductAttributeHistory).filter_by(
+                product_id=product.id,
+                attribute_key="manual_voltage",
+            ).one()
+            self.assertEqual(history.value, "230 V")
+            self.assertEqual(history.source_uri, "data-layer://ai-ingest/review-source.pdf")
+            self.assertEqual(history.operation, "ai_confirm")
         finally:
             db.close()
 
     def test_confirm_updates_existing_product_review_fields_and_attributes(self):
         from app.api.analyze import ConfirmProduct, ConfirmRequest
-        from app.models.product import Product, ProductFamily
+        from app.models.product import Product, ProductAttributeHistory, ProductFamily
 
         db = self.Session()
         try:
@@ -106,6 +113,18 @@ class AnalyzeConfirmPersistenceTests(unittest.TestCase):
             self.assertEqual(product.attributes["kept"], "yes")
             self.assertEqual(product.attributes["changed"], "new")
             self.assertEqual(product.attributes["manual_note"], "persist me")
+            changed_history = db.query(ProductAttributeHistory).filter_by(
+                product_id=product.id,
+                attribute_key="changed",
+            ).one()
+            manual_history = db.query(ProductAttributeHistory).filter_by(
+                product_id=product.id,
+                attribute_key="manual_note",
+            ).one()
+            self.assertEqual(changed_history.value, "new")
+            self.assertEqual(changed_history.previous_value, "old")
+            self.assertEqual(manual_history.value, "persist me")
+            self.assertIsNone(manual_history.previous_value)
         finally:
             db.close()
 

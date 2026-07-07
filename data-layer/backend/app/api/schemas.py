@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -57,6 +58,28 @@ class ProductDocumentOut(BaseModel):
         from_attributes = True
 
 
+class ProductAttributeHistoryOut(BaseModel):
+    id: UUID
+    attribute_key: str
+    value: Any
+    previous_value: Any
+    source_document_id: UUID | None
+    source_uri: str | None
+    source_name: str | None
+    source_type: str | None
+    source_system: str | None
+    lineage: str | None
+    operation: str | None
+    owner: str | None
+    domain: str | None
+    classification: str | None
+    changed_by: str | None
+    changed_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class ProductOut(BaseModel):
     id: UUID
     name: str
@@ -66,6 +89,7 @@ class ProductOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     documents: list[ProductDocumentOut] = []
+    attribute_history: list[ProductAttributeHistoryOut] = []
 
     class Config:
         from_attributes = True

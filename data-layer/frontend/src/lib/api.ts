@@ -96,7 +96,10 @@ export const ingest = {
       return res.json() as Promise<IngestResult>;
     });
   },
-  downloadUrl: (documentId: string) => `${BASE}/ingest/documents/${documentId}/download`,
+  downloadUrl: (documentId: string, filename?: string) => {
+    const suffix = filename ? `/${encodeURIComponent(filename)}` : '';
+    return `${BASE}/ingest/documents/${documentId}/download${suffix}`;
+  },
   deleteDocument: (documentId: string) =>
     request<void>(`/ingest/documents/${documentId}`, { method: 'DELETE' }),
 };

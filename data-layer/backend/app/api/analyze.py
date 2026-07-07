@@ -18,6 +18,7 @@ from app.core.database import get_db
 from app.intelligence.classifier import classify_document
 from app.intelligence.extractors import extract_from_document
 from app.intelligence.text_extract import extract_text
+from app.lineage.attribute_history import record_attribute_history
 from app.models.product import Product, ProductFamily, ProductDocument
 
 router = APIRouter(prefix="/analyze", tags=["analyze"])
@@ -231,8 +232,11 @@ def confirm_extraction(
         if not db.get(ProductFamily, family_id):
             family_id = get_or_create_unsorted_family(db).id
 
+        file_path = STORAGE / body.stored_as
+
         existing = db.query(Product).filter_by(article_number=p.article_number).first()
         if existing:
+            previous_attributes = dict(existing.attributes or {})
             merged = {**(existing.attributes or {}), **p.attributes}
             existing.name = p.name
             existing.family_id = family_id
@@ -252,28 +256,42 @@ def confirm_extraction(
             db.commit()
             db.refresh(product)
             created.append(p.article_number)
+            previous_attributes = {}
 
         # Link document to product
-        file_path = STORAGE / body.stored_as
-        if file_path.exists():
-            product_obj = existing or db.query(Product).filter_by(article_number=p.article_number).first()
-            if product_obj:
+        product_obj = existing or db.query(Product).filter_by(article_number=p.article_number).first()
+        source_doc = None
+        if product_obj:
+            if file_path.exists():
                 # Check if document already linked
-                existing_doc = db.query(ProductDocument).filter_by(
+                source_doc = db.query(ProductDocument).filter_by(
                     filename=body.stored_as, product_id=product_obj.id
                 ).first()
-                if not existing_doc:
-                    doc = ProductDocument(
+                if not source_doc:
+                    source_doc = ProductDocument(
                         product_id=product_obj.id,
                         filename=body.stored_as,
-                        original_filename=Path(body.stored_as).stem,
+                        original_filename=body.stored_as,
                         file_path=str(file_path),
                         source_type=Path(body.stored_as).suffix.lstrip("."),
                         doc_category=body.doc_type,
                         status="done",
                     )
-                    db.add(doc)
+                    db.add(source_doc)
                     db.commit()
+                    db.refresh(source_doc)
+            record_attribute_history(
+                db,
+                product=product_obj,
+                attributes=dict(p.attributes),
+                previous_attributes=previous_attributes,
+                source_document=source_doc,
+                source_uri=None if source_doc else f"data-layer://ai-ingest/{body.stored_as}",
+                lineage="raw-document -> paul-ai-ingest -> data-layer-postgres -> curated-product",
+                operation="ai_confirm",
+                changed_by="paul-ai-ingest-review",
+            )
+            db.commit()
 
     # Auto-export to product-layer after every confirm
     from app.api.export import export_products_json
@@ -304,7 +322,7 @@ def confirm_extraction(
                 write_document_lineage(
                     document_id=body.stored_as,
                     product_article_number=p.article_number,
-                    original_filename=Path(body.stored_as).stem,
+                    original_filename=body.stored_as,
                     doc_type=body.doc_type,
                     source_uri=f"data-layer://documents/{p.article_number}/{body.stored_as}",
                 )

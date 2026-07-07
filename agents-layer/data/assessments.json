@@ -10125,5 +10125,143 @@
       "mempalace_summary_ready": true,
       "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
     }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-f06dee44e8bc",
+    "created_at": "2026-07-07T14:27:22Z",
+    "findings": [
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-a5ff67dac4ed",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T14:27:22Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "0750001",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Unsorted",
+      "product_id": "0750001",
+      "requested_agent_ids": [
+        "compliance-sustainability"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-c77ea08fb74c",
+    "created_at": "2026-07-07T14:35:27Z",
+    "findings": [
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-8f8dfc129000",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T14:35:27Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [
+        "compliance-sustainability"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
   }
 ]

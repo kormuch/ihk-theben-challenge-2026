@@ -27,7 +27,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
-from app.models.product import Product, ProductDocument
+from app.models.product import Product, ProductAttributeHistory, ProductDocument
 
 router = APIRouter(prefix="/export", tags=["export"])
 
@@ -87,6 +87,52 @@ def _extract_certifications(attributes: dict) -> list[str]:
     return certs
 
 
+def _source_uri_for_document(product: Product, doc: ProductDocument | None) -> str | None:
+    if not doc:
+        return None
+    return f"data-layer://documents/{product.article_number}/{doc.filename}"
+
+
+def _attribute_history(product: Product, exported_attribute_keys: set[str]) -> tuple[dict, dict]:
+    grouped: dict[str, list[dict]] = {}
+    latest_sources: dict[str, str] = {}
+    rows = sorted(
+        list(product.attribute_history or []),
+        key=lambda row: row.changed_at or datetime.min,
+        reverse=True,
+    )
+    for row in rows:
+        key = row.attribute_key
+        if key not in exported_attribute_keys:
+            continue
+        source_document = row.source_document
+        source_uri = row.source_uri or _source_uri_for_document(product, source_document)
+        source_name = row.source_name or (source_document.original_filename if source_document else None)
+        source_type = row.source_type or ((source_document.doc_category or source_document.source_type) if source_document else None)
+        source_system = row.source_system or "paul-data-layer"
+        entry = {
+            "value": row.value,
+            "previous_value": row.previous_value,
+            "changed_at": row.changed_at.isoformat() if row.changed_at else None,
+            "operation": row.operation,
+            "source_system": source_system,
+            "source_name": source_name,
+            "source_type": source_type,
+            "source_uri": source_uri,
+            "lineage": row.lineage,
+            "owner": row.owner,
+            "domain": row.domain,
+            "classification": row.classification,
+            "changed_by": row.changed_by,
+        }
+        grouped.setdefault(key, []).append(entry)
+        latest_sources.setdefault(
+            key,
+            " -> ".join(part for part in [source_system, source_name or source_uri, f"attributes.{key}"] if part),
+        )
+    return grouped, latest_sources
+
+
 def _to_product_layer(product: Product) -> dict:
     """Convert a data-layer product to product-layer format."""
     family_name = product.family.name if product.family else "Unassigned"
@@ -101,6 +147,7 @@ def _to_product_layer(product: Product) -> dict:
     clean_attrs.setdefault("ip_rating", attrs.get("protection_class", attrs.get("ip_protection", "IP20")))
 
     certifications = _extract_certifications(attrs)
+    attribute_history, attribute_sources = _attribute_history(product, set(clean_attrs.keys()))
 
     documents = []
     if product.documents:
@@ -121,6 +168,8 @@ def _to_product_layer(product: Product) -> dict:
         "family": mapped_family,
         "lifecycle_status": "active",
         "attributes": clean_attrs,
+        "attribute_history": attribute_history,
+        "attribute_sources": attribute_sources,
         "certifications": certifications,
         "documents": documents,
         "metadata": {
@@ -146,7 +195,11 @@ def export_products_json(db: Session = Depends(get_db)):
     """Export all products in product-layer format (Christian's schema)."""
     products = (
         db.query(Product)
-        .options(joinedload(Product.documents), joinedload(Product.family))
+        .options(
+            joinedload(Product.documents),
+            joinedload(Product.family),
+            joinedload(Product.attribute_history).joinedload(ProductAttributeHistory.source_document),
+        )
         .all()
     )
     exported = [_to_product_layer(p) for p in products]

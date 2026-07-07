@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.api.schemas import ProductCreate, ProductOut, ProductListItem, ProductUpdate
 from app.core.database import get_db
+from app.lineage.attribute_history import record_attribute_history
 from app.models.product import Product, ProductFamily
 
 router = APIRouter(prefix="/products", tags=["products"])
@@ -46,7 +47,7 @@ def create_product(body: ProductCreate, db: Session = Depends(get_db)):
 def get_product(product_id: UUID, db: Session = Depends(get_db)):
     product = (
         db.query(Product)
-        .options(joinedload(Product.documents))
+        .options(joinedload(Product.documents), joinedload(Product.attribute_history))
         .filter(Product.id == product_id)
         .first()
     )
@@ -63,8 +64,20 @@ def update_product(product_id: UUID, body: ProductUpdate, db: Session = Depends(
     data = body.model_dump(exclude_unset=True)
     # Merge attributes instead of replacing — preserves existing keys
     if "attributes" in data:
-        merged = {**product.attributes, **data["attributes"]}
+        previous_attributes = dict(product.attributes or {})
+        merged = {**previous_attributes, **data["attributes"]}
         product.attributes = merged
+        record_attribute_history(
+            db,
+            product=product,
+            attributes=data["attributes"],
+            previous_attributes=previous_attributes,
+            source_uri=f"data-layer://api/products/{product_id}",
+            source_system="paul-data-layer-api",
+            lineage="data-layer-api -> data-layer-postgres -> curated-product",
+            operation="api_patch",
+            changed_by="data-layer-user",
+        )
         data.pop("attributes")
     for field, value in data.items():
         setattr(product, field, value)

@@ -1,1 +1,1 @@
-from app.models.product import Product, ProductFamily, ProductDocument
+from app.models.product import Product, ProductAttributeHistory, ProductDocument, ProductFamily
