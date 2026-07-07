@@ -72,6 +72,7 @@ echo   Product Layer:     http://localhost:8080
 echo.
 
 start http://localhost:3000
+start http://localhost:8080
 
 title PAUL — Live Logs
 echo ==================== LIVE LOGS ====================
