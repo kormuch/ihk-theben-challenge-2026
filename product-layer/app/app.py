@@ -1727,6 +1727,7 @@ def run_avatar_layer_assessment(store: "ProductStore", body: dict[str, Any], use
         raise ValueError("product_id or product object required")
     url = join_url(config["base_url"], "/api/avatar/assess")
     validate_integration_url(url, config["allowed_hosts"], "avatar-layer")
+    logger.info("AVATAR: proxying assessment for product %s to %s", product_id, url)
     payload = build_avatar_layer_assessment_payload(product, body, user)
     payload["request_context"] = {
         "caller_role": str(user.get("role") or "viewer"),
@@ -1754,6 +1755,12 @@ def run_avatar_layer_assessment(store: "ProductStore", body: dict[str, Any], use
     response.setdefault("integration", {})["source"] = "product-layer-avatar-layer-proxy"
     response["integration"]["contract"] = config["contract"]
     response["integration"]["write_policy"] = config["write_policy"]
+    logger.info(
+        "AVATAR: assessment completed for product %s with status=%s severity=%s",
+        product_id,
+        response.get("assessment_status"),
+        response.get("severity"),
+    )
     return response
 
 
@@ -2411,6 +2418,7 @@ class Handler(SimpleHTTPRequestHandler):
             try:
                 result = run_avatar_layer_assessment(self.store, payload, user)
             except ValueError as exc:
+                logger.warning("AVATAR: assessment failed: %s", exc)
                 return self.send_error_json(HTTPStatus.BAD_GATEWAY, f"avatar-layer assessment failed: {exc}")
             self.store.record_audit(
                 action="avatar_layer_assessment",

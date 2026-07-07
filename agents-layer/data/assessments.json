@@ -4606,5 +4606,3994 @@
       "mempalace_summary_ready": true,
       "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
     }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-7ed3b790cfb9",
+    "created_at": "2026-07-07T08:58:48Z",
+    "findings": [
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-8509be22b46f",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T08:58:48Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "123456789",
+      "requested_agent_ids": [
+        "compliance-privacy"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-94af7a3e13bd",
+    "created_at": "2026-07-07T09:07:34Z",
+    "findings": [
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-81952b118600",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:07:34Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "0758004",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "0758004",
+      "requested_agent_ids": [
+        "compliance-sustainability"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-b1db930b98fb",
+    "created_at": "2026-07-07T09:08:19Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-9b2d72eb1b36",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:08:19Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/0758004",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "0758004",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "0758004",
+      "requested_agent_ids": [
+        "expert-dpp-readiness"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 1,
+      "failed_checks": 1,
+      "score": 80,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-1dd2a5beec10",
+    "created_at": "2026-07-07T09:15:56Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-bdd2e7940f4b",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/123456789",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-510f79f460ad",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-f48d70d280ff",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-e43204f03683",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-4c649cbc0da4",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-e28cbe6c4ca2",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-43370f2299f3",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-6dda5487ca75",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-0d51fbc010ac",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-8ce9c6748090",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:15:56Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "123456789",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "123456789",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-c089e6b59f17",
+    "created_at": "2026-07-07T09:17:18Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-40cbee453c3c",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-980493ac0d55",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-1bf758adf47a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-62a825eabf45",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-1441ddf85ea7",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-68a9386b14c7",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-462383f66087",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-811e0f5cce97",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-c42102abbe26",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-e4cd45acb56e",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:17:18Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-763cf388a7b1",
+    "created_at": "2026-07-07T09:21:55Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-8842f329aed5",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/test3",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-a92bc1aee766",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-1167ae1e23a3",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-4ee26a14f2f3",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-6ba5d3cb29cb",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-03e7eda690c8",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-ad3da59ec5b5",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-dbc10f2e57ef",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-60007dbe1e50",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-29fda553f969",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:21:55Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-75965e741dec",
+    "created_at": "2026-07-07T09:23:24Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-40363ab365e7",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-22512958e929",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-e4e73120773e",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-bb217401f33f",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-b8c07a8484b1",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-8b1015dd49f1",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-295ffc02c900",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-7f9c326e88d2",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-236138c2c5a5",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-e64b7ca31e94",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T09:23:24Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-4470afad5dad",
+    "created_at": "2026-07-07T12:18:31Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-b14ff6336cee",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-84393ac3112e",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-41c32405f4ec",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-e014c5eb9227",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-5db4eb333167",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-095e189321a5",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-29ab8743d4a8",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-9d062614ca8f",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-f136fcb1afd1",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-86d02110323d",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:18:31Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-ea0b8be0dbdf",
+    "created_at": "2026-07-07T12:19:28Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-5ec74f30e851",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-038ee91b4c6a",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-87616fd12c10",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-bf7cc4d850a2",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-83a76c11c988",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-1b25edeaced6",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-ab4e6e5dab46",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-278f6e797a0b",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-451c54f63b39",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-7921ca432c4c",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:19:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-95d8333a4464",
+    "created_at": "2026-07-07T12:20:29Z",
+    "findings": [
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-cf2950478149",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:20:29Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "0758004",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "0758004",
+      "requested_agent_ids": [
+        "compliance-sustainability"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-3226385e496d",
+    "created_at": "2026-07-07T12:21:07Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-723c9fe6a095",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-04de3910358c",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-173e4cd25eca",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-ab3f08590c1f",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-673a1d95c19c",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-3ab6f8240ec5",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-bd670a05304a",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-218018257e5d",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-e230fbeb3767",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-216c77a42075",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:07Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-d30d1394eeae",
+    "created_at": "2026-07-07T12:21:13Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-d9bb841791af",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-200-360",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-148bf80b9a91",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-0230ca6a8850",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-3c0d25d7ef18",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-755e67a923cd",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-276bac17f0b1",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-5984ae79829b",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-23e2d0c8e01a",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-493e02b2a64f",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-22caf056bcae",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:13Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Motion Detector",
+          "product_id": "luxa-200-360",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Motion Detector",
+      "product_id": "luxa-200-360",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-9f8e6179140a",
+    "created_at": "2026-07-07T12:21:28Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-ce205071fc9f",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/test3",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-b75718859ab6",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-673ab92765f7",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-86b7990ce523",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-ef67da8dcd90",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-b5b4158447ce",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-7775b2a0bcd7",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-4ad8ef293a24",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-99a913f85bdc",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-971f81e9b987",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-07T12:21:28Z",
+          "date_placing_on_market": "2026-07-07",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Time Switch",
+          "product_id": "test3",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-07",
+      "lifecycle_state": "active",
+      "product_family": "Time Switch",
+      "product_id": "test3",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
   }
 ]

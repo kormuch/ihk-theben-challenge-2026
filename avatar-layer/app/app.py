@@ -299,16 +299,18 @@ def assessment_status(findings: list[dict[str, Any]], assessment: dict[str, Any]
     return STATUS_BY_SEVERITY.get(severity, "review_required")
 
 
-def confidence_value(assessment: dict[str, Any], evidence_count: int, hidden_count: int) -> float:
+def confidence_value(assessment: dict[str, Any], evidence_count: int, hidden_count: int, finding_count: int) -> float:
     explicit = assessment.get("confidence")
     if isinstance(explicit, (int, float)):
         return round(max(0.0, min(1.0, float(explicit))), 2)
-    readiness = assessment.get("readiness") if isinstance(assessment.get("readiness"), dict) else {}
-    score = readiness.get("score")
-    if isinstance(score, (int, float)):
-        return round(max(0.0, min(1.0, float(score) / 100.0)), 2)
+
+    # Confidence describes how well-grounded the avatar output is, not whether
+    # the assessed product is ready. A blocked readiness score can still be a
+    # high-confidence result when findings and evidence are present.
     if evidence_count:
-        return round(max(0.25, 0.72 - hidden_count * 0.04), 2)
+        return round(max(0.25, 0.78 - hidden_count * 0.04), 2)
+    if finding_count:
+        return round(max(0.25, 0.62 - hidden_count * 0.04), 2)
     return 0.35
 
 
@@ -393,8 +395,9 @@ def display_summary_from(
     hidden: int,
     findings: list[dict[str, Any]],
 ) -> str:
+    mode_label = mode.replace("_", " ")
     parts = [
-        f"Product {product_id} assessment mode {mode}: {status.replace('_', ' ')}.",
+        f"Product {product_id} assessment mode {mode_label}: {status.replace('_', ' ')}.",
         f"Highest severity is {severity}; confidence is {int(confidence * 100)}%.",
     ]
     if findings:
@@ -468,7 +471,7 @@ def avatar_assess(body: dict[str, Any], headers: Any | None = None) -> dict[str,
     severity = aggregate_severity(findings, assessment)
     status = assessment_status(findings, assessment, severity)
     missing = missing_evidence_from(findings, assessment)
-    confidence = confidence_value(assessment, len(evidence_refs), hidden)
+    confidence = confidence_value(assessment, len(evidence_refs), hidden, len(findings))
     product_context = product_context_from(body, product_id)
     human_review_required = True
     display = display_summary_from(product_id, mode, status, severity, confidence, missing, hidden, findings)

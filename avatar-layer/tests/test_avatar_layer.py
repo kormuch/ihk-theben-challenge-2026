@@ -103,6 +103,15 @@ class AvatarAssessmentContractTests(unittest.TestCase):
         self.assertIn("signed SBOM", result["missing_evidence"])
         self.assertGreaterEqual(len(result["transcript"]["entries"]), 2)
 
+    def test_blocked_readiness_score_zero_does_not_mean_zero_confidence(self):
+        payload = self.payload()
+        payload["assessment_mode"] = "portfolio"
+        payload["assessment"]["readiness"] = {"status": "blocked", "score": 0}
+        result = avatar_assess(payload)
+        self.assertEqual(result["assessment_status"], "blocked")
+        self.assertGreater(result["confidence"], 0.0)
+        self.assertIn("assessment mode portfolio", result["display_summary"])
+
     def test_viewer_evidence_filter_hides_restricted_text_from_speech(self):
         result = avatar_assess(self.payload())
         refs = result["evidence_refs"]

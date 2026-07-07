@@ -19,14 +19,28 @@ function headers(contentType) {
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(path, {
-    ...options,
-    headers: { ...headers(options.contentType), ...(options.headers || {}) },
-  });
-  const text = await response.text();
-  const payload = text ? JSON.parse(text) : null;
-  if (!response.ok) throw new Error(payload?.error || response.statusText);
-  return payload;
+  const timeoutMs = options.timeoutMs;
+  const controller = timeoutMs ? new AbortController() : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  const { contentType, headers: optionHeaders, timeoutMs: _timeoutMs, ...fetchOptions } = options;
+  try {
+    const response = await fetch(path, {
+      ...fetchOptions,
+      signal: controller ? controller.signal : options.signal,
+      headers: { ...headers(contentType), ...(optionHeaders || {}) },
+    });
+    const text = await response.text();
+    const payload = text ? JSON.parse(text) : null;
+    if (!response.ok) throw new Error(payload?.error || response.statusText);
+    return payload;
+  } catch (error) {
+    if (error.name === "AbortError") {
+      throw new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s: ${path}`);
+    }
+    throw error;
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
 }
 
 function query() {
@@ -341,7 +355,7 @@ function renderAgentAssessment(data, agentId) {
         </tr>
       `).join("")}
     </table>
-    <div id="avatarAssessmentPanel" class="avatar-assessment">
+    <div class="avatar-assessment" data-avatar-assessment-panel>
       <div class="avatar-visual" data-avatar-state="thinking" aria-hidden="true">
         <span></span><span></span><span></span>
       </div>
@@ -371,12 +385,14 @@ async function runAvatarAssessment(assessment, agentId) {
   const data = await api("/api/avatar-layer/assessments", {
     method: "POST",
     contentType: "application/json",
+    timeoutMs: 12000,
     body: JSON.stringify(body),
   });
   renderAvatarAssessment(data);
 }
 
 function assessmentModeForAgent(agentId) {
+  if (!agentId) return "portfolio";
   const raw = String(agentId || "").toLowerCase();
   if (raw.includes("cyber") || raw.includes("security")) return "cybersecurity";
   if (raw.includes("dpp") || raw.includes("passport")) return "dpp";
@@ -387,11 +403,9 @@ function assessmentModeForAgent(agentId) {
 function renderAvatarAssessment(data) {
   state.lastAvatar = data;
   state.lastAssessmentText = data.spoken_summary || state.lastAssessmentText;
-  const target = $("avatarAssessmentPanel");
-  if (!target) return;
   const severity = data.severity || "none";
   const stateName = severity === "critical" || severity === "high" ? "warning" : "speaking";
-  target.innerHTML = `
+  const html = `
     <div class="avatar-visual" data-avatar-state="${escapeHtml(stateName)}" aria-hidden="true">
       <span></span><span></span><span></span>
     </div>
@@ -407,6 +421,7 @@ function renderAvatarAssessment(data) {
       ${renderAvatarTraceability(data)}
     </div>
   `;
+  renderAvatarPanels(html);
 }
 
 function recordAvatarEvent(action) {
@@ -428,17 +443,24 @@ function recordAvatarEvent(action) {
 
 function renderAvatarAssessmentError(error) {
   state.lastAssessmentText = "";
-  const target = $("avatarAssessmentPanel");
-  if (!target) return;
-  target.innerHTML = `
+  const configuredUrl = state.agents?.integration?.avatar_layer?.base_url || "configured avatar-layer URL";
+  const html = `
     <div class="avatar-visual" data-avatar-state="error" aria-hidden="true">
       <span></span><span></span><span></span>
     </div>
     <div>
       <h3>Assess avatar</h3>
       <p class="badge bad">${escapeHtml(error.message)}</p>
+      <p class="muted">Avatar runtime: ${escapeHtml(configuredUrl)}. Start or restart the avatar-layer service, then run the assessment again.</p>
     </div>
   `;
+  renderAvatarPanels(html);
+}
+
+function renderAvatarPanels(html) {
+  document.querySelectorAll("[data-avatar-assessment-panel]").forEach((target) => {
+    target.innerHTML = html;
+  });
 }
 
 function renderAvatarTraceability(data) {

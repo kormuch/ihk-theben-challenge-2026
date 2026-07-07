@@ -16,7 +16,7 @@ Open `http://127.0.0.1:8095/`.
 ## Test
 
 ```bash
-cd /Users/Shared/code/paul/ihk-theben-challenge-2026/avatar-layer
+cd /Users/Shared/code/paul/ihk-theben-challenge-2026/avatar-layerul-avatar-layer grep -n "Confidence describes" /app/app/app.py
 python3 -B -m unittest discover -s tests -v
 ```
 

@@ -14,6 +14,21 @@
       ],
       "visual_state": "idle"
     },
+    "portfolio": {
+      "label": "Selected Product Assessment",
+      "summary_focus": [
+        "selected product context",
+        "cross-agent readiness",
+        "open evidence gaps",
+        "human review"
+      ],
+      "preferred_agents": [
+        "expert-dpp-readiness",
+        "compliance-cybersecurity",
+        "expert-governance"
+      ],
+      "visual_state": "thinking"
+    },
     "dpp": {
       "label": "DPP Readiness",
       "summary_focus": [
