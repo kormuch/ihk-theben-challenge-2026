@@ -38,6 +38,7 @@ from app.app import (
     run_agents_layer_assessment,
     run_theben_layer_sbom_extract,
     run_theben_layer_security_export,
+    run_theben_layer_vex_overview,
     sync_from_data_layer,
     theben_layer_contract,
     validate_product,
@@ -331,7 +332,7 @@ class ProductLayerTests(unittest.TestCase):
         self.assertIn("/api/theben-layer/sbom-extract", calls["Extract SBOM through product-layer"])
         self.assertIn("/api/theben/sbom", calls["List extracted CycloneDX SBOM artifacts"])
         self.assertIn("/api/theben-layer/security-export", calls["Generate CVE export for selected product"])
-        self.assertIn('"artifact_type":"vex"', calls["Generate OpenVEX export for selected product"])
+        self.assertIn("/api/theben-layer/vex-overview", calls["Show OpenVEX overview for selected product"])
 
     def test_agents_layer_assessment_payload_carries_product_and_evidence_context(self):
         product = generate_products(1)[0]
@@ -423,7 +424,21 @@ class ProductLayerTests(unittest.TestCase):
             extraction = {
                 "status": "ok",
                 "artifacts": {"report_id": "theben-report-test"},
-                "report": {"discovery": [{"method": "GET", "path": "/products/sbom", "status": 200}]},
+                "report": {
+                    "discovery": [{"method": "GET", "path": "/products/sbom", "status": 200}],
+                    "products": [
+                        {
+                            "product": {"article_number": "7654126", "name": "Demo product"},
+                            "sbom": {
+                                "components": [
+                                    {"type": "hardware", "name": "Main PCB", "version": "1.0", "supplier": "Theben"},
+                                    {"type": "hardware", "name": "MCU", "version": "2.0", "supplier": "ST"},
+                                ]
+                            },
+                            "evidence_warnings": [],
+                        }
+                    ],
+                },
             }
             artifacts = {
                 "sbom_artifacts": [{"filename": "7654126.cyclonedx.json", "url": "/api/theben/sbom/7654126.cyclonedx.json"}],
@@ -437,9 +452,13 @@ class ProductLayerTests(unittest.TestCase):
                 )
         self.assertEqual(result["integration"]["contract"], "product-layer-theben-sbom-extract-v1")
         self.assertEqual(result["report"]["preview_url"], "http://127.0.0.1:8098/api/theben/reports/theben-report-test/preview")
+        self.assertEqual(result["sbom_overview"]["component_count"], 2)
+        self.assertEqual(result["sbom_overview"]["components"][0]["name"], "Main PCB")
+        self.assertEqual(result["sbom_overview"]["product"]["article_number"], "7654126")
         self.assertTrue(result["sbom_artifacts"][0]["url"].startswith("http://127.0.0.1:8098/api/theben/sbom/"))
         payload = fetch.call_args_list[0].kwargs["payload"]
         self.assertEqual(payload["selected_product"]["id"], product["id"])
+        self.assertIn("attributes", payload["selected_product"])
         self.assertNotIn("use_fixtures", payload)
         self.assertEqual(payload["request_context"]["proxy_authorization_model"], "product-layer selected product context with theben-layer extraction ownership")
 
@@ -473,6 +492,56 @@ class ProductLayerTests(unittest.TestCase):
         self.assertEqual(payload["selected_product"]["id"], product["id"])
         self.assertNotIn("use_fixtures", payload)
         self.assertIn("attributes", payload["selected_product"])
+
+    def test_theben_layer_vex_overview_proxy_is_non_writing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            expected = {
+                "status": "ok",
+                "overview": {
+                    "export_id": "theben-security-overview-test",
+                    "products": [
+                        {
+                            "product": {"article_number": "7654126", "name": "Demo"},
+                            "cve": {"cves": [{"cveId": "CVE-2026-0001"}]},
+                            "openvex": {"statements": [{"vulnerability": {"name": "CVE-2026-0001"}, "status": "not_affected"}]},
+                            "vulnerability_count": 1,
+                        }
+                    ],
+                },
+            }
+            agent_expected = {
+                "assessment_id": "assessment-all-agents-test",
+                "readiness": {"status": "review_required", "score": 70, "failed_checks": 3},
+                "findings": [
+                    {"agent_id": "compliance-cybersecurity", "status": "needs_review"},
+                    {"agent_id": "expert-dpp-readiness", "status": "passed"},
+                ],
+            }
+            with patch("app.app.fetch_json_url", side_effect=[expected, agent_expected]) as fetch:
+                result = run_theben_layer_vex_overview(
+                    store,
+                    {"product_id": product["id"]},
+                    {"role": "viewer", "region": "EU", "purpose": "analytics"},
+                )
+        self.assertEqual(result["integration"]["source"], "product-layer-theben-layer-vex-overview-proxy")
+        self.assertEqual(
+            result["integration"]["write_policy"],
+            "non-writing VEX overview with all-agent advisory assessment; no report or artifact files are generated",
+        )
+        self.assertEqual(result["overview"]["products"][0]["vulnerability_count"], 1)
+        self.assertEqual(result["agent_assessment"]["scope"], "all enabled agents")
+        self.assertEqual(result["agent_assessment"]["assessment_id"], "assessment-all-agents-test")
+        self.assertIn("compliance-agents-layer", result["agent_catalog"]["layers"])
+        self.assertIn("expert-agents-layer", result["agent_catalog"]["layers"])
+        self.assertEqual(fetch.call_args_list[0].kwargs["url"] if "url" in fetch.call_args_list[0].kwargs else fetch.call_args_list[0].args[0], "http://host.docker.internal:8098/api/theben/vex-overview")
+        payload = fetch.call_args_list[0].kwargs["payload"]
+        self.assertEqual(payload["selected_product"]["id"], product["id"])
+        agent_payload = fetch.call_args_list[1].kwargs["payload"]
+        self.assertEqual(agent_payload["product"]["id"], product["id"])
+        self.assertNotIn("agent_ids", agent_payload)
+        self.assertIn("cve_overview", [item["type"] for item in agent_payload["evidence"]])
 
     def test_avatar_ui_action_is_audited(self):
         with tempfile.TemporaryDirectory() as tmp:

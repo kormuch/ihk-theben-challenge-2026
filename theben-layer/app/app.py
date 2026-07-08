@@ -252,7 +252,7 @@ def normalize_components(sbom_payload: Any, bom_payload: dict[str, Any]) -> list
             "type": "hardware",
             "name": item.get("description") or part,
             "version": item.get("version") or "unknown",
-            "supplier": item.get("supplier") or "unknown",
+            "supplier": item.get("supplier") or item.get("manufacturerName") or item.get("manufacturer_name") or "unknown",
             "purl": f"pkg:generic/{slug(part)}",
             "licenses": [],
         })
@@ -485,19 +485,27 @@ def selected_article_candidates(selected_product: dict[str, Any]) -> list[str]:
     raw_values = [
         selected_product.get("article_number"),
         selected_product.get("articleNumber"),
+        selected_product.get("articlenumber"),
         selected_product.get("sku"),
         selected_product.get("id"),
         attrs.get("article_number"),
+        attrs.get("articleNumber"),
         attrs.get("articlenumber"),
         attrs.get("theben_article_number"),
+        attrs.get("legacy_theben_article_number"),
         metadata.get("article_number"),
+        metadata.get("articleNumber"),
+        metadata.get("articlenumber"),
         metadata.get("legacy_article_number"),
+        metadata.get("legacy_theben_article_number"),
     ]
     candidates = []
     for raw in raw_values:
-        value = str(raw or "").strip()
-        if value and value not in candidates:
-            candidates.append(value)
+        values = raw if isinstance(raw, list) else [raw]
+        for item in values:
+            value = str(item or "").strip()
+            if value and value not in candidates:
+                candidates.append(value)
     return candidates
 
 
@@ -524,16 +532,107 @@ def select_requested_products(products: list[dict[str, Any]], selected_product: 
     raise ValueError("selected_product must contain sku, id, or article_number")
 
 
-def collect_report_data(client: LegacyClient) -> dict[str, Any]:
+def bom_row_value(row: dict[str, Any], *keys: str) -> Any:
+    for key in keys:
+        value = row.get(key)
+        if value is not None and value != "":
+            return value
+    return ""
+
+
+def bom_part_number(row: dict[str, Any]) -> str:
+    return str(bom_row_value(row, "partNumber", "part_number"))
+
+
+def bom_supplier(row: dict[str, Any]) -> str:
+    return str(bom_row_value(row, "supplier", "manufacturerName", "manufacturer_name") or "unknown")
+
+
+def selected_product_bom(selected_product: dict[str, Any] | None, article: str) -> dict[str, Any] | None:
+    if not selected_product:
+        return None
+    candidates = selected_article_candidates(selected_product)
+    if candidates and article not in candidates and slug(article) not in {slug(candidate) for candidate in candidates}:
+        return None
+    attrs = selected_product.get("attributes") if isinstance(selected_product.get("attributes"), dict) else {}
+    rows = attrs.get("legacy_theben_bom_items")
+    if not isinstance(rows, list) or not rows:
+        return None
+    normalized_rows = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        normalized_rows.append({
+            "partNumber": bom_row_value(row, "partNumber", "part_number"),
+            "description": bom_row_value(row, "description", "name"),
+            "quantity": bom_row_value(row, "quantity", "qty"),
+            "supplier": bom_row_value(row, "supplier", "manufacturerName", "manufacturer_name"),
+            "category": bom_row_value(row, "category"),
+            "reference": bom_row_value(row, "reference"),
+        })
+    if not normalized_rows:
+        return None
+    return {
+        "articleNumber": article,
+        "bom": normalized_rows,
+        "source": "product-layer-selected-product.attributes.legacy_theben_bom_items",
+    }
+
+
+def missing_certificate(article: str, reason: str) -> dict[str, Any]:
+    return {
+        "articleNumber": article,
+        "certificateType": "Not available",
+        "certificateId": "missing-evidence",
+        "issueDate": "n/a",
+        "validUntil": "n/a",
+        "status": "missing_evidence",
+        "reason": reason,
+    }
+
+
+def report_title(report: dict[str, Any]) -> str:
+    products = report.get("products") or []
+    names = [str(item.get("product", {}).get("name") or item.get("product", {}).get("article_number") or "").strip() for item in products]
+    names = [name for name in names if name]
+    if len(names) == 1:
+        return f"Compliance Overview - {names[0]}"
+    if names:
+        return f"Compliance Overview - {', '.join(names[:2])}" + ("..." if len(names) > 2 else "")
+    return "Compliance Overview"
+
+
+def collect_report_data(client: LegacyClient, selected_product: dict[str, Any] | None = None) -> dict[str, Any]:
     discovery = client.discover()
-    selected = select_demo_products(client.list_products())
+    selected = select_requested_products(client.list_products(), selected_product)
     products = []
     for product in selected:
         article = product["article_number"]
-        bom = client.bom(article)
-        certificate = client.certificate(article)
-        sbom_payload = client.sbom(article)
-        vulnerability_payload = client.vulnerabilities(article)
+        evidence_warnings = []
+        try:
+            bom = client.bom(article)
+        except Exception as exc:
+            logger.warning("report BOM unavailable for %s, continuing with selected product context: %s", article, exc)
+            bom = selected_product_bom(selected_product, article) or {"articleNumber": article, "bom": []}
+            evidence_warnings.append({"type": "bom", "message": str(exc)})
+        try:
+            certificate = client.certificate(article)
+        except Exception as exc:
+            logger.warning("report certificate unavailable for %s, continuing with missing certificate marker: %s", article, exc)
+            certificate = missing_certificate(article, str(exc))
+            evidence_warnings.append({"type": "certificate", "message": str(exc)})
+        try:
+            sbom_payload = client.sbom(article)
+        except Exception as exc:
+            logger.warning("report SBOM unavailable for %s, continuing with BOM-derived SBOM: %s", article, exc)
+            sbom_payload = None
+            evidence_warnings.append({"type": "sbom", "message": str(exc)})
+        try:
+            vulnerability_payload = client.vulnerabilities(article)
+        except Exception as exc:
+            logger.warning("report vulnerability data unavailable for %s, continuing with no CVEs: %s", article, exc)
+            vulnerability_payload = []
+            evidence_warnings.append({"type": "vulnerabilities", "message": str(exc)})
         sbom = build_cyclonedx(product, bom, sbom_payload)
         vex = build_vex(product, sbom, vulnerability_payload)
         products.append({
@@ -543,9 +642,12 @@ def collect_report_data(client: LegacyClient) -> dict[str, Any]:
             "sbom": sbom,
             "vex": vex,
             "vulnerability_count": len(vex["vulnerabilities"]),
+            "evidence_warnings": evidence_warnings,
         })
+    article_suffix = "-".join(slug(item["product"]["article_number"]) for item in products[:3])
+    report_id = f"theben-report-{article_suffix}-{int(time.time())}" if article_suffix else f"theben-report-{int(time.time())}"
     return {
-        "report_id": f"theben-report-{int(time.time())}",
+        "report_id": report_id,
         "generated_at": utc_now(),
         "legacy_base_url": client.base_url,
         "brand": brand_metadata(),
@@ -670,6 +772,7 @@ def save_security_export_artifacts(export: dict[str, Any]) -> dict[str, Any]:
 
 def render_html(report: dict[str, Any]) -> str:
     product_sections = []
+    title = report_title(report)
     for item in report["products"]:
         product = item["product"]
         cert = item["certificate"]
@@ -679,7 +782,7 @@ def render_html(report: dict[str, Any]) -> str:
           <h2>{html.escape(product['name'])}</h2>
           <p><strong>Article:</strong> {html.escape(product['article_number'])} · <strong>Category:</strong> {html.escape(product['category'])}</p>
           <h3>BOM Highlights</h3>
-          <ul>{''.join(f"<li>{html.escape(str(row.get('partNumber', '')))} - {html.escape(str(row.get('description', '')))} ({html.escape(str(row.get('supplier', 'unknown')))})</li>" for row in bom_items[:6])}</ul>
+          <ul>{''.join(f"<li>{html.escape(bom_part_number(row))} - {html.escape(str(row.get('description', '')))} ({html.escape(bom_supplier(row))})</li>" for row in bom_items[:6])}</ul>
           <h3>Certificate</h3>
           <p>{html.escape(str(cert.get('certificateType', 'Unknown')))} · {html.escape(str(cert.get('certificateId', 'n/a')))} · valid until {html.escape(str(cert.get('validUntil', 'n/a')))}</p>
           <h3>SBOM / VEX</h3>
@@ -690,7 +793,7 @@ def render_html(report: dict[str, Any]) -> str:
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Theben Compliance Overview</title>
+  <title>{html.escape(title)}</title>
   <style>
     body {{ font-family: Arial, sans-serif; margin: 42px; color: #172033; }}
     header {{ border-bottom: 4px solid #00456f; padding-bottom: 18px; margin-bottom: 28px; }}
@@ -705,7 +808,7 @@ def render_html(report: dict[str, Any]) -> str:
 <body>
   <header>
     <img class="logo" src="/assets/logo_theben.jpg" alt="Theben logo">
-    <h1>Compliance Overview - Vacuum Cleaner & Coffee Machine</h1>
+    <h1>{html.escape(title)}</h1>
     <p class="meta">Generated {html.escape(report['generated_at'])} · Prototype report · Source {html.escape(report['legacy_base_url'])}</p>
   </header>
   {''.join(product_sections)}
@@ -720,6 +823,7 @@ def generate_pdf(report: dict[str, Any], output_path: Path) -> None:
     if SimpleDocTemplate is None:
         output_path.write_bytes(simple_pdf_bytes(report))
         return
+    title = report_title(report)
     doc = SimpleDocTemplate(str(output_path), pagesize=A4, rightMargin=18 * mm, leftMargin=18 * mm, topMargin=18 * mm, bottomMargin=18 * mm)
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(name="ThebenTitle", parent=styles["Title"], textColor=colors.HexColor("#00456f"), fontSize=24, leading=30))
@@ -730,7 +834,7 @@ def generate_pdf(report: dict[str, Any], output_path: Path) -> None:
         logo = Image(str(LOGO_PATH), width=70 * mm, height=23 * mm)
         story.append(logo)
         story.append(Spacer(1, 8 * mm))
-    story.append(Paragraph("Compliance Overview - Vacuum Cleaner & Coffee Machine", styles["ThebenTitle"]))
+    story.append(Paragraph(title, styles["ThebenTitle"]))
     story.append(Paragraph(f"Generated {report['generated_at']} · Thebenpaul prototype", styles["SmallMuted"]))
     story.append(Spacer(1, 10 * mm))
     story.append(Paragraph("Executive Summary", styles["ThebenHeading"]))
@@ -762,10 +866,10 @@ def generate_pdf(report: dict[str, Any], output_path: Path) -> None:
         bom_rows = [["Part", "Description", "Qty", "Supplier"]]
         for row in item["bom"].get("bom", [])[:8]:
             bom_rows.append([
-                str(row.get("partNumber", "")),
+                bom_part_number(row),
                 str(row.get("description", "")),
                 str(row.get("quantity", "")),
-                str(row.get("supplier", "")),
+                bom_supplier(row),
             ])
         bom_table = Table(bom_rows, colWidths=[32 * mm, 64 * mm, 16 * mm, 42 * mm])
         bom_table.setStyle(TableStyle([
@@ -826,7 +930,7 @@ def simple_pdf_bytes(report: dict[str, Any]) -> bytes:
 
 def fallback_pdf_lines(report: dict[str, Any]) -> list[str]:
     lines = [
-        "Theben Compliance Overview",
+        report_title(report),
         f"Generated {report['generated_at']}",
         f"Source {report['legacy_base_url']}",
         f"Logo source: {report['brand']['logo_source']}",
@@ -847,8 +951,8 @@ def fallback_pdf_lines(report: dict[str, Any]) -> list[str]:
         lines.append("BOM highlights:")
         for row in item["bom"].get("bom", [])[:8]:
             lines.append(
-                f"- {row.get('partNumber', '')}: {row.get('description', '')} "
-                f"x{row.get('quantity', '')} / {row.get('supplier', row.get('manufacturerName', 'unknown'))}"
+                f"- {bom_part_number(row)}: {row.get('description', '')} "
+                f"x{row.get('quantity', '')} / {bom_supplier(row)}"
             )
         if item["vex"].get("vulnerabilities"):
             lines.append("VEX findings:")
@@ -890,26 +994,30 @@ def fallback_enabled(config: dict[str, Any]) -> bool:
     ).lower() in {"1", "true", "yes"}
 
 
-def create_report(use_fixture: bool | None = None, force_live_only: bool = False) -> dict[str, Any]:
+def create_report(
+    use_fixture: bool | None = None,
+    force_live_only: bool = False,
+    selected_product: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     config = load_config()
     base_url = os.environ.get("THEBEN_LEGACY_BASE_URL", config.get("legacy_base_url", "http://192.168.8.200:8000"))
     timeout = float(os.environ.get("THEBEN_LEGACY_TIMEOUT", config.get("legacy_timeout_seconds", 5)))
     if use_fixture is True:
         fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
-        report = collect_report_data(fixture_client)
+        report = collect_report_data(fixture_client, selected_product)
         report["fixture_fallback"] = True
         artifacts = save_report_artifacts(report)
         return {"status": "ok", "artifacts": artifacts, "report": report}
     allow_fallback = not force_live_only and fallback_enabled(config)
     client = LegacyClient(base_url, timeout=timeout, use_fixture=False)
     try:
-        report = collect_report_data(client)
+        report = collect_report_data(client, selected_product)
     except Exception as exc:
         if not allow_fallback:
             raise
         logger.warning("legacy system unavailable, using fixtures: %s", exc)
         fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
-        report = collect_report_data(fixture_client)
+        report = collect_report_data(fixture_client, selected_product)
         report["fixture_fallback"] = True
         report["legacy_error"] = str(exc)
     artifacts = save_report_artifacts(report)
@@ -1061,6 +1169,7 @@ class ThebenHandler(BaseHTTPRequestHandler):
                 result = create_report(
                     use_fixture=body.get("use_fixtures"),
                     force_live_only=bool(body.get("force_live_only", False)),
+                    selected_product=body.get("selected_product") if isinstance(body.get("selected_product"), dict) else None,
                 )
                 self.send_json(result, HTTPStatus.CREATED)
             elif path == "/api/theben/security-export":

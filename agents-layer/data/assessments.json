@@ -13853,5 +13853,1653 @@
       "mempalace_summary_ready": true,
       "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
     }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-48ca7ee74219",
+    "created_at": "2026-07-08T14:00:14Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-fd93fb056fbf",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/tr-800-top3",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-e720fd823dad",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-43c26ade74e2",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-9455bfad9c37",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-6d7dd28f2632",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-c512f4d2899b",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-14e81d8c7a61",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-2d59999511d1",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-723faa898663",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-bb5f2a75a296",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:00:14Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "tr-800-top3",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-08",
+      "lifecycle_state": "active",
+      "product_family": "Unsorted",
+      "product_id": "tr-800-top3",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-c8b279e5c851",
+    "created_at": "2026-07-08T14:01:37Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-ade067339536",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-300-180-v2",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-fe302ff8eb94",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-a0b76bd0c331",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-55ef83ebe676",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-c48297172275",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-135f8d18dffd",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-8ed72e9cb196",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-5ea9a6923954",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-a32599c2b655",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-7ebd58bfa6ab",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:01:37Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-08",
+      "lifecycle_state": "active",
+      "product_family": "Unsorted",
+      "product_id": "luxa-300-180-v2",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-e71abeda6621",
+    "created_at": "2026-07-08T14:03:57Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-f01cd6c421d3",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-300-180-v2",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-11b3a91a21fc",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-f6138883fae0",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-822a0a5b1154",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-b430e8c01104",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-934ed2175e5c",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-cad16c676ad2",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-39aabe07e601",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-d2cbe74c7a94",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-8f909049a8ac",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:03:57Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-08",
+      "lifecycle_state": "active",
+      "product_family": "Unsorted",
+      "product_id": "luxa-300-180-v2",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-0952b4f544f4",
+    "created_at": "2026-07-08T14:07:05Z",
+    "findings": [
+      {
+        "agent_id": "expert-dpp-readiness",
+        "agent_name": "DPP Readiness Expert",
+        "assumptions": [],
+        "criterion": "DPP identity must include GTIN, batch or lot number, and serial number.",
+        "finding_id": "finding-fca503834983",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [
+          "attributes.gtin",
+          "attributes.batch_lot_number",
+          "attributes.serial_number"
+        ],
+        "recommended_action": "Complete identity fields before DPP publication.",
+        "rule_id": "RULE-DPP-IDENTITY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GS1 DataMatrix AI 01/10/21",
+          "goal_dpp.md"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "verified",
+              "reference": "product-layer/products/luxa-300-180-v2",
+              "source_layer": "product-layer",
+              "type": "product_master_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-DPP-IDENTITY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-governance",
+        "agent_name": "Product Data Governance Expert",
+        "assumptions": [],
+        "criterion": "Mandatory data product metadata must be visible for curated product records.",
+        "finding_id": "finding-c2715d07aded",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [],
+        "missing_product_fields": [],
+        "recommended_action": "Attach owner, domain, source, lineage, classification, and certification metadata.",
+        "rule_id": "RULE-GOV-METADATA-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "goal.md mandatory metadata"
+        ],
+        "status": "passed",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [
+            {
+              "confidence": "high",
+              "reference": "paul-ai-ingest -> data-layer-postgres -> product-layer-json-store",
+              "source_layer": "product-layer",
+              "type": "lineage_record"
+            }
+          ],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-GOV-METADATA-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-sustainability",
+        "agent_name": "Sustainability & Environment Compliance Agent",
+        "assumptions": [],
+        "criterion": "Environmental readiness requires material or footprint evidence.",
+        "finding_id": "finding-8cceb4ff0ff1",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "environmental_declaration"
+        ],
+        "missing_product_fields": [
+          "attributes.recyclable_share_pct",
+          "attributes.co2_kg"
+        ],
+        "recommended_action": "Request environmental declaration or footprint evidence from data-layer evidence intake.",
+        "rule_id": "RULE-SUST-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "ESPR",
+          "DPP sustainability fields"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-SUST-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-emc-electrical",
+        "agent_name": "EMC & Electrical Conformity Compliance Agent",
+        "assumptions": [],
+        "criterion": "Electrical or building automation products need EMC or electrical test evidence.",
+        "finding_id": "finding-a5d150520b5c",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "emc_test_report"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Map EMC and electrical evidence to the applicable product family and market.",
+        "rule_id": "RULE-EMC-EVIDENCE-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "EMC Directive 2014/30/EU",
+          "LVD 2014/35/EU"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-EMC-EVIDENCE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-cybersecurity",
+        "agent_name": "Cybersecurity Certification Compliance Agent",
+        "assumptions": [
+          "Only applies when the product is connected or software-controlled."
+        ],
+        "criterion": "Connected products require SBOM and secure update evidence.",
+        "finding_id": "finding-7596b97ad824",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "sbom",
+          "secure_update_process"
+        ],
+        "missing_product_fields": [
+          "attributes.connectivity"
+        ],
+        "recommended_action": "Provide SBOM and secure update process evidence for connected products.",
+        "rule_id": "RULE-CYBER-SBOM-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "Cyber Resilience Act readiness"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-CYBER-SBOM-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-wireless",
+        "agent_name": "Wireless Standards Compliance Agent",
+        "assumptions": [],
+        "criterion": "Wireless products require radio module and qualification evidence.",
+        "finding_id": "finding-f23e714c8be2",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "radio_test_report"
+        ],
+        "missing_product_fields": [
+          "attributes.wireless_protocol"
+        ],
+        "recommended_action": "Attach wireless module and regional radio evidence when wireless protocol is present.",
+        "rule_id": "RULE-WIRELESS-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "RED 2014/53/EU",
+          "Bluetooth qualification",
+          "Wi-Fi certification"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-WIRELESS-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "compliance-privacy",
+        "agent_name": "Data Protection & Privacy Compliance Agent",
+        "assumptions": [],
+        "criterion": "Telemetry or customer data processing requires privacy evidence.",
+        "finding_id": "finding-028068ed3d63",
+        "layer": "compliance-agents-layer",
+        "missing_evidence": [
+          "privacy_assessment"
+        ],
+        "missing_product_fields": [
+          "attributes.telemetry"
+        ],
+        "recommended_action": "Add privacy assessment, retention, deletion, and access logging evidence.",
+        "rule_id": "RULE-PRIVACY-001",
+        "rule_version": "0.1.0",
+        "severity": "high",
+        "standard_refs": [
+          "GDPR",
+          "data minimization"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-PRIVACY-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-cad-mechanical",
+        "agent_name": "CAD and Mechanical Design Expert",
+        "assumptions": [],
+        "criterion": "Mechanical review requires housing, assembly, or serviceability evidence.",
+        "finding_id": "finding-243fa5ffe72b",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "cad_reference",
+          "service_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Link CAD or assembly evidence and service instructions.",
+        "rule_id": "RULE-MECH-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "mechanical design review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-MECH-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-4ff009411658",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      },
+      {
+        "agent_id": "expert-pricing-sales-market",
+        "agent_name": "Pricing, Sales, and Market Expert",
+        "assumptions": [],
+        "criterion": "Market claims should have evidence and commercial classification.",
+        "finding_id": "finding-17ad30729113",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "sales_claim_evidence"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Attach market claim evidence and confirm commercial sensitivity.",
+        "rule_id": "RULE-MARKET-001",
+        "rule_version": "0.1.0",
+        "severity": "low",
+        "standard_refs": [
+          "product market review"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T14:07:05Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "luxa-300-180-v2",
+          "rule_ref": "RULE-MARKET-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-08",
+      "lifecycle_state": "active",
+      "product_family": "Unsorted",
+      "product_id": "luxa-300-180-v2",
+      "requested_agent_ids": [],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 4,
+      "failed_checks": 9,
+      "score": 0,
+      "status": "blocked"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
   }
 ]

@@ -266,8 +266,7 @@ function renderDetail(product, passport) {
   $("saveAttrs").addEventListener("click", saveAttributes);
   $("pdfExport").onclick = () => runThebenSbomExtract("pdf");
   $("sbomExtract").onclick = () => runThebenSbomExtract("sbom");
-  $("cveExport").onclick = () => runThebenSecurityExport("cve");
-  $("vexExport").onclick = () => runThebenSecurityExport("vex");
+  $("vexExport").onclick = runThebenVexOverview;
   document.querySelectorAll("[data-history-attr]").forEach((button) => {
     button.addEventListener("click", () => showAttributeHistory(product, button.dataset.historyAttr));
   });
@@ -438,6 +437,9 @@ async function runThebenSbomExtract(openTarget = "sbom") {
     target.innerHTML = `<p class="muted">Extracting SBOM from proprietary REST access points...</p>`;
   }
   try {
+    if (openTarget === "sbom") {
+      openSbomOverviewModal("SBOM Extract", "<p>Loading complete SBOM for selected product...</p>");
+    }
     const data = await api("/api/theben-layer/sbom-extract", {
       method: "POST",
       contentType: "application/json",
@@ -445,16 +447,90 @@ async function runThebenSbomExtract(openTarget = "sbom") {
       body: JSON.stringify({ product_id: state.selected }),
     });
     renderThebenArtifacts(data);
+    if (openTarget === "sbom") {
+      renderSbomOverview(data);
+    }
     if (openTarget === "pdf" && data.report?.pdf_url) {
       window.open(data.report.pdf_url, "_blank", "noopener");
     }
   } catch (error) {
+    if (openTarget === "sbom") {
+      openSbomOverviewModal("SBOM Extract", `<p class="badge bad">${escapeHtml(error.message)}</p>`);
+    }
     if (target) {
       target.innerHTML = `<p class="badge bad">${escapeHtml(error.message)}</p>`;
     } else {
       alert(error.message);
     }
   }
+}
+
+function renderSbomOverview(data) {
+  const overview = data.sbom_overview || {};
+  const product = overview.product || {};
+  const components = overview.components || [];
+  const warnings = overview.evidence_warnings || [];
+  const artifacts = data.sbom_artifacts || [];
+  if (!components.length) {
+    openSbomOverviewModal("SBOM Extract", `
+      <div class="sbom-empty">
+        <strong>No SBOM available.</strong>
+        <p class="muted">No BOM or SBOM components were returned for the selected product.</p>
+      </div>
+      ${warnings.length ? `<ul class="vex-warning-list">${warnings.map((warning) => `<li>${escapeHtml(warning.type || "evidence")}: ${escapeHtml(warning.message || "")}</li>`).join("")}</ul>` : ""}
+    `);
+    return;
+  }
+  const body = `
+    <div class="sbom-overview-head">
+      <div>
+        <strong>${escapeHtml(product.name || product.article_number || state.selected || "Selected product")}</strong>
+        <p class="muted">${escapeHtml(product.article_number || data.product_id || "")} | ${escapeHtml(overview.source || "theben-layer")}</p>
+      </div>
+      <span class="badge ok">${escapeHtml(String(components.length))} component${components.length === 1 ? "" : "s"}</span>
+    </div>
+    <div class="sbom-component-list">
+      ${components.map((component, index) => renderSbomComponent(component, index)).join("")}
+    </div>
+    ${warnings.length ? `
+      <h3>Evidence warnings</h3>
+      <ul class="vex-warning-list">${warnings.map((warning) => `<li>${escapeHtml(warning.type || "evidence")}: ${escapeHtml(warning.message || "")}</li>`).join("")}</ul>
+    ` : ""}
+    <div class="artifact-grid">
+      <div>
+        <strong>SBOM artifact</strong>
+        <ul>${artifacts.map((item) => artifactLink(item)).join("") || "<li>none generated</li>"}</ul>
+      </div>
+    </div>
+  `;
+  openSbomOverviewModal("Complete SBOM Extract", body);
+}
+
+function renderSbomComponent(component, index) {
+  return `
+    <article class="sbom-component">
+      <div class="sbom-component-head">
+        <strong>${escapeHtml(component.name || component.description || `Component ${index + 1}`)}</strong>
+        <span class="badge">${escapeHtml(component.type || "component")}</span>
+      </div>
+      <table>
+        <tr><th>Version</th><td>${escapeHtml(component.version || "unknown")}</td></tr>
+        <tr><th>Supplier</th><td>${escapeHtml(component.supplier || component.manufacturer || "unknown")}</td></tr>
+        <tr><th>PURL</th><td>${escapeHtml(component.purl || "")}</td></tr>
+        <tr><th>Licenses</th><td>${escapeHtml((component.licenses || []).join(", ") || "none declared")}</td></tr>
+      </table>
+    </article>
+  `;
+}
+
+function openSbomOverviewModal(title, bodyHtml) {
+  $("sbomOverviewTitle").textContent = title;
+  $("sbomOverviewBody").innerHTML = bodyHtml;
+  $("sbomOverviewModal").classList.remove("hidden");
+}
+
+function closeSbomOverviewModal() {
+  $("sbomOverviewModal").classList.add("hidden");
 }
 
 async function runThebenSecurityExport(artifactType) {
@@ -482,6 +558,290 @@ async function runThebenSecurityExport(artifactType) {
       alert(error.message);
     }
   }
+}
+
+async function runThebenVexOverview() {
+  if (!state.selected) {
+    alert("Select a product first.");
+    return;
+  }
+  openVexOverviewModal("CVE overview", "<p>Loading product CVEs and all advisory agent perspectives...</p>");
+  try {
+    const data = await api("/api/theben-layer/vex-overview", {
+      method: "POST",
+      contentType: "application/json",
+      timeoutMs: 30000,
+      body: JSON.stringify({ product_id: state.selected }),
+    });
+    renderVexOverview(data);
+  } catch (error) {
+    openVexOverviewModal("CVE overview", `<p class="badge bad">${escapeHtml(error.message)}</p>`);
+  }
+}
+
+function renderVexOverview(data) {
+  const overview = data.overview || {};
+  const item = (overview.products || [])[0] || {};
+  const product = item.product || {};
+  const cves = item.cve?.cves || [];
+  const openvex = item.openvex || {};
+  const statements = openvex.statements || [];
+  const warnings = item.evidence_warnings || [];
+  const agentAssessment = data.agent_assessment || null;
+  const statementsByName = new Map(statements.map((statement) => [statement.vulnerability?.name || "", statement]));
+  const body = `
+    <div class="vex-overview-head">
+      <div class="cve-logo-lockup">
+        ${renderCveLogo()}
+        <div>
+          <strong>${escapeHtml(product.name || product.article_number || "Selected product")}</strong>
+          <p class="muted">${escapeHtml(product.article_number || "")} | ${escapeHtml(openvex.product?.["@id"] || "")}</p>
+        </div>
+      </div>
+      <span class="badge ${cves.length ? "warn" : "ok"}">${escapeHtml(String(cves.length))} existing CVE${cves.length === 1 ? "" : "s"}</span>
+    </div>
+    <div class="vex-modal-grid">
+      <div class="vex-document">
+        <h3>OpenVEX document</h3>
+        <table>
+          <tr><th>@context</th><td>${escapeHtml(openvex["@context"] || "https://openvex.dev/ns/v0.2.0")}</td></tr>
+          <tr><th>@id</th><td>${escapeHtml(openvex["@id"] || "")}</td></tr>
+          <tr><th>Author</th><td>${escapeHtml(openvex.author || "Theben Security Team")}</td></tr>
+          <tr><th>Timestamp</th><td>${escapeHtml(openvex.timestamp || overview.generated_at || "")}</td></tr>
+          <tr><th>Version</th><td>${escapeHtml(openvex.version || 1)}</td></tr>
+        </table>
+      </div>
+      ${renderVexAgentSummary(agentAssessment, data.agent_assessment_error)}
+    </div>
+    <h3>Statements</h3>
+    <div class="vex-statement-list">
+      ${cves.map((cve) => renderVexStatement(cve, statementsByName.get(cve.cveId))).join("") || `
+        <div class="vex-statement">
+          <strong>No existing CVEs returned for this product.</strong>
+          <p class="muted">The VEX overview remains machine-readable, but there are no vulnerability statements to assess.</p>
+        </div>
+      `}
+    </div>
+    ${warnings.length ? `
+      <h3>Evidence warnings</h3>
+      <ul class="vex-warning-list">${warnings.map((warning) => `<li>${escapeHtml(warning.type || "evidence")}: ${escapeHtml(warning.message || "")}</li>`).join("")}</ul>
+    ` : ""}
+    ${renderVexQualityRecommendations(openvex, cves, statements, warnings)}
+    ${renderVexAgentFindings(agentAssessment, data.agent_catalog)}
+    <p class="muted">${escapeHtml(data.integration?.write_policy || "Non-writing VEX overview only.")}</p>
+  `;
+  openVexOverviewModal("CVE overview with all agents", body);
+}
+
+function renderCveLogo() {
+  return `
+    <svg class="cve-logo" viewBox="0 0 500 145" role="img" aria-label="CVE">
+      <defs>
+        <linearGradient id="cveLogoGradient" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#ffc21a"></stop>
+          <stop offset="100%" stop-color="#f58220"></stop>
+        </linearGradient>
+      </defs>
+      <path fill="url(#cveLogoGradient)" d="M0 72.5C0 31.5 32.5 4 76 4h106v32H78c-24 0-40 13.5-40 36.5S54 109 78 109h104v32H76C32.5 141 0 113.5 0 72.5Z"></path>
+      <path fill="url(#cveLogoGradient)" d="M184 4h40l54 82 54-82h172l-24 32H352l-73 105h-5L184 4Z"></path>
+      <path fill="url(#cveLogoGradient)" d="M352 57h132l-22 30h-72v22h95v32H352V57Z"></path>
+      <rect fill="#0f1117" x="171" y="0" width="16" height="30"></rect>
+      <rect fill="#0f1117" x="203" y="0" width="16" height="30"></rect>
+      <rect fill="#0f1117" x="235" y="0" width="16" height="30"></rect>
+    </svg>
+  `;
+}
+
+function renderVexQualityRecommendations(openvex, cves, statements, warnings) {
+  const hasContext = openvex["@context"] === "https://openvex.dev/ns/v0.2.0";
+  const hasId = Boolean(openvex["@id"]);
+  const hasMetadata = Boolean(openvex.author && openvex.timestamp && openvex.version !== undefined);
+  const hasProduct = Boolean(openvex.product?.["@id"] || openvex.product?.name);
+  const hasStatements = statements.length > 0;
+  const hasCveRefs = cves.length > 0 || statements.some((statement) => statement.vulnerability?.name || statement.vulnerability?.["@id"]);
+  const hasStatuses = statements.some((statement) => statement.status);
+  const hasJustification = statements.some((statement) => statement.justification || statement.impact_statement);
+  const hasAction = statements.some((statement) => statement.action_statement);
+  const hasBomWarning = warnings.some((warning) => /articlenumber|articleNumber|bom|query/i.test(`${warning.type || ""} ${warning.message || ""}`));
+  const correct = [
+    [hasContext, "Proper @context: https://openvex.dev/ns/v0.2.0"],
+    [hasId, "Unique @id is present"],
+    [hasMetadata, "Metadata fields are present: author, timestamp, version"],
+    [hasProduct, "Product identifier is present via product name or purl-like @id"],
+    [Boolean(openvex["@context"] || openvex["@id"] || openvex.product), "Machine-readable OpenVEX structure is present"],
+  ];
+  const weak = [
+    [hasStatements, "Add at least one vulnerability status statement"],
+    [hasCveRefs, "Add vulnerability references such as CVE IDs"],
+    [hasStatuses, "Add statement status values: not_affected, affected, fixed, or under_investigation"],
+    [hasJustification, "Add justification and impact_statement for each relevant CVE"],
+    [hasAction, "Add action_statement where remediation or follow-up is needed"],
+    [!hasBomWarning, "Normalize upstream BOM query parameters so articlenumber/articleNumber evidence warnings disappear"],
+  ];
+  return `
+    <section class="vex-quality-panel">
+      <div class="vex-quality-head">
+        <div>
+          <h3>VEX quality recommendations</h3>
+          <p class="muted">${hasStatements ? "This document contains VEX statements and can support downstream automation." : "Structurally valid OpenVEX metadata, but incomplete for practical vulnerability exchange because it contains no statements."}</p>
+        </div>
+        <span class="badge ${hasStatements ? "ok" : "warn"}">${hasStatements ? "actionable" : "metadata only"}</span>
+      </div>
+      <div class="vex-quality-grid">
+        <div>
+          <strong>What is correct</strong>
+          <ul>${correct.map(([ok, text]) => `<li class="${ok ? "ok" : "missing"}">${escapeHtml(text)}</li>`).join("")}</ul>
+        </div>
+        <div>
+          <strong>What is missing or weak</strong>
+          <ul>${weak.map(([ok, text]) => `<li class="${ok ? "ok" : "missing"}">${escapeHtml(text)}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderVexStatement(cve, statement = {}) {
+  const refs = cve.references || [];
+  const components = cve.affected_components || [];
+  return `
+    <article class="vex-statement">
+      <div class="vex-statement-head">
+        <strong>${escapeHtml(cve.cveId || statement.vulnerability?.name || "UNKNOWN-CVE")}</strong>
+        <span class="badge ${vexStatusClass(statement.status || cve.status)}">${escapeHtml(statement.status || cve.status || "under_investigation")}</span>
+      </div>
+      <p>${escapeHtml(cve.description || "")}</p>
+      <table>
+        <tr><th>Severity</th><td>${escapeHtml(cve.severity || "UNKNOWN")}</td></tr>
+        <tr><th>Vulnerability</th><td>${escapeHtml(statement.vulnerability?.["@id"] || "")}</td></tr>
+        <tr><th>Justification</th><td>${escapeHtml(statement.justification || "")}</td></tr>
+        <tr><th>Impact</th><td>${escapeHtml(statement.impact_statement || "")}</td></tr>
+        <tr><th>Action</th><td>${escapeHtml(statement.action_statement || "")}</td></tr>
+        <tr><th>Components</th><td>${components.map((component) => escapeHtml(`${component.name || "component"} ${component.version || ""} ${component.purl || ""}`)).join("<br>") || "none mapped"}</td></tr>
+        <tr><th>References</th><td>${refs.map((ref) => `<a href="${escapeHtml(ref)}" target="_blank" rel="noopener">${escapeHtml(ref)}</a>`).join("<br>") || "none"}</td></tr>
+      </table>
+    </article>
+  `;
+}
+
+function renderVexAgentSummary(assessment, error) {
+  if (error) {
+    return `
+      <div class="vex-agent-summary">
+        <h3>All-agent advisory layer</h3>
+        <p class="badge bad">${escapeHtml(error)}</p>
+        <p class="muted">CVE/OpenVEX data is still shown; advisory agent data could not be loaded.</p>
+      </div>
+    `;
+  }
+  if (!assessment) {
+    return `
+      <div class="vex-agent-summary">
+        <h3>All-agent advisory layer</h3>
+        <p class="muted">No agent assessment was returned.</p>
+      </div>
+    `;
+  }
+  const readiness = assessment.readiness || {};
+  const findings = assessment.findings || [];
+  const failed = findings.filter((finding) => finding.status !== "passed").length;
+  const statusClass = readiness.status === "ready_for_human_review" ? "ok" : readiness.status === "blocked" ? "bad" : "warn";
+  return `
+    <div class="vex-agent-summary">
+      <h3>All-agent advisory layer</h3>
+      <div class="assessment-summary">
+        <span class="badge ${statusClass}">${escapeHtml(readiness.status || "unknown")}</span>
+        <span>Score ${escapeHtml(String(readiness.score ?? ""))}</span>
+        <span>${escapeHtml(String(findings.length))} checks</span>
+        <span>${escapeHtml(String(failed))} open</span>
+      </div>
+      <p class="muted">${escapeHtml(assessment.scope || "all enabled agents")} | ${escapeHtml(assessment.assessment_id || "")}</p>
+    </div>
+  `;
+}
+
+function flattenAgentCatalog(catalog) {
+  const layers = catalog?.layers || {};
+  return Object.entries(layers).flatMap(([layer, agents]) => (agents || []).map((agent) => ({ ...agent, layer: agent.layer || layer })));
+}
+
+function renderVexAgentFindings(assessment, catalog) {
+  const catalogAgents = flattenAgentCatalog(catalog);
+  const findings = assessment?.findings || [];
+  if (!catalogAgents.length && !findings.length) return "";
+  const findingsByAgent = new Map();
+  findings.forEach((finding) => {
+    const key = finding.agent_id || "unknown-agent";
+    if (!findingsByAgent.has(key)) findingsByAgent.set(key, []);
+    findingsByAgent.get(key).push(finding);
+  });
+  const knownAgents = new Set(catalogAgents.map((agent) => agent.id));
+  const rows = [
+    ...catalogAgents.map((agent) => ({ agent, findings: findingsByAgent.get(agent.id) || [] })),
+    ...findings
+      .filter((finding) => !knownAgents.has(finding.agent_id))
+      .map((finding) => ({
+        agent: {
+          id: finding.agent_id || "unknown-agent",
+          name: finding.agent_name || finding.agent_id || "Unknown agent",
+          layer: finding.layer || "agents-layer",
+          scope: [],
+        },
+        findings: [finding],
+      })),
+  ];
+  return `
+    <h3>Agent perspectives</h3>
+    <div class="vex-agent-grid">
+      ${rows.map(({ agent, findings: agentFindings }) => {
+        const finding = agentFindings.find((item) => item.status !== "passed") || agentFindings[0] || {};
+        const missingFields = agentFindings.flatMap((item) => item.missing_product_fields || []);
+        const missingEvidence = agentFindings.flatMap((item) => item.missing_evidence || []);
+        const refs = [...new Set(agentFindings.flatMap((item) => item.standard_refs || []))];
+        const passed = agentFindings.length > 0 && agentFindings.every((item) => item.status === "passed");
+        const configuredOnly = agentFindings.length === 0;
+        const statusLabel = configuredOnly ? "configured" : passed ? "passed" : finding.status || "needs_review";
+        const statusClass = passed ? "ok" : configuredOnly ? "" : finding.severity === "high" || finding.severity === "critical" ? "bad" : "warn";
+        return `
+          <article class="vex-agent-card ${passed ? "passed" : configuredOnly ? "configured" : "needs-review"}">
+            <div class="vex-agent-card-head">
+              <div>
+                <strong>${escapeHtml(agent.name || finding.agent_name || agent.id || "Agent")}</strong>
+                <p class="muted">${escapeHtml(agent.layer || finding.layer || "")} | ${escapeHtml(agent.id || finding.agent_id || "")}</p>
+              </div>
+              <span class="badge ${statusClass}">${escapeHtml(statusLabel)}</span>
+            </div>
+            <p>${escapeHtml(finding.criterion || (agent.scope || []).join(", ") || "Configured for advisory review.")}</p>
+            <p class="muted">${escapeHtml(finding.recommended_action || (configuredOnly ? "No active rule finding returned for this product." : ""))}</p>
+            ${missingFields.length || missingEvidence.length ? `
+              <div class="vex-agent-gaps">
+                ${missingFields.length ? `<span>Fields: ${escapeHtml([...new Set(missingFields)].join(", "))}</span>` : ""}
+                ${missingEvidence.length ? `<span>Evidence: ${escapeHtml([...new Set(missingEvidence)].join(", "))}</span>` : ""}
+              </div>
+            ` : ""}
+            ${refs.length ? `<p class="vex-agent-refs">${refs.map((ref) => `<span>${escapeHtml(ref)}</span>`).join("")}</p>` : ""}
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function vexStatusClass(status) {
+  const value = String(status || "").toLowerCase();
+  if (value === "affected" || value === "under_investigation") return "warn";
+  if (value === "fixed" || value === "not_affected") return "ok";
+  return "";
+}
+
+function openVexOverviewModal(title, bodyHtml) {
+  $("vexOverviewTitle").textContent = title;
+  $("vexOverviewBody").innerHTML = bodyHtml;
+  $("vexOverviewModal").classList.remove("hidden");
+}
+
+function closeVexOverviewModal() {
+  $("vexOverviewModal").classList.add("hidden");
 }
 
 function renderThebenArtifacts(data) {
@@ -838,6 +1198,8 @@ $("loadAgents").addEventListener("click", loadAgents);
 $("runAgentAssessment").addEventListener("click", () => runAgentAssessment());
 $("closeAgentModal").addEventListener("click", closeAgentModal);
 $("closeAttributeHistoryModal").addEventListener("click", closeAttributeHistoryModal);
+$("closeVexOverviewModal").addEventListener("click", closeVexOverviewModal);
+$("closeSbomOverviewModal").addEventListener("click", closeSbomOverviewModal);
 $("speakAgentAssessment").addEventListener("click", speakAgentAssessment);
 $("stopAgentSpeech").addEventListener("click", stopAgentSpeech);
 $("agentModal").addEventListener("click", (event) => {
@@ -846,9 +1208,17 @@ $("agentModal").addEventListener("click", (event) => {
 $("attributeHistoryModal").addEventListener("click", (event) => {
   if (event.target === $("attributeHistoryModal")) closeAttributeHistoryModal();
 });
+$("vexOverviewModal").addEventListener("click", (event) => {
+  if (event.target === $("vexOverviewModal")) closeVexOverviewModal();
+});
+$("sbomOverviewModal").addEventListener("click", (event) => {
+  if (event.target === $("sbomOverviewModal")) closeSbomOverviewModal();
+});
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !$("agentModal").classList.contains("hidden")) closeAgentModal();
   if (event.key === "Escape" && !$("attributeHistoryModal").classList.contains("hidden")) closeAttributeHistoryModal();
+  if (event.key === "Escape" && !$("vexOverviewModal").classList.contains("hidden")) closeVexOverviewModal();
+  if (event.key === "Escape" && !$("sbomOverviewModal").classList.contains("hidden")) closeSbomOverviewModal();
 });
 
 Promise.all([refreshAll(), loadAgents()]).catch((error) => {

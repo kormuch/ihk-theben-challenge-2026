@@ -72,8 +72,7 @@
             <a id="svgExport" href="#" target="_blank">SVG</a>
             <button id="pdfExport" type="button">PDF</button>
             <button id="sbomExtract" type="button">SBOM Extract</button>
-            <button id="cveExport" type="button">CVE Export</button>
-            <button id="vexExport" type="button">VEX Export</button>
+            <button id="vexExport" type="button">CVE Overview</button>
           </div>
         </div>
         <div id="detail" class="detail"></div>
@@ -138,6 +137,26 @@
         <button id="closeAttributeHistoryModal" class="secondary-button" aria-label="Close value history">Close</button>
       </div>
       <div id="attributeHistoryBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="vexOverviewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="vexOverviewTitle">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h2 id="vexOverviewTitle">VEX overview</h2>
+        <button id="closeVexOverviewModal" class="secondary-button" aria-label="Close VEX overview">Close</button>
+      </div>
+      <div id="vexOverviewBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="sbomOverviewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="sbomOverviewTitle">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h2 id="sbomOverviewTitle">SBOM Extract</h2>
+        <button id="closeSbomOverviewModal" class="secondary-button" aria-label="Close SBOM extract">Close</button>
+      </div>
+      <div id="sbomOverviewBody" class="modal-body"></div>
     </div>
   </div>
 

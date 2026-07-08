@@ -1,4 +1,4 @@
-# Thebenpaul Agents Layer
+d# Thebenpaul Agents Layer
 
 Lightweight advisory runtime for the `compliance-agents-layer` and `expert-agents-layer`.
 

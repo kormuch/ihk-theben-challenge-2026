@@ -1944,13 +1944,7 @@ def run_theben_layer_sbom_extract(store: "ProductStore", body: dict[str, Any], u
     if "use_fixtures" in body:
         payload["use_fixtures"] = bool(body.get("use_fixtures"))
     if product:
-        payload["selected_product"] = {
-            "id": product.get("id"),
-            "sku": product.get("sku"),
-            "name": product.get("name"),
-            "family": product.get("family"),
-            "metadata": product.get("metadata") or {},
-        }
+        payload["selected_product"] = selected_product_context(product)
     logger.info("THEBEN: proxying SBOM extract for product %s to %s", product_id or "all", extract_url)
     extraction = fetch_json_url(
         extract_url,
@@ -1966,6 +1960,12 @@ def run_theben_layer_sbom_extract(store: "ProductStore", body: dict[str, Any], u
         service_name="theben-layer",
     )
     artifacts = extraction.get("artifacts") or {}
+    report_payload = extraction.get("report") if isinstance(extraction.get("report"), dict) else {}
+    report_products = report_payload.get("products") if isinstance(report_payload.get("products"), list) else []
+    selected_report_product = report_products[0] if report_products else {}
+    selected_report_sbom = selected_report_product.get("sbom") if isinstance(selected_report_product.get("sbom"), dict) else {}
+    selected_report_components = selected_report_sbom.get("components") if isinstance(selected_report_sbom.get("components"), list) else []
+    selected_report_identity = selected_report_product.get("product") if isinstance(selected_report_product.get("product"), dict) else {}
     report_id = artifacts.get("report_id") or (extraction.get("report") or {}).get("report_id")
     result = {
         "status": extraction.get("status", "ok"),
@@ -1981,6 +1981,13 @@ def run_theben_layer_sbom_extract(store: "ProductStore", body: dict[str, Any], u
         "vex_artifacts": public_theben_artifacts(config, sbom.get("vex_artifacts", [])),
         "openvex_artifacts": public_theben_artifacts(config, sbom.get("openvex_artifacts", [])),
         "discovery": (extraction.get("report") or {}).get("discovery", []),
+        "sbom_overview": {
+            "product": selected_report_identity,
+            "component_count": len(selected_report_components),
+            "components": selected_report_components,
+            "evidence_warnings": selected_report_product.get("evidence_warnings") or [],
+            "source": "theben-layer report payload",
+        },
         "integration": {
             "source": "product-layer-theben-layer-proxy",
             "contract": config["contract"],
@@ -2123,9 +2130,42 @@ def run_theben_layer_vex_overview(store: "ProductStore", body: dict[str, Any], u
         payload=payload,
         service_name="theben-layer",
     )
+    agent_body: dict[str, Any] = {
+        "evidence": [
+            {
+                "type": "cve_overview",
+                "reference": "theben-layer:/api/theben/vex-overview",
+                "source_layer": "theben-layer",
+                "confidence": "referenced",
+            },
+            {
+                "type": "openvex_overview",
+                "reference": "theben-layer:/api/theben/vex-overview",
+                "source_layer": "theben-layer",
+                "confidence": "referenced",
+            },
+        ],
+    }
+    if product_id or product.get("id"):
+        agent_body["product_id"] = product_id or product.get("id")
+    else:
+        agent_body["product"] = product
+    try:
+        response["agent_assessment"] = run_agents_layer_assessment(store, agent_body, user)
+        response["agent_assessment"]["scope"] = "all enabled agents"
+    except ValueError as exc:
+        logger.warning("THEBEN: all-agent CVE overview assessment unavailable: %s", exc)
+        response["agent_assessment_error"] = str(exc)
+    agent_config = agents_layer_config()
+    response["agent_catalog"] = {
+        "layers": local_agents_catalog_fallback(agent_config),
+        "source": {"mode": "configured_catalog"},
+    }
     response.setdefault("integration", {})["source"] = "product-layer-theben-layer-vex-overview-proxy"
     response["integration"]["contract"] = config["contract"]
-    response["integration"]["write_policy"] = "non-writing VEX overview only; no report or artifact files are generated"
+    response["integration"]["write_policy"] = (
+        "non-writing VEX overview with all-agent advisory assessment; no report or artifact files are generated"
+    )
     return response
 
 
@@ -2472,6 +2512,7 @@ def openapi_spec(host: str) -> dict[str, Any]:
             "/api/avatar-layer/events": {"post": {"summary": "Record avatar UI speech and session actions for audit"}},
             "/api/theben-layer/sbom-extract": {"post": {"summary": "Extract proprietary REST SBOM, VEX, and Theben report artifacts through the Theben layer"}},
             "/api/theben-layer/security-export": {"post": {"summary": "Generate selected-product CVE and OpenVEX exports through the Theben layer"}},
+            "/api/theben-layer/vex-overview": {"post": {"summary": "Show selected-product CVEs in a non-writing OpenVEX formatted overview"}},
             "/api/data-product": {"get": {"summary": "Describe the governed product data product, interfaces, and caller access"}},
             "/api/catalog/data-products": {"get": {"summary": "List governed product-layer data products and metadata requirements"}},
             "/api/lineage": {"get": {"summary": "Describe lakehouse layer lineage for the product data product"}},
@@ -2878,6 +2919,33 @@ class Handler(SimpleHTTPRequestHandler):
                     "artifact_type": result.get("artifact_type"),
                     "cve_artifacts": len(result.get("cve_artifacts") or []),
                     "openvex_artifacts": len(result.get("openvex_artifacts") or []),
+                },
+            )
+            return self.send_json(result, HTTPStatus.CREATED)
+        if parsed.path == "/api/theben-layer/vex-overview":
+            try:
+                payload = self.read_json()
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+            try:
+                result = run_theben_layer_vex_overview(self.store, payload, user)
+            except ValueError as exc:
+                logger.warning("THEBEN: VEX overview failed: %s", exc)
+                return self.send_error_json(HTTPStatus.BAD_GATEWAY, f"theben-layer VEX overview failed: {exc}")
+            overview = result.get("overview") or {}
+            product_items = overview.get("products") if isinstance(overview.get("products"), list) else []
+            first_product = product_items[0] if product_items else {}
+            self.store.record_audit(
+                action="theben_layer_vex_overview",
+                product_id=payload.get("product_id") or "theben-vex-overview",
+                role=user.get("role", "viewer"),
+                actor=user.get("actor"),
+                view="artifact_overview",
+                channel="api",
+                details={
+                    "export_id": overview.get("export_id"),
+                    "vulnerability_count": first_product.get("vulnerability_count", 0),
+                    "non_writing": True,
                 },
             )
             return self.send_json(result, HTTPStatus.CREATED)

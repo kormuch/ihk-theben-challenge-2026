@@ -13,6 +13,7 @@ from app.app import (
     create_security_export,
     create_report,
     collect_security_export_data,
+    create_vex_overview,
     list_security_artifacts,
     normalize_product,
     select_demo_products,
@@ -38,6 +39,41 @@ class ThebenLayerTests(unittest.TestCase):
         self.assertEqual(len(report["products"]), 2)
         self.assertGreater(len(report["products"][0]["sbom"]["components"]), 0)
         self.assertIn("vulnerabilities", report["products"][0]["vex"])
+
+    def test_fixture_report_for_selected_product_contains_only_that_product(self):
+        report = collect_report_data(
+            LegacyClient("http://example.invalid", use_fixture=True),
+            {"sku": "CM-2025-017", "name": "Coffee Machine Deluxe"},
+        )
+        self.assertEqual(len(report["products"]), 1)
+        self.assertEqual(report["products"][0]["product"]["article_number"], "CM-2025-017")
+        self.assertIn("cm-2025-017", report["report_id"])
+
+    def test_report_for_imported_product_stays_single_product_with_selected_bom(self):
+        report = collect_report_data(
+            LegacyClient("http://example.invalid", use_fixture=True),
+            {
+                "sku": "7654126",
+                "name": "Theoretical Fully Automatic Coffee Machine",
+                "attributes": {
+                    "legacy_theben_article_number": "7654126",
+                    "legacy_theben_bom_items": [
+                        {
+                            "part_number": "PCB-CTRL-STD-001",
+                            "description": "Standard Main Control PCB",
+                            "quantity": "1",
+                            "manufacturer_name": "EuroBoard Electronics AG",
+                        }
+                    ],
+                },
+            },
+        )
+        self.assertEqual(len(report["products"]), 1)
+        item = report["products"][0]
+        self.assertEqual(item["product"]["article_number"], "7654126")
+        self.assertEqual(item["bom"]["bom"][0]["partNumber"], "PCB-CTRL-STD-001")
+        self.assertEqual(item["sbom"]["components"][0]["supplier"], "EuroBoard Electronics AG")
+        self.assertTrue(item["evidence_warnings"])
 
     def test_build_vex_has_csaf_vex_category(self):
         product = {"article_number": "A-1", "name": "Demo"}
@@ -81,6 +117,17 @@ class ThebenLayerTests(unittest.TestCase):
         result = create_report(use_fixture=True)
         pdf_path = Path(result["artifacts"]["pdf_path"])
         self.assertTrue(pdf_path.exists())
+        self.assertGreater(pdf_path.stat().st_size, 1200)
+
+    def test_create_report_with_selected_product_writes_single_product_pdf(self):
+        result = create_report(
+            use_fixture=True,
+            selected_product={"sku": "CM-2025-017", "name": "Coffee Machine Deluxe"},
+        )
+        pdf_path = Path(result["artifacts"]["pdf_path"])
+        self.assertTrue(pdf_path.exists())
+        self.assertEqual(len(result["report"]["products"]), 1)
+        self.assertEqual(result["report"]["products"][0]["product"]["article_number"], "CM-2025-017")
         self.assertGreater(pdf_path.stat().st_size, 1200)
 
     def test_create_report_tries_live_then_falls_back_when_unreachable(self):
@@ -136,6 +183,18 @@ class ThebenLayerTests(unittest.TestCase):
         self.assertTrue(product["evidence_warnings"])
         self.assertEqual(product["sbom"]["components"], [])
         self.assertEqual(product["openvex"]["statements"], [])
+
+    def test_vex_overview_is_non_writing_and_returns_openvex_shape(self):
+        with patch("app.app.save_security_export_artifacts") as save_artifacts:
+            result = create_vex_overview(
+                selected_product={"sku": "VC-2025-001", "name": "Vacuum Cleaner Pro"},
+                use_fixture=True,
+            )
+        product = result["overview"]["products"][0]
+        self.assertEqual(result["status"], "ok")
+        self.assertIn("@context", product["openvex"])
+        self.assertIn("statements", product["openvex"])
+        save_artifacts.assert_not_called()
 
     def test_real_api_query_parameter_is_lowercase_articlenumber(self):
         self.assertEqual(

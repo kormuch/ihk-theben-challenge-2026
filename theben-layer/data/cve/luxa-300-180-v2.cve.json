@@ -1,0 +1,11 @@
+{
+  "cves": [],
+  "generated_at": "2026-07-08T14:03:55+00:00",
+  "matching_method": "SBOM component/version data matched against proprietary REST vulnerability records; external CVE database enrichment can be added behind the same export contract.",
+  "product": {
+    "article_number": "LUXA 300-180/V2",
+    "name": "LUXA 300-180",
+    "purl": "pkg:firmware/theben/luxa-300-180-v2@luxa-300-180-v2"
+  },
+  "schema": "thebenpaul-cve-export-v1"
+}

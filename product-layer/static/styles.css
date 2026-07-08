@@ -545,6 +545,226 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.sbom-overview-head,
+.vex-overview-head,
+.vex-statement-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.sbom-overview-head strong,
+.vex-overview-head strong {
+  display: block;
+  font-size: 16px;
+}
+
+.sbom-component-list {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.sbom-component,
+.sbom-empty {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+}
+
+.sbom-component-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.sbom-empty {
+  border-left: 3px solid var(--warn);
+  margin-bottom: 12px;
+}
+
+.sbom-empty p {
+  margin-bottom: 0;
+}
+
+.cve-logo-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.cve-logo {
+  width: clamp(120px, 20vw, 190px);
+  height: auto;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 6px 10px rgba(245, 130, 32, 0.16));
+}
+
+.vex-modal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.vex-document,
+.vex-statement,
+.vex-agent-summary,
+.vex-agent-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.vex-document h3,
+.vex-agent-summary h3 {
+  margin: 0 0 10px;
+}
+
+.vex-statement-list {
+  display: grid;
+  gap: 10px;
+}
+
+.vex-statement p {
+  margin: 0 0 10px;
+}
+
+.vex-agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.vex-agent-card {
+  border-left: 3px solid var(--line);
+  margin-bottom: 0;
+}
+
+.vex-agent-card.passed {
+  border-left-color: var(--ok);
+}
+
+.vex-agent-card.needs-review {
+  border-left-color: var(--warn);
+}
+
+.vex-agent-card.configured {
+  border-left-color: #cbd5e1;
+}
+
+.vex-agent-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.vex-agent-card p {
+  margin: 0 0 8px;
+}
+
+.vex-agent-gaps,
+.vex-agent-refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.vex-agent-gaps span,
+.vex-agent-refs span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--soft);
+  padding: 4px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.vex-warning-list {
+  border: 1px solid rgba(217, 119, 6, 0.24);
+  border-radius: 8px;
+  background: rgba(217, 119, 6, 0.06);
+  padding: 12px 12px 12px 28px;
+}
+
+.vex-warning-list li {
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.vex-quality-panel {
+  border: 1px solid rgba(217, 119, 6, 0.24);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 251, 235, 0.86), #fff);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.vex-quality-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.vex-quality-head h3 {
+  margin: 0 0 4px;
+}
+
+.vex-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.vex-quality-grid ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.vex-quality-grid li {
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.vex-quality-grid li.ok::marker {
+  color: var(--ok);
+}
+
+.vex-quality-grid li.missing::marker {
+  color: var(--warn);
+}
+
+@media (max-width: 820px) {
+  .vex-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vex-overview-head,
+  .cve-logo-lockup {
+    align-items: flex-start;
+  }
+
+  .cve-logo-lockup {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
 .import-panel,
 .validation-panel,
 .agents-panel {
