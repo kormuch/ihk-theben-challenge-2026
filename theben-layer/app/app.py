@@ -951,6 +951,35 @@ def create_security_export(
     return {"status": "ok", "artifacts": artifacts, "export": export}
 
 
+def create_vex_overview(
+    *,
+    selected_product: dict[str, Any] | None = None,
+    use_fixture: bool | None = None,
+    force_live_only: bool = False,
+) -> dict[str, Any]:
+    config = load_config()
+    base_url = os.environ.get("THEBEN_LEGACY_BASE_URL", config.get("legacy_base_url", "http://192.168.8.200:8000"))
+    timeout = float(os.environ.get("THEBEN_LEGACY_TIMEOUT", config.get("legacy_timeout_seconds", 5)))
+    if use_fixture is True:
+        fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
+        overview = collect_security_export_data(fixture_client, selected_product, "vex")
+        overview["fixture_fallback"] = True
+        return {"status": "ok", "overview": overview}
+    allow_fallback = not force_live_only and fallback_enabled(config)
+    client = LegacyClient(base_url, timeout=timeout, use_fixture=False)
+    try:
+        overview = collect_security_export_data(client, selected_product, "vex")
+    except Exception as exc:
+        if not allow_fallback:
+            raise
+        logger.warning("legacy VEX overview unavailable, using fixtures: %s", exc)
+        fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
+        overview = collect_security_export_data(fixture_client, selected_product, "vex")
+        overview["fixture_fallback"] = True
+        overview["legacy_error"] = str(exc)
+    return {"status": "ok", "overview": overview}
+
+
 class ThebenHandler(BaseHTTPRequestHandler):
     def log_message(self, format: str, *args: Any) -> None:
         logger.info("%s - %s", self.client_address[0], format % args)
@@ -1039,6 +1068,14 @@ class ThebenHandler(BaseHTTPRequestHandler):
                 result = create_security_export(
                     selected_product=body.get("selected_product") if isinstance(body.get("selected_product"), dict) else None,
                     artifact_type=body.get("artifact_type", "both"),
+                    use_fixture=body.get("use_fixtures"),
+                    force_live_only=bool(body.get("force_live_only", False)),
+                )
+                self.send_json(result, HTTPStatus.CREATED)
+            elif path == "/api/theben/vex-overview":
+                body = self.read_json(optional=True)
+                result = create_vex_overview(
+                    selected_product=body.get("selected_product") if isinstance(body.get("selected_product"), dict) else None,
                     use_fixture=body.get("use_fixtures"),
                     force_live_only=bool(body.get("force_live_only", False)),
                 )

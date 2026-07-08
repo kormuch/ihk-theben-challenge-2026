@@ -1620,6 +1620,7 @@ def theben_layer_contract(host: str = "localhost") -> dict[str, Any]:
                 "products": "/api/theben/products",
                 "extract": "/api/theben/extract",
                 "security_export": "/api/theben/security-export",
+                "vex_overview": "/api/theben/vex-overview",
                 "reports": "/api/theben/reports",
                 "sbom": "/api/theben/sbom",
                 "cve": "/api/theben/cve",
@@ -1664,13 +1665,13 @@ def theben_layer_contract(host: str = "localhost") -> dict[str, Any]:
                 ),
             },
             {
-                "name": "Generate OpenVEX export for selected product",
+                "name": "Show OpenVEX overview for selected product",
                 "method": "POST",
-                "url": "/api/theben-layer/security-export",
+                "url": "/api/theben-layer/vex-overview",
                 "curl": (
                     "curl -X POST -H 'Content-Type: application/json' "
-                    f"-d '{{\"product_id\":\"{sample_product_id}\",\"artifact_type\":\"vex\",\"use_fixtures\":false}}' "
-                    f"{local_product_base}/api/theben-layer/security-export"
+                    f"-d '{{\"product_id\":\"{sample_product_id}\"}}' "
+                    f"{local_product_base}/api/theben-layer/vex-overview"
                 ),
             },
         ],
@@ -2090,6 +2091,42 @@ def run_theben_layer_security_export(store: "ProductStore", body: dict[str, Any]
         len(result["openvex_artifacts"]),
     )
     return result
+
+
+def run_theben_layer_vex_overview(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
+    config = theben_layer_config()
+    if not config["enabled"]:
+        raise ValueError("theben-layer integration is disabled")
+    product_id = str(body.get("product_id") or body.get("id") or "").strip()
+    product = store.get_product(product_id, user) if product_id else None
+    if not product and isinstance(body.get("product"), dict):
+        product = body["product"]
+    if not product:
+        raise ValueError("product_id or product object required")
+    url = join_url(config["base_url"], "/api/theben/vex-overview")
+    validate_integration_url(url, config["allowed_hosts"], "theben-layer")
+    payload = {
+        "selected_product": selected_product_context(product),
+        "request_context": {
+            "caller_role": str(user.get("role") or "viewer"),
+            "caller_region": str(user.get("region") or "EU"),
+            "caller_purpose": str(user.get("purpose") or "analytics"),
+            "proxy_authorization_model": "product-layer selected product context with non-writing VEX overview",
+        },
+    }
+    if "use_fixtures" in body:
+        payload["use_fixtures"] = bool(body.get("use_fixtures"))
+    response = fetch_json_url(
+        url,
+        config["timeout_seconds"],
+        method="POST",
+        payload=payload,
+        service_name="theben-layer",
+    )
+    response.setdefault("integration", {})["source"] = "product-layer-theben-layer-vex-overview-proxy"
+    response["integration"]["contract"] = config["contract"]
+    response["integration"]["write_policy"] = "non-writing VEX overview only; no report or artifact files are generated"
+    return response
 
 
 def record_avatar_user_action(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
