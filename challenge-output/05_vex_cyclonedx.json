@@ -1,0 +1,342 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-08T13:32:56.387790+00:00",
+    "tools": [
+      {
+        "name": "PAUL",
+        "version": "1.4.0"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "id": "CVE-2024-45798",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "arduino-esp32 is an Arduino core for the ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6 and ESP32-H2 microcontrollers. The `arduino-esp32` CI is vulnerable to multiple Poisoned Pipeline Execution (PPE)",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32-C6"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2025-53540",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "arduino-esp32 is an Arduino core for the ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6 and ESP32-H2 microcontrollers. Several OTA update examples and the HTTPUpdateServer implementation are vulnerable",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32-C6"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2026-41429",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "arduino-esp32 is an Arduino core for the ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6 and ESP32-H2 microcontrollers. Prior to 3.3.8, there is a remotely reachable memory corruption issue in the NBNS ",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32-C6"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2026-42854",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "arduino-esp32 is an Arduino core for the ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6 and ESP32-H2 microcontrollers. Prior to 3.3.8, the WebServer multipart form parser in arduino-esp32 allocates a V",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32-C6"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2026-42855",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "arduino-esp32 is an Arduino core for the ESP32, ESP32-S2, ESP32-S3, ESP32-C3, ESP32-C6 and ESP32-H2 microcontrollers. Prior to 3.3.8, the WebServer Digest authentication implementation in arduino-esp3",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32-C6"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2019-15894",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "An issue was discovered in Espressif ESP-IDF 2.x, 3.0.x through 3.0.9, 3.1.x through 3.1.6, 3.2.x through 3.2.3, and 3.3.x through 3.3.1. An attacker who uses fault injection to physically disrupt the",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2019-17391",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "An issue was discovered in the Espressif ESP32 mask ROM code 2016-06-08 0 through 2. Lack of anti-glitch mitigations in the first stage bootloader of the ESP32 chip allows an attacker (with physical a",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2020-13594",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "The Bluetooth Low Energy (BLE) controller implementation in Espressif ESP-IDF 4.2 and earlier (for ESP32 devices) does not properly restrict the channel map field of the connection request packet on r",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2020-13595",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "The Bluetooth Low Energy (BLE) controller implementation in Espressif ESP-IDF 4.0 through 4.2 (for ESP32 devices) returns the wrong number of completed BLE packets and triggers a reachable assertion o",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2021-34173",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "An attacker can cause a Denial of Service and kernel panic in v4.2 and earlier versions of Espressif esp32 via a malformed beacon csa frame. The device requires a reboot to recover.",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: ESP32"
+      },
+      "affects": [
+        {
+          "ref": "7654126-ESP32-C6-MOD"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2017-18347",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "Incorrect access control in RDP Level 1 on STMicroelectronics STM32F0 series devices allows physically present attackers to extract the device's protected firmware via a special sequence of Serial Wir",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: STM32"
+      },
+      "affects": [
+        {
+          "ref": "8654126-MCU-STM32G474"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2019-14236",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "On STMicroelectronics STM32L0, STM32L1, STM32L4, STM32F4, STM32F7, and STM32H7 devices, Proprietary Code Read Out Protection (PCROP) (a software IP protection method) can be defeated by observing CPU ",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: STM32"
+      },
+      "affects": [
+        {
+          "ref": "8654126-MCU-STM32G474"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2019-14238",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "On STMicroelectronics STM32F7 devices, Proprietary Code Read Out Protection (PCROP) (a software IP protection method) can be defeated with a debug probe via the Instruction Tightly Coupled Memory (ITC",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: STM32"
+      },
+      "affects": [
+        {
+          "ref": "8654126-MCU-STM32G474"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2019-19192",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "The Bluetooth Low Energy implementation on STMicroelectronics BLE Stack through 1.3.1 for STM32WB5x devices does not properly handle consecutive Attribute Protocol (ATT) requests on reception, allowin",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: STM32"
+      },
+      "affects": [
+        {
+          "ref": "8654126-MCU-STM32G474"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2020-8004",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "STMicroelectronics STM32F1 devices have Incorrect Access Control.",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: STM32"
+      },
+      "affects": [
+        {
+          "ref": "8654126-MCU-STM32G474"
+        }
+      ]
+    },
+    {
+      "id": "CVE-2018-18558",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "An issue was discovered in Espressif ESP-IDF 2.x and 3.x before 3.0.6 and 3.1.x before 3.1.1. Insufficient validation of input data in the 2nd stage bootloader allows a physically proximate attacker t",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: Espressif"
+      },
+      "affects": []
+    },
+    {
+      "id": "CVE-2019-12587",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "The EAP peer implementation in Espressif ESP-IDF 2.0.0 through 4.0.0 and ESP8266_NONOS_SDK 2.2.0 through 3.1.0 allows the installation of a zero Pairwise Master Key (PMK) after the completion of any E",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: Espressif"
+      },
+      "affects": []
+    },
+    {
+      "id": "CVE-2019-12588",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "The client 802.11 mac implementation in Espressif ESP8266_NONOS_SDK 2.2.0 through 3.1.0 does not validate correctly the RSN AuthKey suite list count in beacon frames, probe responses, and association ",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: Espressif"
+      },
+      "affects": []
+    },
+    {
+      "id": "CVE-2019-12586",
+      "source": {
+        "name": "NVD",
+        "url": "https://nvd.nist.gov"
+      },
+      "description": "The EAP peer implementation in Espressif ESP-IDF 2.0.0 through 4.0.0 and ESP8266_NONOS_SDK 2.2.0 through 3.1.0 processes EAP Success messages before any EAP method completion or failure, which allows ",
+      "analysis": {
+        "state": "under_investigation",
+        "justification": "requires_manual_review",
+        "detail": "Found via NIST NVD for keyword: Espressif"
+      },
+      "affects": []
+    }
+  ]
+}
