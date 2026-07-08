@@ -505,6 +505,46 @@ h2 {
   color: var(--ok);
 }
 
+.actions button {
+  padding: 7px 9px;
+}
+
+.theben-artifact-result {
+  display: grid;
+  gap: 12px;
+}
+
+.theben-report-preview {
+  width: 100%;
+  min-height: 360px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.artifact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.artifact-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+}
+
+.artifact-grid ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.artifact-grid li {
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
 .import-panel,
 .validation-panel,
 .agents-panel {

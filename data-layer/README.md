@@ -121,6 +121,44 @@ Family mapping (data-layer -> product-layer):
 - KNX Actuator -> KNX Actuator
 - Energy Meter -> Energy Meter
 
+## Theben Proprietary REST Import
+
+The Products page includes two Theben import actions:
+
+- `Import Theben REST` imports products from `THEBEN_LEGACY_BASE_URL` (default `http://192.168.8.200:8000`).
+- `Import Bundled Theben` imports the two bundled competition products from `config/theben_legacy_products`.
+
+The REST import follows the verified proprietary API calls:
+
+```bash
+curl "http://192.168.8.200:8000/products"
+curl "http://192.168.8.200:8000/products/bom?articlenumber=7654126"
+```
+
+During import, data-layer first reads `/products`, then calls `/products/bom?articlenumber={article}` for each imported article and stores the parsed XML BOM as governed product attributes.
+
+Backend endpoints:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/v1/legacy-theben/health` | Check data-layer backend connectivity to the proprietary REST system |
+| GET | `/api/v1/legacy-theben/products` | List products from the proprietary REST system |
+| POST | `/api/v1/legacy-theben/import-products` | Import or refresh products from the proprietary REST system |
+| GET | `/api/v1/legacy-theben/bundled-products` | Preview bundled Theben products |
+| POST | `/api/v1/legacy-theben/import-bundled-products` | Import or refresh bundled Theben products |
+
+The bundled files currently contain article `7654126` and `8654126` with XML BOM content. Import stores BOM item count, categories, suppliers, parsed item details, source metadata, and lineage on the product attributes.
+
+If host curl works but Docker import fails, test from the backend container:
+
+```bash
+docker exec -it data-layer-backend-1 curl -v http://192.168.8.200:8000/products
+docker exec -it data-layer-backend-1 curl -v "http://192.168.8.200:8000/products/bom?articlenumber=7654126"
+curl http://localhost:8000/api/v1/legacy-theben/health
+```
+
+The backend HTTP client ignores proxy environment variables for this LAN call (`httpx trust_env=false`), and Docker Compose sets `NO_PROXY` for the proprietary host.
+
 ## LLM Agent Configuration
 
 Document analysis uses config-as-code from:

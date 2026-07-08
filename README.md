@@ -91,6 +91,8 @@ Starts all services (data-layer, product-layer, lakehouse infrastructure, OpenMe
 | Product Layer | http://localhost:8080 | Governance, DPP preview, exports |
 | Product-Agents Layer | http://localhost:8090 | Product-Experts, Compliance-Agents for relevant Domains like Cyber, EMC, Privacy, etc. |
 | Product-Avatar Layer | http://localhost:8095 | example for UI-Analysis with usage of Product-Agents, Data-layer & bad voice |
+| Graph Layer | http://localhost:8096 | Neo4j product knowledge graph rooted by product numbers |
+| Theben Layer | http://localhost:8098 | Theben-styled competition reports, SBOM, CVE and VEX outputs |
 | Trino UI | http://localhost:8082 | SQL query engine for Iceberg |
 | MinIO Console | http://localhost:9001 | Object storage browser (admin/password) |
 | OpenMetadata | http://localhost:8585 | Data catalog & lineage (admin/admin) |
@@ -149,6 +151,8 @@ data-layer/
   docker-compose.yml          # Full stack (DB, MinIO, Iceberg, Trino, OpenMetadata)
   test-docs/                  # Test documents for demo
 product-layer/                # Christian's governance layer (DPP, validation, exports)
+graph-layer/                  # Neo4j graph read model for product numbers, lineage, evidence, identity
+theben-layer/                 # Theben corporate identity reports for proprietary REST add-on scenario
 architecture.html             # Visual architecture diagram (open in browser)
 start-paul.bat                # One-click start (all services)
 ```
@@ -174,6 +178,7 @@ Products confirmed through the AI pipeline are automatically mirrored to Iceberg
 | AI / LLM | Ollama LAN (default), DeepSeek, Gemini, Groq (config-driven) |
 | Lakehouse | Apache Iceberg, Trino, MinIO |
 | Data Catalog | OpenMetadata |
+| Graph Database | Neo4j |
 | Infrastructure | Docker Compose |
 | Text extraction | pdfplumber, openpyxl, pytesseract + Pillow (OCR) |
 | OCR Engine | Tesseract (deu + eng) |

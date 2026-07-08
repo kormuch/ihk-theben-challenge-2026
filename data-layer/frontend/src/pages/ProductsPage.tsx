@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { products, families, exportApi, type Product, type ProductFamily } from '../lib/api';
+import { products, families, exportApi, legacyTheben, type Product, type ProductFamily } from '../lib/api';
 
 interface Props {
   onSelectProduct: (id: string) => void;
@@ -16,6 +16,8 @@ export function ProductsPage({ onSelectProduct }: Props) {
   const [newArticle, setNewArticle] = useState('');
   const [newFamily, setNewFamily] = useState('');
   const [creating, setCreating] = useState(false);
+  const [importingLegacy, setImportingLegacy] = useState(false);
+  const [importingBundled, setImportingBundled] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const load = () => {
@@ -70,6 +72,42 @@ export function ProductsPage({ onSelectProduct }: Props) {
           <p className="text-xs text-gray-500">{items.length} products loaded</p>
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              setImportingBundled(true);
+              try {
+                const res = await legacyTheben.importBundledProducts();
+                alert(`Imported ${res.count} bundled Theben product(s). Created: ${res.created.length}, updated: ${res.updated.length}.`);
+                load();
+              } catch (err: any) {
+                alert('Bundled Theben import failed: ' + err.message);
+              } finally {
+                setImportingBundled(false);
+              }
+            }}
+            disabled={importingBundled}
+            className="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#64748b] text-white hover:bg-[#475569] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+          >
+            {importingBundled ? 'Importing...' : 'Import Bundled Theben'}
+          </button>
+          <button
+            onClick={async () => {
+              setImportingLegacy(true);
+              try {
+                const res = await legacyTheben.importProducts();
+                alert(`Imported ${res.count} product(s) from ${res.source}. Created: ${res.created.length}, updated: ${res.updated.length}.`);
+                load();
+              } catch (err: any) {
+                alert('Theben REST import failed: ' + err.message);
+              } finally {
+                setImportingLegacy(false);
+              }
+            }}
+            disabled={importingLegacy}
+            className="text-xs font-semibold px-3 py-1.5 rounded-md bg-[#0ea5e9] text-white hover:bg-[#0284c7] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+          >
+            {importingLegacy ? 'Importing...' : 'Import Theben REST'}
+          </button>
           <button
             onClick={async () => {
               try {

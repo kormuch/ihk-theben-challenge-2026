@@ -1,0 +1,34 @@
+{
+  "service": "theben-layer",
+  "schema_version": "0.1.0",
+  "legacy_base_url": "http://192.168.8.200:8000",
+  "legacy_timeout_seconds": 5,
+  "use_fixtures_when_unreachable": true,
+  "brand": {
+    "logo_path": "/app/assets/logo_theben.jpg",
+    "logo_source": "user-provided Theben logo attachment copied from 99_shared/logo_theben.jpg",
+    "primary_color": "#00456f",
+    "accent_color": "#2f7d32",
+    "report_usage": "Thebenpaul competition prototype"
+  },
+  "safe_api_discovery": {
+    "allowed_methods": ["GET", "HEAD", "OPTIONS"],
+    "allowed_host": "192.168.8.200",
+    "allowed_port": 8000,
+    "rate_limit": "low/manual prototype discovery only",
+    "forbidden": [
+      "credential brute force",
+      "authentication bypass",
+      "destructive HTTP methods",
+      "high-rate fuzzing",
+      "probing outside the authorized host and port"
+    ]
+  },
+  "governance": {
+    "owner": "Product Compliance Domain",
+    "domain": "product-compliance",
+    "classification": "internal",
+    "lineage": "proprietary-rest-system -> data-layer/theben-layer -> SBOM/VEX/PDF report",
+    "certification_status": "prototype"
+  }
+}

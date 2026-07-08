@@ -1334,6 +1334,39 @@ def avatar_layer_config() -> dict[str, Any]:
     }
 
 
+def theben_layer_config() -> dict[str, Any]:
+    configured = dict(RUNTIME_CONFIG.get("theben_layer") or {})
+    timeout_raw = os.environ.get("THEBEN_LAYER_TIMEOUT") or configured.get("timeout_seconds", 20)
+    try:
+        timeout_seconds = float(timeout_raw)
+    except (TypeError, ValueError):
+        timeout_seconds = 20.0
+    allowed_hosts = os.environ.get("THEBEN_LAYER_ALLOWED_HOSTS")
+    if allowed_hosts:
+        hosts = [host.strip().lower() for host in allowed_hosts.split(",") if host.strip()]
+    else:
+        hosts = list(configured.get("allowed_hosts") or ["127.0.0.1", "localhost", "host.docker.internal", "theben-layer"])
+    return {
+        "enabled": bool_from_env(os.environ.get("THEBEN_LAYER_ENABLED"), bool(configured.get("enabled", True))),
+        "base_url": (
+            os.environ.get("THEBEN_LAYER_URL")
+            or configured.get("base_url")
+            or "http://host.docker.internal:8098"
+        ).rstrip("/"),
+        "local_base_url": str(configured.get("local_base_url") or "http://127.0.0.1:8098").rstrip("/"),
+        "timeout_seconds": max(0.5, min(timeout_seconds, 120.0)),
+        "allowed_hosts": hosts,
+        "contract": configured.get("contract", "product-layer-theben-sbom-extract-v1"),
+        "mode": configured.get("mode", "proprietary-rest-artifact-extraction"),
+        "source_layer": configured.get("source_layer", "curated_product_context"),
+        "target_layer": configured.get("target_layer", "theben_corporate_reporting_layer"),
+        "write_policy": configured.get(
+            "write_policy",
+            "theben-layer owns REST extraction, SBOM/VEX artifacts, and branded PDF output; product-layer only proxies selected product context and displays links",
+        ),
+    }
+
+
 def join_url(base_url: str, path: str) -> str:
     return f"{base_url.rstrip('/')}/{path.lstrip('/')}"
 
@@ -1550,6 +1583,94 @@ def avatar_layer_contract(host: str = "localhost") -> dict[str, Any]:
                     "curl -X POST -H 'Content-Type: application/json' "
                     f"-d '{json.dumps(sample_payload, separators=(',', ':'))}' "
                     f"{avatar_base}/api/avatar/assess"
+                ),
+            },
+        ],
+    }
+
+
+def theben_layer_contract(host: str = "localhost") -> dict[str, Any]:
+    config = theben_layer_config()
+    local_product_base = f"http://{host}".rstrip("/")
+    theben_base = config["local_base_url"]
+    sample_product_id = "thb-tim-0001"
+    sample_payload = {
+        "product_id": sample_product_id,
+        "use_fixtures": False,
+    }
+    return {
+        "status": "active_adapter" if config["enabled"] else "disabled",
+        "enabled": config["enabled"],
+        "contract": config["contract"],
+        "mode": config["mode"],
+        "base_url": config["base_url"],
+        "local_base_url": config["local_base_url"],
+        "timeout_seconds": config["timeout_seconds"],
+        "source_layer": config["source_layer"],
+        "target_layer": config["target_layer"],
+        "architecture": "product-layer sends selected curated product context to theben-layer; theben-layer calls proprietary REST endpoints and writes report, SBOM, and VEX artifacts.",
+        "write_policy": config["write_policy"],
+        "interfaces": {
+            "product_layer_proxy": {
+                "integration_contract": "/api/integrations/theben-layer",
+                "sbom_extract": "/api/theben-layer/sbom-extract",
+            },
+            "theben_layer_runtime": {
+                "health": "/health",
+                "products": "/api/theben/products",
+                "extract": "/api/theben/extract",
+                "security_export": "/api/theben/security-export",
+                "reports": "/api/theben/reports",
+                "sbom": "/api/theben/sbom",
+                "cve": "/api/theben/cve",
+                "vex": "/api/theben/vex",
+            },
+        },
+        "rest_api_calls": [
+            {
+                "name": "Extract SBOM through product-layer",
+                "method": "POST",
+                "url": "/api/theben-layer/sbom-extract",
+                "curl": (
+                    "curl -X POST -H 'Content-Type: application/json' "
+                    f"-d '{json.dumps(sample_payload, separators=(',', ':'))}' "
+                    f"{local_product_base}/api/theben-layer/sbom-extract"
+                ),
+            },
+            {
+                "name": "Extract directly against theben-layer",
+                "method": "POST",
+                "url": "/api/theben/extract",
+                "curl": (
+                    "curl -X POST -H 'Content-Type: application/json' "
+                    "-d '{\"use_fixtures\":false}' "
+                    f"{theben_base}/api/theben/extract"
+                ),
+            },
+            {
+                "name": "List extracted CycloneDX SBOM artifacts",
+                "method": "GET",
+                "url": "/api/theben/sbom",
+                "curl": f"curl {theben_base}/api/theben/sbom",
+            },
+            {
+                "name": "Generate CVE export for selected product",
+                "method": "POST",
+                "url": "/api/theben-layer/security-export",
+                "curl": (
+                    "curl -X POST -H 'Content-Type: application/json' "
+                    f"-d '{{\"product_id\":\"{sample_product_id}\",\"artifact_type\":\"cve\",\"use_fixtures\":false}}' "
+                    f"{local_product_base}/api/theben-layer/security-export"
+                ),
+            },
+            {
+                "name": "Generate OpenVEX export for selected product",
+                "method": "POST",
+                "url": "/api/theben-layer/security-export",
+                "curl": (
+                    "curl -X POST -H 'Content-Type: application/json' "
+                    f"-d '{{\"product_id\":\"{sample_product_id}\",\"artifact_type\":\"vex\",\"use_fixtures\":false}}' "
+                    f"{local_product_base}/api/theben-layer/security-export"
                 ),
             },
         ],
@@ -1795,6 +1916,178 @@ def run_avatar_layer_assessment(store: "ProductStore", body: dict[str, Any], use
         response.get("severity"),
     )
     return response
+
+
+def run_theben_layer_sbom_extract(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
+    config = theben_layer_config()
+    if not config["enabled"]:
+        raise ValueError("theben-layer integration is disabled")
+    product_id = str(body.get("product_id") or body.get("id") or "").strip()
+    product = store.get_product(product_id, user) if product_id else None
+    if not product and isinstance(body.get("product"), dict):
+        product = body["product"]
+    if product_id and not product:
+        raise ValueError("selected product was not found or is not visible for the caller")
+
+    extract_url = join_url(config["base_url"], "/api/theben/extract")
+    sbom_url = join_url(config["base_url"], "/api/theben/sbom")
+    validate_integration_url(extract_url, config["allowed_hosts"], "theben-layer")
+    payload = {
+        "use_fixtures": bool(body.get("use_fixtures", False)),
+        "request_context": {
+            "caller_role": str(user.get("role") or "viewer"),
+            "caller_region": str(user.get("region") or "EU"),
+            "caller_purpose": str(user.get("purpose") or "analytics"),
+            "proxy_authorization_model": "product-layer selected product context with theben-layer extraction ownership",
+        },
+    }
+    if product:
+        payload["selected_product"] = {
+            "id": product.get("id"),
+            "sku": product.get("sku"),
+            "name": product.get("name"),
+            "family": product.get("family"),
+            "metadata": product.get("metadata") or {},
+        }
+    logger.info("THEBEN: proxying SBOM extract for product %s to %s", product_id or "all", extract_url)
+    extraction = fetch_json_url(
+        extract_url,
+        config["timeout_seconds"],
+        method="POST",
+        payload=payload,
+        service_name="theben-layer",
+    )
+    sbom = fetch_json_url(
+        sbom_url,
+        config["timeout_seconds"],
+        method="GET",
+        service_name="theben-layer",
+    )
+    artifacts = extraction.get("artifacts") or {}
+    report_id = artifacts.get("report_id") or (extraction.get("report") or {}).get("report_id")
+    result = {
+        "status": extraction.get("status", "ok"),
+        "product_id": product_id or None,
+        "report_id": report_id,
+        "report": {
+            "json_url": f"{config['local_base_url']}/api/theben/reports/{report_id}" if report_id else None,
+            "preview_url": f"{config['local_base_url']}/api/theben/reports/{report_id}/preview" if report_id else None,
+            "pdf_url": f"{config['local_base_url']}/api/theben/reports/{report_id}/pdf" if report_id else None,
+        },
+        "sbom_artifacts": public_theben_artifacts(config, sbom.get("sbom_artifacts", [])),
+        "cve_artifacts": public_theben_artifacts(config, sbom.get("cve_artifacts", [])),
+        "vex_artifacts": public_theben_artifacts(config, sbom.get("vex_artifacts", [])),
+        "openvex_artifacts": public_theben_artifacts(config, sbom.get("openvex_artifacts", [])),
+        "discovery": (extraction.get("report") or {}).get("discovery", []),
+        "integration": {
+            "source": "product-layer-theben-layer-proxy",
+            "contract": config["contract"],
+            "source_layer": config["source_layer"],
+            "target_layer": config["target_layer"],
+            "write_policy": config["write_policy"],
+        },
+    }
+    logger.info(
+        "THEBEN: SBOM extract completed for product %s report=%s sbom_artifacts=%d",
+        product_id or "all",
+        report_id,
+        len(result["sbom_artifacts"]),
+    )
+    return result
+
+
+def public_theben_artifacts(config: dict[str, Any], items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    result_items = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        cloned = dict(item)
+        url = str(cloned.get("url") or "")
+        if url.startswith("/"):
+            cloned["url"] = f"{config['local_base_url']}{url}"
+        result_items.append(cloned)
+    return result_items
+
+
+def selected_product_context(product: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": product.get("id"),
+        "sku": product.get("sku"),
+        "name": product.get("name"),
+        "family": product.get("family"),
+        "attributes": product.get("attributes") or {},
+        "metadata": product.get("metadata") or {},
+    }
+
+
+def run_theben_layer_security_export(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
+    config = theben_layer_config()
+    if not config["enabled"]:
+        raise ValueError("theben-layer integration is disabled")
+    product_id = str(body.get("product_id") or body.get("id") or "").strip()
+    product = store.get_product(product_id, user) if product_id else None
+    if not product and isinstance(body.get("product"), dict):
+        product = body["product"]
+    if not product:
+        raise ValueError("product_id or product object required")
+    artifact_type = str(body.get("artifact_type") or "both").strip().lower()
+    if artifact_type not in {"both", "cve", "vex"}:
+        raise ValueError("artifact_type must be one of: both, cve, vex")
+    export_url = join_url(config["base_url"], "/api/theben/security-export")
+    listing_url = join_url(config["base_url"], "/api/theben/sbom")
+    validate_integration_url(export_url, config["allowed_hosts"], "theben-layer")
+    payload = {
+        "artifact_type": artifact_type,
+        "use_fixtures": bool(body.get("use_fixtures", False)),
+        "selected_product": selected_product_context(product),
+        "request_context": {
+            "caller_role": str(user.get("role") or "viewer"),
+            "caller_region": str(user.get("region") or "EU"),
+            "caller_purpose": str(user.get("purpose") or "analytics"),
+            "proxy_authorization_model": "product-layer selected product context with theben-layer security export ownership",
+        },
+    }
+    logger.info("THEBEN: proxying %s export for product %s to %s", artifact_type, product_id or product.get("id"), export_url)
+    export = fetch_json_url(
+        export_url,
+        config["timeout_seconds"],
+        method="POST",
+        payload=payload,
+        service_name="theben-layer",
+    )
+    listing = fetch_json_url(
+        listing_url,
+        config["timeout_seconds"],
+        method="GET",
+        service_name="theben-layer",
+    )
+    result = {
+        "status": export.get("status", "ok"),
+        "product_id": product_id or product.get("id"),
+        "artifact_type": artifact_type,
+        "export_id": (export.get("artifacts") or {}).get("export_id") or (export.get("export") or {}).get("export_id"),
+        "security_export": export.get("export", {}),
+        "sbom_artifacts": public_theben_artifacts(config, listing.get("sbom_artifacts", [])),
+        "cve_artifacts": public_theben_artifacts(config, listing.get("cve_artifacts", [])),
+        "vex_artifacts": public_theben_artifacts(config, listing.get("vex_artifacts", [])),
+        "openvex_artifacts": public_theben_artifacts(config, listing.get("openvex_artifacts", [])),
+        "discovery": (export.get("export") or {}).get("discovery", []),
+        "integration": {
+            "source": "product-layer-theben-layer-security-export-proxy",
+            "contract": config["contract"],
+            "source_layer": config["source_layer"],
+            "target_layer": config["target_layer"],
+            "write_policy": config["write_policy"],
+        },
+    }
+    logger.info(
+        "THEBEN: %s export completed for product %s cve_artifacts=%d openvex_artifacts=%d",
+        artifact_type,
+        product_id or product.get("id"),
+        len(result["cve_artifacts"]),
+        len(result["openvex_artifacts"]),
+    )
+    return result
 
 
 def record_avatar_user_action(store: "ProductStore", body: dict[str, Any], user: dict[str, Any]) -> dict[str, Any]:
@@ -2133,10 +2426,13 @@ def openapi_spec(host: str) -> dict[str, Any]:
             "/api/integrations/data-layer": {"get": {"summary": "Describe the configured data-layer interface contract"}},
             "/api/integrations/agents-layer": {"get": {"summary": "Describe the configured agents-layer advisory interface contract"}},
             "/api/integrations/avatar-layer": {"get": {"summary": "Describe the configured avatar-layer speech and presentation interface contract"}},
+            "/api/integrations/theben-layer": {"get": {"summary": "Describe the configured Theben corporate reporting and SBOM extraction interface"}},
             "/api/agents-layer/agents": {"get": {"summary": "List callable compliance and expert agents"}},
             "/api/agents-layer/assessments": {"post": {"summary": "Run an advisory agents-layer assessment for a selected product"}},
             "/api/avatar-layer/assessments": {"post": {"summary": "Render an advisory assessment through the avatar-layer"}},
             "/api/avatar-layer/events": {"post": {"summary": "Record avatar UI speech and session actions for audit"}},
+            "/api/theben-layer/sbom-extract": {"post": {"summary": "Extract proprietary REST SBOM, VEX, and Theben report artifacts through the Theben layer"}},
+            "/api/theben-layer/security-export": {"post": {"summary": "Generate selected-product CVE and OpenVEX exports through the Theben layer"}},
             "/api/data-product": {"get": {"summary": "Describe the governed product data product, interfaces, and caller access"}},
             "/api/catalog/data-products": {"get": {"summary": "List governed product-layer data products and metadata requirements"}},
             "/api/lineage": {"get": {"summary": "Describe lakehouse layer lineage for the product data product"}},
@@ -2222,6 +2518,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.send_json(agents_layer_contract(self.headers.get("Host", "localhost")))
         if path == "/api/integrations/avatar-layer":
             return self.send_json(avatar_layer_contract(self.headers.get("Host", "localhost")))
+        if path == "/api/integrations/theben-layer":
+            return self.send_json(theben_layer_contract(self.headers.get("Host", "localhost")))
         if path == "/api/agents-layer/agents":
             return self.send_json({**agents_layer_catalog(), "integration": agents_layer_contract(self.headers.get("Host", "localhost"))})
         if path == "/api/sync/data-layer":
@@ -2495,6 +2793,55 @@ class Handler(SimpleHTTPRequestHandler):
             except ValueError as exc:
                 return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
             return self.send_json({"event": event}, HTTPStatus.CREATED)
+        if parsed.path == "/api/theben-layer/sbom-extract":
+            try:
+                payload = self.read_json()
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+            try:
+                result = run_theben_layer_sbom_extract(self.store, payload, user)
+            except ValueError as exc:
+                logger.warning("THEBEN: SBOM extract failed: %s", exc)
+                return self.send_error_json(HTTPStatus.BAD_GATEWAY, f"theben-layer SBOM extract failed: {exc}")
+            self.store.record_audit(
+                action="theben_layer_sbom_extract",
+                product_id=result.get("product_id") or payload.get("product_id") or "bulk-theben-extract",
+                role=user.get("role", "viewer"),
+                actor=user.get("actor"),
+                view="artifact_extraction",
+                channel="api",
+                details={
+                    "report_id": result.get("report_id"),
+                    "sbom_artifacts": len(result.get("sbom_artifacts") or []),
+                    "vex_artifacts": len(result.get("vex_artifacts") or []),
+                },
+            )
+            return self.send_json(result, HTTPStatus.CREATED)
+        if parsed.path == "/api/theben-layer/security-export":
+            try:
+                payload = self.read_json()
+            except ValueError as exc:
+                return self.send_error_json(HTTPStatus.BAD_REQUEST, str(exc))
+            try:
+                result = run_theben_layer_security_export(self.store, payload, user)
+            except ValueError as exc:
+                logger.warning("THEBEN: security export failed: %s", exc)
+                return self.send_error_json(HTTPStatus.BAD_GATEWAY, f"theben-layer security export failed: {exc}")
+            self.store.record_audit(
+                action="theben_layer_security_export",
+                product_id=result.get("product_id") or payload.get("product_id") or "theben-security-export",
+                role=user.get("role", "viewer"),
+                actor=user.get("actor"),
+                view="artifact_extraction",
+                channel="api",
+                details={
+                    "export_id": result.get("export_id"),
+                    "artifact_type": result.get("artifact_type"),
+                    "cve_artifacts": len(result.get("cve_artifacts") or []),
+                    "openvex_artifacts": len(result.get("openvex_artifacts") or []),
+                },
+            )
+            return self.send_json(result, HTTPStatus.CREATED)
         if parsed.path.startswith("/api/dpp/"):
             return self.update_dpp(parsed.path, user)
         return self.send_error_json(HTTPStatus.NOT_FOUND, "endpoint not found")
@@ -2611,7 +2958,10 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
         self.send_header(
             "Content-Security-Policy",
-            "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'",
+            "default-src 'self'; connect-src 'self'; img-src 'self' data:; "
+            "style-src 'self'; script-src 'self' 'unsafe-inline'; "
+            "frame-src 'self' http://127.0.0.1:8098 http://localhost:8098 http://host.docker.internal:8098; "
+            "base-uri 'none'; frame-ancestors 'none'",
         )
         cors_origin = os.environ.get("THEBEN_CORS_ALLOW_ORIGIN", "").strip()
         if cors_origin:

@@ -16,7 +16,7 @@ from app.core.database import Base, engine
 
 # Import models so Alembic/SQLAlchemy picks them up
 import app.models  # noqa
-from app.api import analyze, export, families, ingest, products, prompts, transparency
+from app.api import analyze, export, families, ingest, legacy_theben, products, prompts, transparency
 
 
 @asynccontextmanager
@@ -76,6 +76,7 @@ def lakehouse_health():
 app.include_router(families.router, prefix=settings.API_PREFIX)
 app.include_router(products.router, prefix=settings.API_PREFIX)
 app.include_router(ingest.router, prefix=settings.API_PREFIX)
+app.include_router(legacy_theben.router, prefix=settings.API_PREFIX)
 app.include_router(analyze.router, prefix=settings.API_PREFIX)
 app.include_router(export.router, prefix=settings.API_PREFIX)
 app.include_router(prompts.router, prefix=settings.API_PREFIX)

@@ -36,7 +36,10 @@ from app.app import (
     row_allowed,
     run_avatar_layer_assessment,
     run_agents_layer_assessment,
+    run_theben_layer_sbom_extract,
+    run_theben_layer_security_export,
     sync_from_data_layer,
+    theben_layer_contract,
     validate_product,
 )
 
@@ -319,6 +322,17 @@ class ProductLayerTests(unittest.TestCase):
         self.assertIn("/api/avatar-layer/assessments", calls["Run avatar assessment through product-layer"])
         self.assertIn("/api/avatar/assess", calls["Run avatar assessment directly against avatar-layer"])
 
+    def test_theben_layer_contract_exposes_sbom_extract_calls(self):
+        contract = theben_layer_contract("127.0.0.1:8080")
+        self.assertEqual(contract["source_layer"], "curated_product_context")
+        self.assertEqual(contract["target_layer"], "theben_corporate_reporting_layer")
+        self.assertEqual(contract["interfaces"]["product_layer_proxy"]["sbom_extract"], "/api/theben-layer/sbom-extract")
+        calls = {call["name"]: call["curl"] for call in contract["rest_api_calls"]}
+        self.assertIn("/api/theben-layer/sbom-extract", calls["Extract SBOM through product-layer"])
+        self.assertIn("/api/theben/sbom", calls["List extracted CycloneDX SBOM artifacts"])
+        self.assertIn("/api/theben-layer/security-export", calls["Generate CVE export for selected product"])
+        self.assertIn('"artifact_type":"vex"', calls["Generate OpenVEX export for selected product"])
+
     def test_agents_layer_assessment_payload_carries_product_and_evidence_context(self):
         product = generate_products(1)[0]
         payload = build_agents_layer_assessment_payload(
@@ -401,6 +415,62 @@ class ProductLayerTests(unittest.TestCase):
         self.assertEqual(headers["X-Delegated-Role"], "viewer")
         self.assertEqual(payload["request_context"]["caller_role"], "viewer")
         self.assertEqual(payload["request_context"]["proxy_authorization_model"], "product-layer service role with delegated caller context")
+
+    def test_theben_layer_sbom_extract_proxy_returns_report_and_artifact_links(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            extraction = {
+                "status": "ok",
+                "artifacts": {"report_id": "theben-report-test"},
+                "report": {"discovery": [{"method": "GET", "path": "/products/sbom", "status": 200}]},
+            }
+            artifacts = {
+                "sbom_artifacts": [{"filename": "7654126.cyclonedx.json", "url": "/api/theben/sbom/7654126.cyclonedx.json"}],
+                "vex_artifacts": [{"filename": "7654126.vex.json", "url": "/api/theben/vex/7654126.vex.json"}],
+            }
+            with patch("app.app.fetch_json_url", side_effect=[extraction, artifacts]) as fetch:
+                result = run_theben_layer_sbom_extract(
+                    store,
+                    {"product_id": product["id"], "use_fixtures": False},
+                    {"role": "viewer", "region": "EU", "purpose": "analytics"},
+                )
+        self.assertEqual(result["integration"]["contract"], "product-layer-theben-sbom-extract-v1")
+        self.assertEqual(result["report"]["preview_url"], "http://127.0.0.1:8098/api/theben/reports/theben-report-test/preview")
+        self.assertTrue(result["sbom_artifacts"][0]["url"].startswith("http://127.0.0.1:8098/api/theben/sbom/"))
+        payload = fetch.call_args_list[0].kwargs["payload"]
+        self.assertEqual(payload["selected_product"]["id"], product["id"])
+        self.assertEqual(payload["request_context"]["proxy_authorization_model"], "product-layer selected product context with theben-layer extraction ownership")
+
+    def test_theben_layer_security_export_proxy_returns_cve_and_openvex_links(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = ProductStore(Path(tmp) / "products.json")
+            product = store.get_raw_product("thb-tim-0001")
+            export = {
+                "status": "ok",
+                "artifacts": {"export_id": "theben-security-export-test"},
+                "export": {"export_id": "theben-security-export-test", "discovery": []},
+            }
+            artifacts = {
+                "sbom_artifacts": [{"filename": "7654126.cyclonedx.json", "url": "/api/theben/sbom/7654126.cyclonedx.json"}],
+                "cve_artifacts": [{"filename": "7654126.cve.json", "url": "/api/theben/cve/7654126.cve.json"}],
+                "vex_artifacts": [{"filename": "7654126.openvex.json", "url": "/api/theben/vex/7654126.openvex.json"}],
+                "openvex_artifacts": [{"filename": "7654126.openvex.json", "url": "/api/theben/vex/7654126.openvex.json"}],
+            }
+            with patch("app.app.fetch_json_url", side_effect=[export, artifacts]) as fetch:
+                result = run_theben_layer_security_export(
+                    store,
+                    {"product_id": product["id"], "artifact_type": "vex", "use_fixtures": False},
+                    {"role": "viewer", "region": "EU", "purpose": "analytics"},
+                )
+        self.assertEqual(result["integration"]["source"], "product-layer-theben-layer-security-export-proxy")
+        self.assertEqual(result["artifact_type"], "vex")
+        self.assertTrue(result["cve_artifacts"][0]["url"].startswith("http://127.0.0.1:8098/api/theben/cve/"))
+        self.assertTrue(result["openvex_artifacts"][0]["url"].startswith("http://127.0.0.1:8098/api/theben/vex/"))
+        payload = fetch.call_args_list[0].kwargs["payload"]
+        self.assertEqual(payload["artifact_type"], "vex")
+        self.assertEqual(payload["selected_product"]["id"], product["id"])
+        self.assertIn("attributes", payload["selected_product"])
 
     def test_avatar_ui_action_is_audited(self):
         with tempfile.TemporaryDirectory() as tmp:

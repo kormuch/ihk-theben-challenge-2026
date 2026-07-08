@@ -115,6 +115,9 @@ services:
       DATA_LAYER_LLM_CONFIG: ${DATA_LAYER_LLM_CONFIG:-/config/llm_agents.json}
       DATA_LAYER_LLM_CHAIN: ${DATA_LAYER_LLM_CHAIN:-local_ollama_lan}
       DATA_LAYER_OLLAMA_BASE_URL: ${DATA_LAYER_OLLAMA_BASE_URL:-http://192.168.178.60:11434}
+      THEBEN_LEGACY_BASE_URL: ${THEBEN_LEGACY_BASE_URL:-http://192.168.8.200:8000}
+      NO_PROXY: ${NO_PROXY:-localhost,127.0.0.1,host.docker.internal,192.168.8.200,192.168.0.0/16,10.0.0.0/8}
+      no_proxy: ${no_proxy:-localhost,127.0.0.1,host.docker.internal,192.168.8.200,192.168.0.0/16,10.0.0.0/8}
       TRINO_HOST: trino
       TRINO_PORT: "8080"
       TRINO_CATALOG: iceberg

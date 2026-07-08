@@ -1,0 +1,16 @@
+services:
+  theben-layer:
+    build: .
+    container_name: thebenpaul-theben-layer
+    environment:
+      PORT: 8098
+      THEBEN_LEGACY_BASE_URL: ${THEBEN_LEGACY_BASE_URL:-http://192.168.8.200:8000}
+      THEBEN_LAYER_CONFIG: /app/config/runtime.json
+      THEBEN_LAYER_DATA_DIR: /app/data
+      THEBEN_LOGO_PATH: /app/assets/logo_theben.jpg
+    ports:
+      - "8098:8098"
+    volumes:
+      - ./config:/app/config:ro
+      - ./assets:/app/assets:ro
+      - ./data:/app/data

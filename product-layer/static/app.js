@@ -256,8 +256,18 @@ function renderDetail(product, passport) {
       <tr><th>Documents</th><td>${documents.map((d) => escapeHtml(d.name)).join("<br>")}</td></tr>
     </table>
     </section>
+    <section class="detail-section">
+      <h3>Theben REST artifacts</h3>
+      <div id="thebenArtifactResult" class="theben-artifact-result">
+        <p class="muted">Use PDF or SBOM Extract to call the Theben layer for proprietary REST report, SBOM, and VEX artifacts.</p>
+      </div>
+    </section>
   `;
   $("saveAttrs").addEventListener("click", saveAttributes);
+  $("pdfExport").onclick = () => runThebenSbomExtract("pdf");
+  $("sbomExtract").onclick = () => runThebenSbomExtract("sbom");
+  $("cveExport").onclick = () => runThebenSecurityExport("cve");
+  $("vexExport").onclick = () => runThebenSecurityExport("vex");
   document.querySelectorAll("[data-history-attr]").forEach((button) => {
     button.addEventListener("click", () => showAttributeHistory(product, button.dataset.historyAttr));
   });
@@ -416,6 +426,119 @@ async function syncDataLayer() {
   } catch (error) {
     $("importResult").textContent = error.message;
   }
+}
+
+async function runThebenSbomExtract(openTarget = "sbom") {
+  if (!state.selected) {
+    alert("Select a product first.");
+    return;
+  }
+  const target = $("thebenArtifactResult");
+  if (target) {
+    target.innerHTML = `<p class="muted">Extracting SBOM from proprietary REST access points...</p>`;
+  }
+  try {
+    const data = await api("/api/theben-layer/sbom-extract", {
+      method: "POST",
+      contentType: "application/json",
+      timeoutMs: 30000,
+      body: JSON.stringify({ product_id: state.selected, use_fixtures: false }),
+    });
+    renderThebenArtifacts(data);
+    if (openTarget === "pdf" && data.report?.pdf_url) {
+      window.open(data.report.pdf_url, "_blank", "noopener");
+    }
+  } catch (error) {
+    if (target) {
+      target.innerHTML = `<p class="badge bad">${escapeHtml(error.message)}</p>`;
+    } else {
+      alert(error.message);
+    }
+  }
+}
+
+async function runThebenSecurityExport(artifactType) {
+  if (!state.selected) {
+    alert("Select a product first.");
+    return;
+  }
+  const target = $("thebenArtifactResult");
+  const label = artifactType === "cve" ? "CVE" : "OpenVEX";
+  if (target) {
+    target.innerHTML = `<p class="muted">Generating ${escapeHtml(label)} export for selected product...</p>`;
+  }
+  try {
+    const data = await api("/api/theben-layer/security-export", {
+      method: "POST",
+      contentType: "application/json",
+      timeoutMs: 30000,
+      body: JSON.stringify({ product_id: state.selected, artifact_type: artifactType, use_fixtures: false }),
+    });
+    renderThebenArtifacts(data);
+  } catch (error) {
+    if (target) {
+      target.innerHTML = `<p class="badge bad">${escapeHtml(error.message)}</p>`;
+    } else {
+      alert(error.message);
+    }
+  }
+}
+
+function renderThebenArtifacts(data) {
+  const target = $("thebenArtifactResult");
+  if (!target) return;
+  const report = data.report || {};
+  const sboms = data.sbom_artifacts || [];
+  const cves = data.cve_artifacts || [];
+  const vex = data.vex_artifacts || [];
+  const openvex = data.openvex_artifacts || [];
+  const discoveries = data.discovery || [];
+  target.innerHTML = `
+    <div class="assessment-summary">
+      <span class="badge ok">${escapeHtml(data.status || "ok")}</span>
+      <span>${escapeHtml(data.report_id ? `Report ${data.report_id}` : data.export_id ? `Export ${data.export_id}` : "Artifact created")}</span>
+      <span>${escapeHtml(String(sboms.length))} SBOM</span>
+      <span>${escapeHtml(String(cves.length))} CVE</span>
+      <span>${escapeHtml(String(openvex.length))} OpenVEX</span>
+      <span>${escapeHtml(String(vex.length))} VEX</span>
+    </div>
+    <div class="actions">
+      ${report.preview_url ? `<a href="${escapeHtml(report.preview_url)}" target="_blank" rel="noopener">Preview</a>` : ""}
+      ${report.pdf_url ? `<a href="${escapeHtml(report.pdf_url)}" target="_blank" rel="noopener">PDF</a>` : ""}
+      ${report.json_url ? `<a href="${escapeHtml(report.json_url)}" target="_blank" rel="noopener">Report JSON</a>` : ""}
+    </div>
+    ${report.preview_url ? `<iframe class="theben-report-preview" src="${escapeHtml(report.preview_url)}" title="Theben report preview"></iframe>` : ""}
+    <div class="artifact-grid">
+      <div>
+        <strong>CycloneDX SBOM artifacts</strong>
+        <ul>${sboms.map((item) => artifactLink(item)).join("") || "<li>none generated</li>"}</ul>
+      </div>
+      <div>
+        <strong>CVE artifacts</strong>
+        <ul>${cves.map((item) => artifactLink(item)).join("") || "<li>none generated</li>"}</ul>
+      </div>
+      <div>
+        <strong>OpenVEX artifacts</strong>
+        <ul>${openvex.map((item) => artifactLink(item)).join("") || "<li>none generated</li>"}</ul>
+      </div>
+      <div>
+        <strong>All VEX artifacts</strong>
+        <ul>${vex.map((item) => artifactLink(item)).join("") || "<li>none generated</li>"}</ul>
+      </div>
+      <div>
+        <strong>REST discovery</strong>
+        <ul>${discoveries.map((item) => `<li>${escapeHtml(item.method || "GET")} ${escapeHtml(item.path || "")}: ${escapeHtml(item.status ?? "unknown")}</li>`).join("") || "<li>not returned</li>"}</ul>
+      </div>
+    </div>
+    <p class="muted">${escapeHtml(data.integration?.write_policy || "")}</p>
+  `;
+}
+
+function artifactLink(item) {
+  const href = item.url || "#";
+  const label = item.filename || href;
+  const size = item.size_bytes ? ` (${Math.round(item.size_bytes / 1024)} KB)` : "";
+  return `<li><a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>${escapeHtml(size)}</li>`;
 }
 
 async function runValidation() {

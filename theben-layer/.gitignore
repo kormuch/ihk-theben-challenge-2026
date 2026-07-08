@@ -1,0 +1,8 @@
+data/reports/*
+!data/reports/.gitkeep
+data/sbom/*
+!data/sbom/.gitkeep
+data/vex/*
+!data/vex/.gitkeep
+__pycache__/
+*.pyc

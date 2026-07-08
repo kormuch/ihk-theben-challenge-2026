@@ -52,6 +52,18 @@
     "role_token_env": "THEBEN_AVATAR_LAYER_ROLE_TOKEN",
     "write_policy": "presentation and spoken advisory output only; no product, DPP, agent, or evidence mutation"
   },
+  "theben_layer": {
+    "enabled": true,
+    "base_url": "http://host.docker.internal:8098",
+    "local_base_url": "http://127.0.0.1:8098",
+    "timeout_seconds": 20,
+    "allowed_hosts": ["127.0.0.1", "localhost", "host.docker.internal", "theben-layer"],
+    "contract": "product-layer-theben-sbom-extract-v1",
+    "mode": "proprietary-rest-artifact-extraction",
+    "source_layer": "curated_product_context",
+    "target_layer": "theben_corporate_reporting_layer",
+    "write_policy": "theben-layer owns REST extraction, SBOM/VEX artifacts, and branded PDF output; product-layer only proxies selected product context and displays links"
+  },
   "ollama": {
     "base_url": "http://192.168.178.60:11434",
     "alternative_base_urls": [

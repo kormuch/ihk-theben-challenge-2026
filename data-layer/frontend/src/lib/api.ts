@@ -110,6 +110,35 @@ export const exportApi = {
   productsJson: () => request<{ schema_version: string; generated_at: string; products: any[] }>('/export/products.json'),
 };
 
+// ── Legacy Theben REST import ─────────────────────────────────────────────
+
+export const legacyTheben = {
+  importProducts: (baseUrl?: string) =>
+    request<{
+      status: string;
+      source: string;
+      created: string[];
+      updated: string[];
+      skipped: { reason: string; row: string }[];
+      count: number;
+    }>('/legacy-theben/import-products', {
+      method: 'POST',
+      body: JSON.stringify({ base_url: baseUrl || undefined }),
+    }),
+  importBundledProducts: () =>
+    request<{
+      status: string;
+      source: string;
+      created: string[];
+      updated: string[];
+      skipped: { reason: string; row: string }[];
+      count: number;
+    }>('/legacy-theben/import-bundled-products', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+};
+
 // ── Analyze (AI) ──────────────────────────────────────────────────────────
 
 export interface AnalyzeResult {

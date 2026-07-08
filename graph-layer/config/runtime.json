@@ -1,0 +1,35 @@
+{
+  "service": "graph-layer",
+  "schema_version": "0.1.0",
+  "root_classifier": "product_number",
+  "neo4j_enabled": true,
+  "neo4j_uri": "bolt://localhost:7687",
+  "neo4j_username": "neo4j",
+  "neo4j_password": "thebenpaul",
+  "neo4j_database": "neo4j",
+  "data_layer_export_url": "http://host.docker.internal:8000/api/v1/export/products.json",
+  "governance": {
+    "owner": "Product Data Domain",
+    "domain": "product",
+    "classification": "internal",
+    "lineage": "data-layer export -> graph-layer sync -> neo4j product knowledge graph",
+    "access_model": "read-oriented API; write operations limited to sync endpoints",
+    "certification": "derived from curated data-layer/product-layer product data products"
+  },
+  "graph_model": {
+    "root_node": "Product",
+    "root_key": "product_number",
+    "identity_precedence": ["article_number", "sku", "product_number", "id"],
+    "nodes": [
+      "Product",
+      "ProductFamily",
+      "GTIN",
+      "Batch",
+      "ProductInstance",
+      "ProductAttribute",
+      "Certification",
+      "SourceDocument",
+      "MetadataField"
+    ]
+  }
+}

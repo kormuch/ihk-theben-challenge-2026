@@ -1,0 +1,75 @@
+{
+  "products": [
+    {
+      "articleNumber": "VC-2025-001",
+      "name": "Vacuum Cleaner Pro",
+      "category": "Household"
+    },
+    {
+      "articleNumber": "CM-2025-017",
+      "name": "Coffee Machine Deluxe",
+      "category": "Household"
+    }
+  ],
+  "boms": {
+    "VC-2025-001": {
+      "articleNumber": "VC-2025-001",
+      "bom": [
+        {"partNumber": "MTR-001", "description": "Motor assembly", "quantity": 1, "supplier": "Motors GmbH"},
+        {"partNumber": "PCB-123", "description": "Main control board", "quantity": 1, "supplier": "ElectroTech"},
+        {"partNumber": "FW-VC-01", "description": "Vacuum firmware package", "quantity": 1, "supplier": "Theben Embedded"}
+      ]
+    },
+    "CM-2025-017": {
+      "articleNumber": "CM-2025-017",
+      "bom": [
+        {"partNumber": "HEAT-017", "description": "Heating module", "quantity": 1, "supplier": "ThermoParts AG"},
+        {"partNumber": "PCB-217", "description": "Coffee controller board", "quantity": 1, "supplier": "ElectroTech"},
+        {"partNumber": "FW-CM-02", "description": "Coffee firmware package", "quantity": 1, "supplier": "Theben Embedded"}
+      ]
+    }
+  },
+  "certificates": {
+    "VC-2025-001": {
+      "articleNumber": "VC-2025-001",
+      "certificateType": "EU Declaration of Conformity",
+      "certificateId": "CE-VC-2025-001-2024",
+      "issueDate": "2024-06-15",
+      "validUntil": "2029-06-14",
+      "directives": ["2014/35/EU (Low Voltage Directive)", "2014/30/EU (EMC Directive)", "2011/65/EU (RoHS)"],
+      "documentUrl": "file:///certs/VC-2025-001_CE.pdf"
+    },
+    "CM-2025-017": {
+      "articleNumber": "CM-2025-017",
+      "certificateType": "EU Declaration of Conformity",
+      "certificateId": "CE-CM-2025-017-2024",
+      "issueDate": "2024-04-21",
+      "validUntil": "2029-04-20",
+      "directives": ["2014/35/EU (Low Voltage Directive)", "2014/30/EU (EMC Directive)", "2011/65/EU (RoHS)", "2009/125/EC (Ecodesign)"],
+      "documentUrl": "file:///certs/CM-2025-017_CE.pdf"
+    }
+  },
+  "sboms": {
+    "VC-2025-001": {
+      "components": [
+        {"type": "library", "name": "FreeRTOS", "version": "10.5.1", "supplier": "Amazon Web Services", "purl": "pkg:generic/freertos@10.5.1", "licenses": [{"license": {"id": "MIT"}}]},
+        {"type": "library", "name": "mbedTLS", "version": "2.28.7", "supplier": "TrustedFirmware", "purl": "pkg:generic/mbedtls@2.28.7", "licenses": [{"license": {"id": "Apache-2.0"}}]}
+      ]
+    },
+    "CM-2025-017": {
+      "components": [
+        {"type": "library", "name": "Zephyr", "version": "3.6.0", "supplier": "Linux Foundation", "purl": "pkg:generic/zephyr@3.6.0", "licenses": [{"license": {"id": "Apache-2.0"}}]},
+        {"type": "library", "name": "tinycrypt", "version": "0.2.8", "supplier": "Intel", "purl": "pkg:generic/tinycrypt@0.2.8", "licenses": [{"license": {"id": "BSD-3-Clause"}}]}
+      ]
+    }
+  },
+  "vulnerabilities": {
+    "VC-2025-001": [
+      {"cve": "CVE-2024-0001", "title": "Example TLS parsing issue", "severity": "medium", "status": "not_affected", "justification": "Vulnerable parser feature is not compiled into the shipped firmware."}
+    ],
+    "CM-2025-017": [
+      {"cve": "CVE-2024-0002", "title": "Example RTOS scheduler issue", "severity": "high", "status": "fixed", "justification": "Patched firmware baseline is used in release CM-2025-017."},
+      {"cve": "CVE-2024-0003", "title": "Example crypto configuration issue", "severity": "low", "status": "under_investigation", "justification": "Awaiting supplier confirmation."}
+    ]
+  }
+}
