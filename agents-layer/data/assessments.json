@@ -10903,5 +10903,71 @@
       "mempalace_summary_ready": true,
       "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
     }
+  },
+  {
+    "advisory_only": true,
+    "assessment_id": "assessment-3b1fab56dc73",
+    "created_at": "2026-07-08T06:37:44Z",
+    "findings": [
+      {
+        "agent_id": "expert-aftermarket-service",
+        "agent_name": "Aftermarket Service Expert",
+        "assumptions": [],
+        "criterion": "Aftermarket readiness requires spare parts or repair instruction evidence.",
+        "finding_id": "finding-1ab81d582b6c",
+        "layer": "expert-agents-layer",
+        "missing_evidence": [
+          "spare_parts_list",
+          "repair_instruction"
+        ],
+        "missing_product_fields": [],
+        "recommended_action": "Request spare parts list and repair instructions for lifecycle support.",
+        "rule_id": "RULE-SERVICE-001",
+        "rule_version": "0.1.0",
+        "severity": "medium",
+        "standard_refs": [
+          "service lifecycle support"
+        ],
+        "status": "needs_review",
+        "traceability": {
+          "agent_version": "0.1.0",
+          "assessment_timestamp": "2026-07-08T06:37:44Z",
+          "date_placing_on_market": "2026-07-08",
+          "evidence_refs": [],
+          "human_review_state": "pending",
+          "product_family": "Unsorted",
+          "product_id": "0750001",
+          "rule_ref": "RULE-SERVICE-001",
+          "source_layers": [
+            "product-layer",
+            "data-layer"
+          ],
+          "target_market": "EU"
+        }
+      }
+    ],
+    "human_signoff_required": true,
+    "product_context": {
+      "date_placing_on_market": "2026-07-08",
+      "lifecycle_state": "active",
+      "product_family": "Unsorted",
+      "product_id": "0750001",
+      "requested_agent_ids": [
+        "expert-aftermarket-service"
+      ],
+      "target_market": "EU"
+    },
+    "readiness": {
+      "blocking_or_high_risk_checks": 0,
+      "failed_checks": 1,
+      "score": 90,
+      "status": "review_required"
+    },
+    "schema_version": "0.1.0",
+    "workflow_feedback": {
+      "data_layer_write_policy": "raw evidence is not mutated; missing evidence is routed as a finding",
+      "mempalace_summary_ready": true,
+      "product_layer_write_policy": "advisory output only; product master and DPP updates require human review"
+    }
   }
 ]

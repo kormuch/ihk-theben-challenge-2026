@@ -89,6 +89,8 @@ Starts all services (data-layer, product-layer, lakehouse infrastructure, OpenMe
 | PAUL UI | http://localhost:3000 | AI Ingest, Products, Families |
 | PAUL API | http://localhost:8000/docs | FastAPI Swagger docs |
 | Product Layer | http://localhost:8080 | Governance, DPP preview, exports |
+| Product-Agents Layer | http://localhost:8090 | Product-Experts, Compliance-Agents for relevant Domains like Cyber, EMC, Privacy, etc. |
+| Product-Avatar Layer | http://localhost:8095 | example for UI-Analysis with usage of Product-Agents, Data-layer & bad voice |
 | Trino UI | http://localhost:8082 | SQL query engine for Iceberg |
 | MinIO Console | http://localhost:9001 | Object storage browser (admin/password) |
 | OpenMetadata | http://localhost:8585 | Data catalog & lineage (admin/admin) |
