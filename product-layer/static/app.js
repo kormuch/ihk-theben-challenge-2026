@@ -442,7 +442,7 @@ async function runThebenSbomExtract(openTarget = "sbom") {
       method: "POST",
       contentType: "application/json",
       timeoutMs: 30000,
-      body: JSON.stringify({ product_id: state.selected, use_fixtures: false }),
+      body: JSON.stringify({ product_id: state.selected }),
     });
     renderThebenArtifacts(data);
     if (openTarget === "pdf" && data.report?.pdf_url) {
@@ -472,7 +472,7 @@ async function runThebenSecurityExport(artifactType) {
       method: "POST",
       contentType: "application/json",
       timeoutMs: 30000,
-      body: JSON.stringify({ product_id: state.selected, artifact_type: artifactType, use_fixtures: false }),
+      body: JSON.stringify({ product_id: state.selected, artifact_type: artifactType }),
     });
     renderThebenArtifacts(data);
   } catch (error) {

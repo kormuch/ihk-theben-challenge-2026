@@ -1933,7 +1933,6 @@ def run_theben_layer_sbom_extract(store: "ProductStore", body: dict[str, Any], u
     sbom_url = join_url(config["base_url"], "/api/theben/sbom")
     validate_integration_url(extract_url, config["allowed_hosts"], "theben-layer")
     payload = {
-        "use_fixtures": bool(body.get("use_fixtures", False)),
         "request_context": {
             "caller_role": str(user.get("role") or "viewer"),
             "caller_region": str(user.get("region") or "EU"),
@@ -1941,6 +1940,8 @@ def run_theben_layer_sbom_extract(store: "ProductStore", body: dict[str, Any], u
             "proxy_authorization_model": "product-layer selected product context with theben-layer extraction ownership",
         },
     }
+    if "use_fixtures" in body:
+        payload["use_fixtures"] = bool(body.get("use_fixtures"))
     if product:
         payload["selected_product"] = {
             "id": product.get("id"),
@@ -2038,7 +2039,6 @@ def run_theben_layer_security_export(store: "ProductStore", body: dict[str, Any]
     validate_integration_url(export_url, config["allowed_hosts"], "theben-layer")
     payload = {
         "artifact_type": artifact_type,
-        "use_fixtures": bool(body.get("use_fixtures", False)),
         "selected_product": selected_product_context(product),
         "request_context": {
             "caller_role": str(user.get("role") or "viewer"),
@@ -2047,6 +2047,8 @@ def run_theben_layer_security_export(store: "ProductStore", body: dict[str, Any]
             "proxy_authorization_model": "product-layer selected product context with theben-layer security export ownership",
         },
     }
+    if "use_fixtures" in body:
+        payload["use_fixtures"] = bool(body.get("use_fixtures"))
     logger.info("THEBEN: proxying %s export for product %s to %s", artifact_type, product_id or product.get("id"), export_url)
     export = fetch_json_url(
         export_url,

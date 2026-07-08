@@ -1,5 +1,6 @@
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from app.app import (
     LegacyClient,
@@ -11,6 +12,7 @@ from app.app import (
     collect_report_data,
     create_security_export,
     create_report,
+    collect_security_export_data,
     list_security_artifacts,
     normalize_product,
     select_demo_products,
@@ -81,6 +83,30 @@ class ThebenLayerTests(unittest.TestCase):
         self.assertTrue(pdf_path.exists())
         self.assertGreater(pdf_path.stat().st_size, 1200)
 
+    def test_create_report_tries_live_then_falls_back_when_unreachable(self):
+        report = collect_report_data(LegacyClient("http://example.invalid", use_fixture=True))
+        with patch("app.app.collect_report_data", side_effect=[OSError("connection refused"), report]), patch(
+            "app.app.save_report_artifacts",
+            return_value={"report_id": "fallback-report"},
+        ):
+            result = create_report(use_fixture=None)
+        self.assertTrue(result["report"]["fixture_fallback"])
+        self.assertIn("connection refused", result["report"]["legacy_error"])
+
+    def test_create_report_use_fixture_false_still_allows_configured_fallback(self):
+        report = collect_report_data(LegacyClient("http://example.invalid", use_fixture=True))
+        with patch("app.app.collect_report_data", side_effect=[OSError("connection refused"), report]), patch(
+            "app.app.save_report_artifacts",
+            return_value={"report_id": "fallback-report"},
+        ):
+            result = create_report(use_fixture=False)
+        self.assertTrue(result["report"]["fixture_fallback"])
+
+    def test_create_report_force_live_only_disables_fixture_fallback(self):
+        with patch("app.app.collect_report_data", side_effect=OSError("connection refused")):
+            with self.assertRaises(OSError):
+                create_report(use_fixture=False, force_live_only=True)
+
     def test_security_artifact_listing_exposes_sbom_and_vex_urls(self):
         create_report(use_fixture=True)
         create_security_export(
@@ -97,6 +123,19 @@ class ThebenLayerTests(unittest.TestCase):
         self.assertTrue(listing["cve_artifacts"][0]["url"].startswith("/api/theben/cve/"))
         self.assertTrue(listing["vex_artifacts"][0]["url"].startswith("/api/theben/vex/"))
         self.assertTrue(listing["sbom_artifacts"][0]["filename"].endswith(".json"))
+
+    def test_security_export_handles_selected_product_missing_from_fixture_bom(self):
+        export = collect_security_export_data(
+            LegacyClient("http://example.invalid", use_fixture=True),
+            {"sku": "LUXA 200-360", "name": "LUXA 200-360", "family": "Motion Detector"},
+            "vex",
+        )
+        product = export["products"][0]
+        self.assertEqual(product["product"]["article_number"], "LUXA 200-360")
+        self.assertEqual(product["vulnerability_count"], 0)
+        self.assertTrue(product["evidence_warnings"])
+        self.assertEqual(product["sbom"]["components"], [])
+        self.assertEqual(product["openvex"]["statements"], [])
 
     def test_real_api_query_parameter_is_lowercase_articlenumber(self):
         self.assertEqual(

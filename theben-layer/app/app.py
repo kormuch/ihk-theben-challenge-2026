@@ -564,9 +564,25 @@ def collect_security_export_data(
     products = []
     for product in selected:
         article = product["article_number"]
-        bom = client.bom(article)
-        sbom_payload = client.sbom(article)
-        vulnerability_payload = client.vulnerabilities(article)
+        evidence_warnings = []
+        try:
+            bom = client.bom(article)
+        except Exception as exc:
+            logger.warning("security export BOM unavailable for %s, continuing with empty BOM: %s", article, exc)
+            bom = {"articleNumber": article, "bom": []}
+            evidence_warnings.append({"type": "bom", "message": str(exc)})
+        try:
+            sbom_payload = client.sbom(article)
+        except Exception as exc:
+            logger.warning("security export SBOM unavailable for %s, continuing with BOM-derived SBOM: %s", article, exc)
+            sbom_payload = None
+            evidence_warnings.append({"type": "sbom", "message": str(exc)})
+        try:
+            vulnerability_payload = client.vulnerabilities(article)
+        except Exception as exc:
+            logger.warning("security export vulnerability data unavailable for %s, continuing with no CVEs: %s", article, exc)
+            vulnerability_payload = []
+            evidence_warnings.append({"type": "vulnerabilities", "message": str(exc)})
         sbom = build_cyclonedx(product, bom, sbom_payload)
         cve = build_cve_export(product, sbom, vulnerability_payload)
         openvex = build_openvex(product, sbom, vulnerability_payload)
@@ -576,6 +592,7 @@ def collect_security_export_data(
             "cve": cve,
             "openvex": openvex,
             "vulnerability_count": len(cve["cves"]),
+            "evidence_warnings": evidence_warnings,
         }
         if artifact_type in {"both", "cve"}:
             item["cve_export"] = cve
@@ -866,23 +883,29 @@ def pdf_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
 
 
-def create_report(use_fixture: bool | None = None) -> dict[str, Any]:
+def fallback_enabled(config: dict[str, Any]) -> bool:
+    return os.environ.get(
+        "THEBEN_USE_FIXTURES",
+        str(config.get("use_fixtures_when_unreachable", True)),
+    ).lower() in {"1", "true", "yes"}
+
+
+def create_report(use_fixture: bool | None = None, force_live_only: bool = False) -> dict[str, Any]:
     config = load_config()
     base_url = os.environ.get("THEBEN_LEGACY_BASE_URL", config.get("legacy_base_url", "http://192.168.8.200:8000"))
     timeout = float(os.environ.get("THEBEN_LEGACY_TIMEOUT", config.get("legacy_timeout_seconds", 5)))
-    if use_fixture is None:
-        use_fixture = os.environ.get("THEBEN_USE_FIXTURES", str(config.get("use_fixtures_when_unreachable", True))).lower() in {"1", "true", "yes"}
     if use_fixture is True:
         fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
         report = collect_report_data(fixture_client)
         report["fixture_fallback"] = True
         artifacts = save_report_artifacts(report)
         return {"status": "ok", "artifacts": artifacts, "report": report}
+    allow_fallback = not force_live_only and fallback_enabled(config)
     client = LegacyClient(base_url, timeout=timeout, use_fixture=False)
     try:
         report = collect_report_data(client)
     except Exception as exc:
-        if not use_fixture:
+        if not allow_fallback:
             raise
         logger.warning("legacy system unavailable, using fixtures: %s", exc)
         fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
@@ -898,6 +921,7 @@ def create_security_export(
     selected_product: dict[str, Any] | None = None,
     artifact_type: str = "both",
     use_fixture: bool | None = None,
+    force_live_only: bool = False,
 ) -> dict[str, Any]:
     artifact_type = str(artifact_type or "both").strip().lower()
     if artifact_type not in {"both", "cve", "vex"}:
@@ -905,19 +929,18 @@ def create_security_export(
     config = load_config()
     base_url = os.environ.get("THEBEN_LEGACY_BASE_URL", config.get("legacy_base_url", "http://192.168.8.200:8000"))
     timeout = float(os.environ.get("THEBEN_LEGACY_TIMEOUT", config.get("legacy_timeout_seconds", 5)))
-    if use_fixture is None:
-        use_fixture = os.environ.get("THEBEN_USE_FIXTURES", str(config.get("use_fixtures_when_unreachable", True))).lower() in {"1", "true", "yes"}
     if use_fixture is True:
         fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
         export = collect_security_export_data(fixture_client, selected_product, artifact_type)
         export["fixture_fallback"] = True
         artifacts = save_security_export_artifacts(export)
         return {"status": "ok", "artifacts": artifacts, "export": export}
+    allow_fallback = not force_live_only and fallback_enabled(config)
     client = LegacyClient(base_url, timeout=timeout, use_fixture=False)
     try:
         export = collect_security_export_data(client, selected_product, artifact_type)
     except Exception as exc:
-        if not use_fixture:
+        if not allow_fallback:
             raise
         logger.warning("legacy security export unavailable, using fixtures: %s", exc)
         fixture_client = LegacyClient(base_url, timeout=timeout, use_fixture=True)
@@ -1006,7 +1029,10 @@ class ThebenHandler(BaseHTTPRequestHandler):
         try:
             if path in {"/api/theben/reports", "/api/theben/extract"}:
                 body = self.read_json(optional=True)
-                result = create_report(use_fixture=body.get("use_fixtures"))
+                result = create_report(
+                    use_fixture=body.get("use_fixtures"),
+                    force_live_only=bool(body.get("force_live_only", False)),
+                )
                 self.send_json(result, HTTPStatus.CREATED)
             elif path == "/api/theben/security-export":
                 body = self.read_json(optional=True)
@@ -1014,13 +1040,23 @@ class ThebenHandler(BaseHTTPRequestHandler):
                     selected_product=body.get("selected_product") if isinstance(body.get("selected_product"), dict) else None,
                     artifact_type=body.get("artifact_type", "both"),
                     use_fixture=body.get("use_fixtures"),
+                    force_live_only=bool(body.get("force_live_only", False)),
                 )
                 self.send_json(result, HTTPStatus.CREATED)
             else:
                 self.send_json({"error": "not found"}, HTTPStatus.NOT_FOUND)
+        except ValueError as exc:
+            logger.warning("POST validation failed: %s", exc)
+            self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
         except Exception as exc:
-            logger.exception("POST failed: %s", exc)
-            self.send_json({"error": str(exc)}, HTTPStatus.INTERNAL_SERVER_ERROR)
+            logger.warning("POST upstream failed: %s", exc)
+            self.send_json(
+                {
+                    "error": f"legacy Theben REST system unavailable: {exc}",
+                    "fallback_hint": "leave force_live_only unset or set use_fixtures=true to allow configured fixture fallback",
+                },
+                HTTPStatus.BAD_GATEWAY,
+            )
 
     def read_json(self, optional: bool = False) -> dict[str, Any]:
         length = int(self.headers.get("Content-Length", "0"))

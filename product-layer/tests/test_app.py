@@ -432,7 +432,7 @@ class ProductLayerTests(unittest.TestCase):
             with patch("app.app.fetch_json_url", side_effect=[extraction, artifacts]) as fetch:
                 result = run_theben_layer_sbom_extract(
                     store,
-                    {"product_id": product["id"], "use_fixtures": False},
+                    {"product_id": product["id"]},
                     {"role": "viewer", "region": "EU", "purpose": "analytics"},
                 )
         self.assertEqual(result["integration"]["contract"], "product-layer-theben-sbom-extract-v1")
@@ -440,6 +440,7 @@ class ProductLayerTests(unittest.TestCase):
         self.assertTrue(result["sbom_artifacts"][0]["url"].startswith("http://127.0.0.1:8098/api/theben/sbom/"))
         payload = fetch.call_args_list[0].kwargs["payload"]
         self.assertEqual(payload["selected_product"]["id"], product["id"])
+        self.assertNotIn("use_fixtures", payload)
         self.assertEqual(payload["request_context"]["proxy_authorization_model"], "product-layer selected product context with theben-layer extraction ownership")
 
     def test_theben_layer_security_export_proxy_returns_cve_and_openvex_links(self):
@@ -460,7 +461,7 @@ class ProductLayerTests(unittest.TestCase):
             with patch("app.app.fetch_json_url", side_effect=[export, artifacts]) as fetch:
                 result = run_theben_layer_security_export(
                     store,
-                    {"product_id": product["id"], "artifact_type": "vex", "use_fixtures": False},
+                    {"product_id": product["id"], "artifact_type": "vex"},
                     {"role": "viewer", "region": "EU", "purpose": "analytics"},
                 )
         self.assertEqual(result["integration"]["source"], "product-layer-theben-layer-security-export-proxy")
@@ -470,6 +471,7 @@ class ProductLayerTests(unittest.TestCase):
         payload = fetch.call_args_list[0].kwargs["payload"]
         self.assertEqual(payload["artifact_type"], "vex")
         self.assertEqual(payload["selected_product"]["id"], product["id"])
+        self.assertNotIn("use_fixtures", payload)
         self.assertIn("attributes", payload["selected_product"])
 
     def test_avatar_ui_action_is_audited(self):
