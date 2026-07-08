@@ -22,7 +22,7 @@
   .highlight { color: #38bdf8; font-weight: 600; }
   .big { font-size: 1.8rem; color: #fff; line-height: 2; }
 
-  .pipeline { display: flex; align-items: center; gap: 0; margin: 48px 0; justify-content: center; }
+  .pipeline { display: flex; align-items: center; gap: 0; margin: 48px 0; justify-content: center; flex-wrap: wrap; }
   .pipeline-step { background: #1e293b; border: 2px solid #334155; border-radius: 14px; padding: 24px 32px; text-align: center; }
   .pipeline-step .step-title { font-size: 1.3rem; font-weight: 700; color: #fff; }
   .pipeline-step .step-desc { font-size: 0.95rem; color: #94a3b8; margin-top: 4px; }
@@ -31,14 +31,38 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 24px; }
   .card { background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 32px; }
 
-  .tech-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 32px; }
-  .tech-tag { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 14px 24px; font-size: 1.15rem; color: #fff; font-weight: 500; }
-
   .nav { position: fixed; bottom: 30px; right: 40px; display: flex; gap: 12px; z-index: 100; }
   .nav button { background: #1e293b; border: 2px solid #334155; color: #e2e8f0; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
   .nav button:hover { background: #334155; border-color: #38bdf8; }
   .slide-counter { position: fixed; bottom: 36px; left: 40px; font-size: 0.95rem; color: #475569; }
   .footer-line { position: fixed; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #38bdf8, #818cf8, #38bdf8); }
+
+  /* Slide 3: file cards */
+  .file-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+  .file-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px 24px; }
+  .file-card .file-icon { font-size: 2rem; margin-bottom: 8px; }
+  .file-card .file-name { font-size: 1rem; color: #38bdf8; font-weight: 600; font-family: 'Consolas', monospace; word-break: break-all; }
+  .file-card .file-desc { font-size: 0.95rem; color: #94a3b8; margin-top: 6px; }
+
+  /* Slide 4: flow */
+  .flow-layout { display: flex; align-items: center; gap: 40px; margin: 24px 0; }
+  .flow-left { flex: 1; }
+  .flow { display: flex; align-items: stretch; gap: 0; justify-content: center; flex-direction: column; }
+  .flow-row { display: flex; align-items: center; gap: 0; justify-content: center; margin: 8px 0; }
+  .flow-box { background: #1e293b; border: 2px solid #334155; border-radius: 16px; padding: 20px 24px; min-width: 200px; }
+  .flow-box h3 { font-size: 1.15rem; color: #fff; margin-bottom: 8px; }
+  .flow-box ul { margin: 0; }
+  .flow-box ul li { font-size: 0.95rem; padding: 2px 0; padding-left: 20px; }
+  .flow-box ul li::before { top: 12px; width: 8px; height: 8px; }
+  .flow-arrow { display: flex; align-items: center; font-size: 2.2rem; color: #38bdf8; padding: 0 12px; }
+  .flow-screenshot { max-width: 420px; border-radius: 12px; border: 2px solid #334155; box-shadow: 0 4px 24px rgba(0,0,0,0.4); }
+  .flow-screenshot-label { font-size: 0.95rem; color: #94a3b8; margin-top: 8px; text-align: center; }
+
+  /* Slide 5: team */
+  .team-slide { align-items: center; text-align: center; }
+  .team-photo { max-width: 700px; max-height: 400px; border-radius: 16px; border: 3px solid #334155; margin-top: 32px; object-fit: cover; }
+  .team-names { font-size: 1.6rem; color: #fff; margin-top: 24px; font-weight: 600; }
+  .team-sub { font-size: 1.2rem; color: #94a3b8; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -47,13 +71,14 @@
 <div class="slide active" id="slide1">
   <h1>PAUL</h1>
   <p class="subtitle">Product Attribute Unified Layer</p>
-  <p class="subtitle" style="color:#475569; margin-top:8px;">Korbinian Much &middot; Christian Solva &middot; Theben AG &middot; 08.07.2026</p>
+  <p class="subtitle" style="color:#475569; margin-top:8px;">Kollege Codex &middot; IHK Innovationstage Zollernalb &middot; 08.07.2026</p>
 
   <div style="margin-top: 56px;">
-    <p class="big">Theben hat <span class="highlight">hunderte Produkte</span> — Daten dazu liegen in dutzenden Systemen.</p>
-    <p class="big">Dieselbe Produkteigenschaft steht in drei Systemen — und jedes sagt was anderes.</p>
+    <p class="big">Ein Hersteller hat <span class="highlight">hunderte Produkte</span>.</p>
+    <p class="big">Die Daten dazu liegen in <span class="highlight">dutzenden Systemen</span> und Formaten.</p>
+    <p class="big" style="margin-top: 16px;">Dasselbe Produkt, drei Quellen, <span class="highlight">drei verschiedene Angaben</span>.</p>
     <p style="font-size: 1.25rem; color: #94a3b8; margin-top: 8px;">Beispiel: Schutzart IP54 im Datenblatt, IP44 im ERP, IP65 im Prüfbericht — was stimmt?</p>
-    <p class="big" style="margin-top: 24px;">Ergebnis: <span class="highlight">Kein Digital Product Passport möglich.</span></p>
+    <p class="big" style="margin-top: 24px;">Ohne eine einheitliche Datenbasis ist kein <span class="highlight">Digitaler Produktpass</span> möglich.</p>
   </div>
 </div>
 
@@ -61,60 +86,122 @@
 <div class="slide" id="slide2">
   <h2>Was PAUL macht</h2>
 
-  <p style="font-size: 1.6rem; color: #fff; margin-bottom: 12px;">Datei reinwerfen. KI liest. Mensch prüft. Produkt gespeichert.</p>
+  <p style="font-size: 1.6rem; color: #fff; margin-bottom: 12px;">Datei reinwerfen. KI liest. Mensch prüft. Fertig.</p>
 
   <div class="pipeline">
-    <div class="pipeline-step"><div class="step-title">Drop</div><div class="step-desc">PDF, CSV, JSON, ...</div></div>
+    <div class="pipeline-step"><div class="step-title">Datei reinwerfen</div><div class="step-desc">PDF, CSV, Bild, ...</div></div>
     <div class="pipeline-arrow">&#10132;</div>
-    <div class="pipeline-step"><div class="step-title">KI erkennt</div><div class="step-desc">Dokumenttyp</div></div>
+    <div class="pipeline-step"><div class="step-title">KI erkennt</div><div class="step-desc">Was ist das?</div></div>
     <div class="pipeline-arrow">&#10132;</div>
-    <div class="pipeline-step"><div class="step-title">KI extrahiert</div><div class="step-desc">Produktdaten</div></div>
+    <div class="pipeline-step"><div class="step-title">KI extrahiert</div><div class="step-desc">Produktdaten rausziehen</div></div>
     <div class="pipeline-arrow">&#10132;</div>
     <div class="pipeline-step"><div class="step-title">Mensch prüft</div><div class="step-desc">Bestätigen / Korrigieren</div></div>
     <div class="pipeline-arrow">&#10132;</div>
-    <div class="pipeline-step"><div class="step-title">Datenbank</div><div class="step-desc">Single Source of Truth</div></div>
+    <div class="pipeline-step"><div class="step-title">Gespeichert</div><div class="step-desc">Eine Wahrheit</div></div>
   </div>
 
-  <div class="grid-2">
-    <div>
-      <ul>
-        <li>Jeder extrahierte Wert zeigt <span class="highlight">woher er kommt</span> (Zitat aus Quelldatei)</li>
-        <li>Ab 85% Confidence automatisch — darunter fragt PAUL nach</li>
-        <li>Erkennt ob Produkt schon existiert und zeigt <span class="highlight">was sich ändert</span></li>
-      </ul>
+  <ul style="margin-top: 24px;">
+    <li>Jeder Wert zeigt, <span class="highlight">woher er kommt</span> — Zitat aus der Originaldatei</li>
+    <li>Erkennt ob ein Produkt schon existiert und zeigt <span class="highlight">was sich ändert</span></li>
+    <li>Mehrere Dateien auf einmal — Duplikate werden erkannt und zusammengeführt</li>
+  </ul>
+</div>
+
+<!-- SLIDE 3: Was geht rein? -->
+<div class="slide" id="slide3">
+  <h2>Was geht rein?</h2>
+  <p style="font-size: 1.3rem; color: #94a3b8; margin-bottom: 8px;">PAUL versteht unterschiedlichste Dateiformate und Dokumenttypen — alles, was im Arbeitsalltag anfällt.</p>
+
+  <div class="file-grid">
+    <div class="file-card">
+      <div class="file-icon">&#128196;</div>
+      <div class="file-name">LUXA_200-360_Datasheet.csv</div>
+      <div class="file-desc">Produktdatenblatt als CSV — technische Kennwerte, tabellarisch</div>
     </div>
-    <div>
-      <ul>
-        <li>Bulk-Upload: viele Dateien auf einmal</li>
-        <li>Duplikate über Dateigrenzen hinweg erkannt</li>
-        <li>LLM-Fallback: fällt Gemini aus, springt Groq ein</li>
-      </ul>
+    <div class="file-card">
+      <div class="file-icon">&#128209;</div>
+      <div class="file-name">LUXA_200-360_Lab_Report.txt</div>
+      <div class="file-desc">Prüfbericht aus dem Labor — Testergebnisse, Messwerte</div>
+    </div>
+    <div class="file-card">
+      <div class="file-icon">&#128220;</div>
+      <div class="file-name">IEC62619_certificate.pdf</div>
+      <div class="file-desc">Zertifikat als PDF — gescannt oder digital</div>
+    </div>
+    <div class="file-card">
+      <div class="file-icon">&#128202;</div>
+      <div class="file-name">Multi_Product_Catalog.json</div>
+      <div class="file-desc">Produktkatalog aus dem ERP — 7 Produkte auf einmal</div>
+    </div>
+    <div class="file-card">
+      <div class="file-icon">&#128248;</div>
+      <div class="file-name">33J_Spec.png</div>
+      <div class="file-desc">Foto oder Scan eines Datenblatts — wird per OCR gelesen</div>
+    </div>
+    <div class="file-card">
+      <div class="file-icon">&#128203;</div>
+      <div class="file-name">Cell_data_33J.xlsx</div>
+      <div class="file-desc">Excel-Tabelle mit Messdaten — mehrere Sheets</div>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 3: Tech & Demo -->
-<div class="slide" id="slide3">
-  <h2>Unter der Haube</h2>
+<!-- SLIDE 4: Flow -->
+<div class="slide" id="slide4">
+  <h2>Vom Chaos zur Ordnung</h2>
 
-  <div class="tech-row">
-    <div class="tech-tag">FastAPI</div>
-    <div class="tech-tag">React + TypeScript</div>
-    <div class="tech-tag">PostgreSQL 16</div>
-    <div class="tech-tag">Gemini 2.0 Flash</div>
-    <div class="tech-tag">Groq Llama 3.3 70B</div>
-    <div class="tech-tag">Docker Compose</div>
-  </div>
+  <div class="flow-layout">
+    <div class="flow-left">
+      <div class="flow">
+        <div class="flow-row">
+          <div class="flow-box">
+            <h3>&#128193; Quelldateien</h3>
+            <ul>
+              <li>PDF, CSV, JSON, XML</li>
+              <li>Excel, Bilder (OCR)</li>
+              <li>Aus ERP, Labor, PM, ...</li>
+            </ul>
+          </div>
 
-  <div style="margin-top: 48px;">
-    <p class="big"><span class="highlight">start-paul.bat</span> — ein Klick, alles läuft.</p>
-    <p style="font-size: 1.3rem; color: #94a3b8; margin-top: 8px;">Health-Checks, Browser öffnet sich, Logs streamen.</p>
-  </div>
+          <div class="flow-arrow">&#10132;</div>
 
-  <div style="margin-top: 48px;">
-    <p style="font-size: 1.8rem; color: #fff; font-weight: 600;">Live Demo?</p>
-    <p style="font-size: 1.2rem; color: #94a3b8; margin-top: 8px;">localhost:3000 — Datei droppen, zusehen, bestätigen.</p>
+          <div class="flow-box" style="border-color: #38bdf8;">
+            <h3 style="color: #38bdf8;">&#129302; Data-Layer (KI)</h3>
+            <ul>
+              <li>Dokumenttyp erkennen</li>
+              <li>Produktdaten extrahieren</li>
+              <li>Mensch prüft & bestätigt</li>
+            </ul>
+          </div>
+
+          <div class="flow-arrow">&#10132;</div>
+
+          <div class="flow-box" style="border-color: #818cf8;">
+            <h3 style="color: #818cf8;">&#127981; Product-Layer</h3>
+            <ul>
+              <li>Produkte verwalten</li>
+              <li>Produktfamilien & Attribute</li>
+              <li>Digitaler Produktpass</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size: 1.15rem; color: #94a3b8; margin-top: 20px;">
+        Aus <span class="highlight">verteilten Dateien</span> wird ein <span class="highlight">zentrales Produktregister</span> — bereit für den Digitalen Produktpass.
+      </p>
+    </div>
+
   </div>
+</div>
+
+<!-- SLIDE 5: Team -->
+<div class="slide team-slide" id="slide5">
+  <h2>Team</h2>
+  <img src="team.jpg" alt="Christian Schindler & Korbinian Much" class="team-photo">
+  <div class="team-names">Christian Schindler & Korbinian Much</div>
+  <div class="team-sub">Kollege Codex &middot; IHK Innovationstage Zollernalb 2026</div>
+  <p style="font-size: 1.3rem; color: #38bdf8; margin-top: 32px; font-weight: 600;">Danke!</p>
 </div>
 
 <!-- Navigation -->
@@ -122,7 +209,7 @@
   <button onclick="navigate(-1)">&#8592;</button>
   <button onclick="navigate(1)">&#8594;</button>
 </div>
-<div class="slide-counter" id="counter">1 / 3</div>
+<div class="slide-counter" id="counter">1 / 5</div>
 <div class="footer-line"></div>
 
 <script>
