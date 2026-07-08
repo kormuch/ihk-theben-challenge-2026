@@ -225,6 +225,47 @@ Datasheet, Lab Report, Certificate, Software Documentation, Bill of Materials, M
 
 ---
 
+## Add-on Challenge (30 min)
+
+External REST API at `192.168.8.200:8000` with two dummy products (Kaffeemaschine & Staubsauger).
+
+### Tasks
+
+| # | Task | Status |
+|---|------|--------|
+| 1 | **Connect to proprietary REST system** — integrate external API (`/products`, `/products/bom`, `/products/certificate`) into PAUL | done |
+| 2 | **Gather products into data-layer** — add button to import external products via REST into PAUL's database | done |
+| 3 | **Generate Theben-styled PDF** — product report with BOM, certificates, SBOM, CVE/VEX in Theben corporate design (logo from product-layer) | done |
+| 4 | **Extract complete SBOM** — build CycloneDX 1.5 SBOM from BOM API data, brute-force API for hidden endpoints | done |
+| 5 | **Evaluate CVEs & generate VEX** — check BOM components against NIST NVD, generate VEX-formatted vulnerability overview | done |
+
+### External REST API
+
+| Method | Endpoint | Returns |
+|--------|----------|---------|
+| GET | `/products` | List of article numbers `["7654126", "8654126"]` |
+| GET | `/products/bom?articlenumber=<SKU>` | BOM as XML (components, manufacturers, quantities) |
+| GET | `/products/certificate?articlenumber=<SKU>` | CE certificate as base64-encoded PDF |
+
+### Challenge Output
+
+All generated files are in `challenge-output/`:
+
+| File | Description |
+|------|-------------|
+| `04_sbom_cyclonedx.json` | SBOM with 41 components (CycloneDX 1.5) |
+| `05_vex_cyclonedx.json` | VEX with 19 CVEs (ESP32, STM32, Espressif) |
+
+### Results
+
+- **7654126** — Theoretical Fully Automatic Coffee Machine (20 BOM components)
+- **8654126** — Theoretical Smart Vacuum Cleaner (21 BOM components)
+- **41 components** in SBOM across both products
+- **19 real CVEs** found via NIST NVD (BLE vulnerabilities, access control bypasses, DoS)
+- **2 CE certificates** extracted and decoded (EMC 2014/30/EU, LVD 2014/35/EU, RoHS 2011/65/EU)
+
+---
+
 ## Constraints
 
 - Docker Compose (containerisierte Lösung)

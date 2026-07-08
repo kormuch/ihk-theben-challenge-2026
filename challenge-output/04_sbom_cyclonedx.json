@@ -1,0 +1,1744 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:paul-challenge-20260708133235",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-08T13:32:35.373930+00:00",
+    "tools": [
+      {
+        "name": "PAUL",
+        "version": "1.4.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "Theben Product Analysis",
+      "description": "SBOM generated via PAUL - IHK Innovationstage 2026"
+    }
+  },
+  "components": [
+    {
+      "type": "device",
+      "bom-ref": "7654126-CM-ASSY-001",
+      "name": "Main Coffee Machine Assembly",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Main Coffee Machine Assembly (Part: CM-ASSY-001)",
+      "supplier": {
+        "name": "Acme Appliance Systems GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "CM-ASSY-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-CM-ASSY-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "TOP"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/cm-assy-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-PCB-CTRL-STD-001",
+      "name": "Standard Main Control PCB",
+      "version": "1.0",
+      "group": "Electronics",
+      "description": "Standard Main Control PCB (Part: PCB-CTRL-STD-001)",
+      "supplier": {
+        "name": "EuroBoard Electronics AG"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "PCB-CTRL-STD-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-PCB-CTRL-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Electronics"
+        },
+        {
+          "name": "reference",
+          "value": "PCB1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/pcb-ctrl-std-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-MCU-STM32H563",
+      "name": "32-bit Microcontroller",
+      "version": "1.0",
+      "group": "Semiconductor",
+      "description": "32-bit Microcontroller (Part: MCU-STM32H563)",
+      "supplier": {
+        "name": "STMicroelectronics"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "MCU-STM32H563"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MCU-0007"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Semiconductor"
+        },
+        {
+          "name": "reference",
+          "value": "U1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/mcu-stm32h563@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-PMIC-AXP2101",
+      "name": "Power Management IC",
+      "version": "1.0",
+      "group": "Semiconductor",
+      "description": "Power Management IC (Part: PMIC-AXP2101)",
+      "supplier": {
+        "name": "X-Powers Technology"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "PMIC-AXP2101"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-PMIC-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Semiconductor"
+        },
+        {
+          "name": "reference",
+          "value": "U2"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/pmic-axp2101@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-ESP32-C6-MOD",
+      "name": "WiFi and BLE Module",
+      "version": "1.0",
+      "group": "Communication",
+      "description": "WiFi and BLE Module (Part: ESP32-C6-MOD)",
+      "supplier": {
+        "name": "Espressif Systems"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "ESP32-C6-MOD"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-COM-0003"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Communication"
+        },
+        {
+          "name": "reference",
+          "value": "U3"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/esp32-c6-mod@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-EEPROM-16K-I2C",
+      "name": "EEPROM 16 Kbit",
+      "version": "1.0",
+      "group": "Memory",
+      "description": "EEPROM 16 Kbit (Part: EEPROM-16K-I2C)",
+      "supplier": {
+        "name": "Microchip Technology"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "EEPROM-16K-I2C"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MEM-0002"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Memory"
+        },
+        {
+          "name": "reference",
+          "value": "U4"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/eeprom-16k-i2c@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-LDO-TLV75533",
+      "name": "3.3V LDO Regulator",
+      "version": "1.0",
+      "group": "Power",
+      "description": "3.3V LDO Regulator (Part: LDO-TLV75533)",
+      "supplier": {
+        "name": "Texas Instruments"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "LDO-TLV75533"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-REG-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Power"
+        },
+        {
+          "name": "reference",
+          "value": "U5"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/ldo-tlv75533@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-USB-C-SERVICE",
+      "name": "USB-C Service Port",
+      "version": "1.0",
+      "group": "Connector",
+      "description": "USB-C Service Port (Part: USB-C-SERVICE)",
+      "supplier": {
+        "name": "Amphenol ICC"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "USB-C-SERVICE"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-CON-USB-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Connector"
+        },
+        {
+          "name": "reference",
+          "value": "J1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/usb-c-service@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-BUZZER-5V",
+      "name": "Piezo Buzzer",
+      "version": "1.0",
+      "group": "Audio",
+      "description": "Piezo Buzzer (Part: BUZZER-5V)",
+      "supplier": {
+        "name": "Murata Manufacturing"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BUZZER-5V"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-HMI-BUZ-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Audio"
+        },
+        {
+          "name": "reference",
+          "value": "BZ1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/buzzer-5v@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-LED-RGB-5050",
+      "name": "RGB Status LED",
+      "version": "1.0",
+      "group": "Opto",
+      "description": "RGB Status LED (Part: LED-RGB-5050)",
+      "supplier": {
+        "name": "Kingbright"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "LED-RGB-5050"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-LED-RGB-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "2"
+        },
+        {
+          "name": "category",
+          "value": "Opto"
+        },
+        {
+          "name": "reference",
+          "value": "D20-D21"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/led-rgb-5050@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-TEMP-NTC-100K",
+      "name": "Boiler Temperature Sensor",
+      "version": "1.0",
+      "group": "Sensor",
+      "description": "Boiler Temperature Sensor (Part: TEMP-NTC-100K)",
+      "supplier": {
+        "name": "TDK Electronics"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "TEMP-NTC-100K"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-SENS-TEMP-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "2"
+        },
+        {
+          "name": "category",
+          "value": "Sensor"
+        },
+        {
+          "name": "reference",
+          "value": "TH1-TH2"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/temp-ntc-100k@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-FLOW-HALL-001",
+      "name": "Water Flow Sensor",
+      "version": "1.0",
+      "group": "Sensor",
+      "description": "Water Flow Sensor (Part: FLOW-HALL-001)",
+      "supplier": {
+        "name": "Sensirion AG"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "FLOW-HALL-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-SENS-FLOW-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Sensor"
+        },
+        {
+          "name": "reference",
+          "value": "FS1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/flow-hall-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-PUMP-15BAR",
+      "name": "High Pressure Water Pump",
+      "version": "1.0",
+      "group": "Fluidics",
+      "description": "High Pressure Water Pump (Part: PUMP-15BAR)",
+      "supplier": {
+        "name": "Ulka Pump Systems"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "PUMP-15BAR"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MOT-PUMP-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Fluidics"
+        },
+        {
+          "name": "reference",
+          "value": "P1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/pump-15bar@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-MOTOR-GRINDER",
+      "name": "Grinder Motor",
+      "version": "1.0",
+      "group": "Motor",
+      "description": "Grinder Motor (Part: MOTOR-GRINDER)",
+      "supplier": {
+        "name": "Johnson Electric"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "MOTOR-GRINDER"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MOT-GRIND-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Motor"
+        },
+        {
+          "name": "reference",
+          "value": "M1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/motor-grinder@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-BOILER-SS-1400W",
+      "name": "Stainless Steel Boiler with 1400W Heater",
+      "version": "1.0",
+      "group": "Thermal",
+      "description": "Stainless Steel Boiler with 1400W Heater (Part: BOILER-SS-1400W)",
+      "supplier": {
+        "name": "ThermoFab Appliances Ltd."
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BOILER-SS-1400W"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MECH-BOIL-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Thermal"
+        },
+        {
+          "name": "reference",
+          "value": "B1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/boiler-ss-1400w@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-BREW-GROUP-001",
+      "name": "Brew Group Assembly",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Brew Group Assembly (Part: BREW-GROUP-001)",
+      "supplier": {
+        "name": "BrewMotion Components GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BREW-GROUP-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MECH-BREW-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "BG1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/brew-group-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-WATER-TANK-1L8",
+      "name": "Water Reservoir 1.8 Liter",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Water Reservoir 1.8 Liter (Part: WATER-TANK-1L8)",
+      "supplier": {
+        "name": "PolyMold Europe GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "WATER-TANK-1L8"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MECH-WT-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "WT1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/water-tank-1l8@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-SCREW-M3X8",
+      "name": "M3 x 8 Screw",
+      "version": "1.0",
+      "group": "Fastener",
+      "description": "M3 x 8 Screw (Part: SCREW-M3X8)",
+      "supplier": {
+        "name": "Wuerth"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "SCREW-M3X8"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-SCR-M3X8-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "64"
+        },
+        {
+          "name": "category",
+          "value": "Fastener"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/screw-m3x8@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-LABEL-SERIAL",
+      "name": "Serial Number Label",
+      "version": "1.0",
+      "group": "Documentation",
+      "description": "Serial Number Label (Part: LABEL-SERIAL)",
+      "supplier": {
+        "name": "LabelTech Print Solutions GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "LABEL-SERIAL"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-LBL-SER-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Documentation"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/label-serial@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "7654126-CABLE-TIE-100MM",
+      "name": "Cable Tie 100 mm",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Cable Tie 100 mm (Part: CABLE-TIE-100MM)",
+      "supplier": {
+        "name": "HellermannTyton"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "CABLE-TIE-100MM"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-CABLE-TIE-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "30"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Fully Automatic Coffee Machine"
+        },
+        {
+          "name": "articlenumber",
+          "value": "7654126"
+        }
+      ],
+      "purl": "pkg:generic/cable-tie-100mm@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-VC-ASSY-001",
+      "name": "Main Vacuum Cleaner Assembly",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Main Vacuum Cleaner Assembly (Part: VC-ASSY-001)",
+      "supplier": {
+        "name": "Acme Appliance Systems GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "VC-ASSY-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-VC-ASSY-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "TOP"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/vc-assy-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-PCB-CTRL-STD-001",
+      "name": "Standard Main Control PCB",
+      "version": "1.0",
+      "group": "Electronics",
+      "description": "Standard Main Control PCB (Part: PCB-CTRL-STD-001)",
+      "supplier": {
+        "name": "EuroBoard Electronics AG"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "PCB-CTRL-STD-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-PCB-CTRL-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Electronics"
+        },
+        {
+          "name": "reference",
+          "value": "PCB1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/pcb-ctrl-std-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-MCU-STM32G474",
+      "name": "32-bit Motor Control Microcontroller",
+      "version": "1.0",
+      "group": "Semiconductor",
+      "description": "32-bit Motor Control Microcontroller (Part: MCU-STM32G474)",
+      "supplier": {
+        "name": "STMicroelectronics"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "MCU-STM32G474"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MCU-0011"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Semiconductor"
+        },
+        {
+          "name": "reference",
+          "value": "U1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/mcu-stm32g474@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-PMIC-AXP2101",
+      "name": "Power Management IC",
+      "version": "1.0",
+      "group": "Semiconductor",
+      "description": "Power Management IC (Part: PMIC-AXP2101)",
+      "supplier": {
+        "name": "X-Powers Technology"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "PMIC-AXP2101"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-PMIC-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Semiconductor"
+        },
+        {
+          "name": "reference",
+          "value": "U2"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/pmic-axp2101@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-BLE-WIFI-MOD",
+      "name": "WiFi and BLE Communication Module",
+      "version": "1.0",
+      "group": "Communication",
+      "description": "WiFi and BLE Communication Module (Part: BLE-WIFI-MOD)",
+      "supplier": {
+        "name": "Espressif Systems"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BLE-WIFI-MOD"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-COM-0004"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Communication"
+        },
+        {
+          "name": "reference",
+          "value": "U3"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/ble-wifi-mod@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-EEPROM-32K-I2C",
+      "name": "EEPROM 32 Kbit",
+      "version": "1.0",
+      "group": "Memory",
+      "description": "EEPROM 32 Kbit (Part: EEPROM-32K-I2C)",
+      "supplier": {
+        "name": "Microchip Technology"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "EEPROM-32K-I2C"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MEM-0003"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Memory"
+        },
+        {
+          "name": "reference",
+          "value": "U4"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/eeprom-32k-i2c@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-LDO-TLV75533",
+      "name": "3.3V LDO Regulator",
+      "version": "1.0",
+      "group": "Power",
+      "description": "3.3V LDO Regulator (Part: LDO-TLV75533)",
+      "supplier": {
+        "name": "Texas Instruments"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "LDO-TLV75533"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-REG-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Power"
+        },
+        {
+          "name": "reference",
+          "value": "U5"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/ldo-tlv75533@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-USB-C-SERVICE",
+      "name": "USB-C Service Port",
+      "version": "1.0",
+      "group": "Connector",
+      "description": "USB-C Service Port (Part: USB-C-SERVICE)",
+      "supplier": {
+        "name": "Amphenol ICC"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "USB-C-SERVICE"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-CON-USB-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Connector"
+        },
+        {
+          "name": "reference",
+          "value": "J1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/usb-c-service@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-BUZZER-5V",
+      "name": "Piezo Buzzer",
+      "version": "1.0",
+      "group": "Audio",
+      "description": "Piezo Buzzer (Part: BUZZER-5V)",
+      "supplier": {
+        "name": "Murata Manufacturing"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BUZZER-5V"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-HMI-BUZ-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Audio"
+        },
+        {
+          "name": "reference",
+          "value": "BZ1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/buzzer-5v@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-LED-RGB-5050",
+      "name": "RGB Status LED",
+      "version": "1.0",
+      "group": "Opto",
+      "description": "RGB Status LED (Part: LED-RGB-5050)",
+      "supplier": {
+        "name": "Kingbright"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "LED-RGB-5050"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-LED-RGB-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "2"
+        },
+        {
+          "name": "category",
+          "value": "Opto"
+        },
+        {
+          "name": "reference",
+          "value": "D20-D21"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/led-rgb-5050@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-BATTERY-25V2-LIION",
+      "name": "25.2V Lithium Ion Battery Pack",
+      "version": "1.0",
+      "group": "Battery",
+      "description": "25.2V Lithium Ion Battery Pack (Part: BATTERY-25V2-LIION)",
+      "supplier": {
+        "name": "Varta Energy Systems"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BATTERY-25V2-LIION"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-BAT-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Battery"
+        },
+        {
+          "name": "reference",
+          "value": "BAT1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/battery-25v2-liion@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-BMS-6S-001",
+      "name": "6S Battery Management System PCB",
+      "version": "1.0",
+      "group": "Power",
+      "description": "6S Battery Management System PCB (Part: BMS-6S-001)",
+      "supplier": {
+        "name": "PowerSafe Electronics GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "BMS-6S-001"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-BMS-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Power"
+        },
+        {
+          "name": "reference",
+          "value": "PCB2"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/bms-6s-001@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-MOTOR-BLDC-FAN",
+      "name": "High Speed BLDC Suction Motor",
+      "version": "1.0",
+      "group": "Motor",
+      "description": "High Speed BLDC Suction Motor (Part: MOTOR-BLDC-FAN)",
+      "supplier": {
+        "name": "Nidec Motor Corporation"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "MOTOR-BLDC-FAN"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MOT-BLDC-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Motor"
+        },
+        {
+          "name": "reference",
+          "value": "M1"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/motor-bldc-fan@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-MOTOR-BRUSH",
+      "name": "Brush Roller Motor",
+      "version": "1.0",
+      "group": "Motor",
+      "description": "Brush Roller Motor (Part: MOTOR-BRUSH)",
+      "supplier": {
+        "name": "Johnson Electric"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "MOTOR-BRUSH"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MOT-BRUSH-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Motor"
+        },
+        {
+          "name": "reference",
+          "value": "M2"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/motor-brush@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-IMU-6AXIS",
+      "name": "6-Axis IMU Sensor",
+      "version": "1.0",
+      "group": "Sensor",
+      "description": "6-Axis IMU Sensor (Part: IMU-6AXIS)",
+      "supplier": {
+        "name": "Bosch Sensortec"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "IMU-6AXIS"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-SENS-IMU-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Sensor"
+        },
+        {
+          "name": "reference",
+          "value": "U12"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/imu-6axis@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-TOF-SENSOR",
+      "name": "Time of Flight Distance Sensor",
+      "version": "1.0",
+      "group": "Sensor",
+      "description": "Time of Flight Distance Sensor (Part: TOF-SENSOR)",
+      "supplier": {
+        "name": "STMicroelectronics"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "TOF-SENSOR"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-SENS-TOF-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "4"
+        },
+        {
+          "name": "category",
+          "value": "Sensor"
+        },
+        {
+          "name": "reference",
+          "value": "TOF1-TOF4"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/tof-sensor@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-DUSTBIN-ASSY",
+      "name": "Dust Bin Assembly",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Dust Bin Assembly (Part: DUSTBIN-ASSY)",
+      "supplier": {
+        "name": "PolyMold Europe GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "DUSTBIN-ASSY"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-MECH-DUST-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/dustbin-assy@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-FILTER-HEPA",
+      "name": "HEPA Filter Cartridge",
+      "version": "1.0",
+      "group": "Consumable",
+      "description": "HEPA Filter Cartridge (Part: FILTER-HEPA)",
+      "supplier": {
+        "name": "CleanAir Filter Systems GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "FILTER-HEPA"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-FILT-HEPA-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Consumable"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/filter-hepa@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-SCREW-M3X8",
+      "name": "M3 x 8 Screw",
+      "version": "1.0",
+      "group": "Fastener",
+      "description": "M3 x 8 Screw (Part: SCREW-M3X8)",
+      "supplier": {
+        "name": "Wuerth"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "SCREW-M3X8"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-SCR-M3X8-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "48"
+        },
+        {
+          "name": "category",
+          "value": "Fastener"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/screw-m3x8@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-LABEL-SERIAL",
+      "name": "Serial Number Label",
+      "version": "1.0",
+      "group": "Documentation",
+      "description": "Serial Number Label (Part: LABEL-SERIAL)",
+      "supplier": {
+        "name": "LabelTech Print Solutions GmbH"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "LABEL-SERIAL"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-LBL-SER-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "1"
+        },
+        {
+          "name": "category",
+          "value": "Documentation"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/label-serial@1.0"
+    },
+    {
+      "type": "device",
+      "bom-ref": "8654126-CABLE-TIE-100MM",
+      "name": "Cable Tie 100 mm",
+      "version": "1.0",
+      "group": "Mechanical",
+      "description": "Cable Tie 100 mm (Part: CABLE-TIE-100MM)",
+      "supplier": {
+        "name": "HellermannTyton"
+      },
+      "properties": [
+        {
+          "name": "partNumber",
+          "value": "CABLE-TIE-100MM"
+        },
+        {
+          "name": "internalPartNumber",
+          "value": "INT-CABLE-TIE-0001"
+        },
+        {
+          "name": "quantity",
+          "value": "20"
+        },
+        {
+          "name": "category",
+          "value": "Mechanical"
+        },
+        {
+          "name": "reference",
+          "value": "-"
+        },
+        {
+          "name": "product",
+          "value": "Theoretical Smart Vacuum Cleaner"
+        },
+        {
+          "name": "articlenumber",
+          "value": "8654126"
+        }
+      ],
+      "purl": "pkg:generic/cable-tie-100mm@1.0"
+    }
+  ]
+}
